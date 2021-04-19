@@ -1,0 +1,667 @@
+body { 
+  font-family: Arial, Helvetica, sans-serif; 
+  background-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#wrapper {
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+#content_wrapper {
+  background: white;
+  border: solid 1px lightgray;
+  padding: 10px;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.top_band {
+  background: black;
+  display: flex; 
+  justify-content: space-between;
+}
+
+.top_band > div {
+  background: darkgray;
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+}
+
+#on_the_clock, #countdown {
+  background-color: #333;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  box-shadow: inset 0px 0px 0px 1px white;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#countdown {
+    font-family: 'digital-7', sans-serif;
+}
+
+#top_flow_band {
+  display:flex; 
+  justify-content: space-around;
+  background-color: #333;
+  flex-direction: row;
+  box-shadow: inset 0px 0px 0px 1px white;
+  width: 100%;
+}
+
+#top_flow_band > div {
+  display: flex;
+  align-items:center;
+  flex-basis: 100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  padding: 5px;
+  margin: 2px;
+}
+
+.content {
+  display:flex; 
+}
+
+.content > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.left_column {
+  background: url(/images/texturen/dottedBorder_vert.gif) repeat-y bottom right;
+  margin-left: 1px;
+  margin-right: 5px;
+  padding: 5px;
+}
+
+#left_head {
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 18px;
+  height: 65px;
+}
+
+#search_player_wrapper {
+  display: flex;
+}
+
+#search_player {
+  width: 100%;
+  margin-left: 5px;
+  margin-right: 5px;
+  text-align: left;
+}
+
+#player_filters {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#position_filters, #misc_filters {
+  display: flex;
+  justify-content: space-around;
+}
+
+.filter_button {
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: lightgray;
+  font-size: 11;
+  border: 0;
+  cursor: pointer;
+  margin: 3px;
+}
+
+#selectable_players_list {
+    overflow: scroll;
+    max-height: 70vh;
+}
+
+.players_tr {
+  display: table-row;
+  font-size: 11px;
+}
+
+.players_tr:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.players_td {
+  display: table-cell;
+  padding: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.picked {
+  opacity: 0.2;
+}
+
+.right_column {
+  background: url(/images/texturen/dottedBorder_vert.gif) repeat-y bottom left;
+  margin-right: 1px;
+  margin-left: 5px;
+  padding: 5px;
+}
+
+#right_head {
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 18px;
+  height: 65px;
+}
+
+.dropdown {
+  overflow: hidden;
+  justify-content: center;
+  display: flex;
+  margin-top: 15px;
+  margin-bottom: auto;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#view_team_wrapper {
+}
+
+#view_team_count {
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.view_team_position_head {
+  display: flex;
+  justify-content: space-between;
+  background: url(/images/texturen/dottedBorder.gif) repeat-x bottom left;
+  padding: 3px;
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+.view_team_player_table {
+  display: table;
+}
+
+.view_team_player_tr {
+  display: table-row;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.view_team_player_td {
+  display: table-cell;
+  padding: 2px;
+  vertical-align: middle;
+}
+
+.main {
+  background: lightgray;
+  overflow: scroll;
+  flex: 1;
+  width: 100%;
+}
+
+#spielerprofil_metadaten {
+  padding: 3px;
+}
+
+#spielerprofil_image {
+  padding: 3px;
+}
+
+#meta_daten_table {
+  font-size: 12px;
+}
+
+.draft_grid {
+  display:table;
+  border-collapse:separate;
+  border-spacing: 5px;
+}
+
+.draft_grid_row {
+  display: table-row;
+}
+
+.draft_grid_cell_ftsy_team {
+  font-size: 10px;
+  height: 20px !important;
+  text-align: center;
+}
+
+.draft_grid_cell {
+    display:table-cell;
+    color: #ababab;
+    background-color: #dedede;
+    margin-bottom: .8rem;
+    width: 85px;
+    min-width: 85px;
+    max-width: 85px;
+    height: 55px;
+    padding: .65rem .8rem;
+    line-height: 1.4rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 2px 0 hsla(0,0%,75.3%,.5);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.draft_grid_cell_name {
+  font-size: 13px;
+  font-family: Open Sans,sans-serif;
+  letter-spacing: .1px;
+  font-weight: bold;  
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.draft_grid_cell_info {
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.draft_grid_cell_pos {
+   font-family: Open Sans,sans-serif; 
+}
+
+.draft_grid_cell_pick {
+  font-family: Open Sans,sans-serif;
+}
+
+.draft_grid_cell_coloring_ST {
+  background-color: #e75a4b;
+  color: white;
+}
+
+.draft_grid_cell_coloring_MF {
+  background-color: #f2a842;
+  color: white;
+}
+
+.draft_grid_cell_coloring_AW {
+  background-color: #4392f1;
+  color: white;
+}
+
+.draft_grid_cell_coloring_TW {
+  background-color: #3ca27b;
+  color: white;
+}
+
+.draft_grid_cell_coloring_unpicked {
+  background-color: #f1f1f1;
+  color: #8888a5;
+}
+
+.draft_user {
+  cursor: pointer;
+}
+
+#data_2019 {
+ margin-top: 10px;
+ padding: 10px;
+}
+
+#table_2019 {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#table_2019 th {
+  font-size: 9.5px;
+  padding: 4px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+#table_2019 td {
+  font-size: 9.5px;
+  color: #555;
+  padding: 3px;
+  border-bottom:1pt solid lightgray;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.first_th {
+  background-color: #e3e3e3;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.second_th {
+  background-color: #f4f4f4;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.highlight_td {
+  font-weight: bold;
+  font-size: 10px !important;
+}
+
+
+#highlights_2019 {
+  display: flex;
+  margin: 10px;
+}
+
+.highlight_stat {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: start;
+  margin-left: 2.5px;
+  margin-right: 2.5px;
+  padding: 5px;
+  background-color: #333;
+  color: white;
+  text-align: center;
+}
+
+.highlight_stat_headline {
+  font-size: 10px;
+  opacity: 0.5;
+}
+
+.higlight_stat_value {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.higlight_stat_ranks {
+  display: inline-flex;
+  flex-direction: row;
+  font-size: 9px;
+  text-align: center;
+  opacity: 0.5;
+  margin-top: 1px;
+}
+                
+.highlight_stat_rank_ovr, .highlight_stat_rank_pos {
+  text-align: center;
+  padding: 1px;
+}
+
+#spielerprofil_wrapper {
+  background: white;
+}
+
+#spielerprofil_basisdaten {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 10px;
+  height: 100px;
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 12px;
+}
+
+#spielerprofil_headline {
+  text-align: center;
+  margin: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+#spielerprofil_metadaten {
+  flex-grow: 2;
+}
+
+.profil_player_name {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.metadaten_table {
+  display: flex;
+}
+
+.left_col, .right_col {
+  display: table;
+  margin-top: 3px;
+  margin-right: 20px;
+}
+
+.meta_stat_row {
+  display: table-row;
+}
+
+.meta_stat, .meta_value {
+  display: table-cell;
+  padding: 1px;
+}
+
+.meta_stat {
+  padding-right: 10px !important;
+}
+
+#player_image {
+  height: 100%;
+}
+
+#draft_me_button, #player_is_drafted {
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  opacity: 0.6;
+  text-decoration: none;
+  margin: 10px;
+  border-style: solid;
+  border-width: 2px;
+}
+
+#draft_me_button{
+  background-color: green;
+  transition: 0.3s;
+  cursor: pointer;
+  border-color: darkgreen;
+}
+
+#player_is_drafted{
+  background-color: red;
+  border-color: darkred;
+}
+
+#draft_me_button {:hover {opacity: 1}}
+
+.back_to_grid_button {
+  font-size: 12px;
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+
+.back_to_grid_div {
+  text-align: center;
+  padding: 2px;
+}
+
+.sub_headline {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#transfer_daten {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+#transfer_table {
+  font-size: 11px;
+  color: #555;
+  padding: 3px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#transfer_table th {
+  padding: 4px;
+  background-color: #e3e3e3;
+  color: black;
+}
+
+#transfer_table tr {
+}
+
+#transfer_table td {
+  color: #555;
+  padding: 3px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#view_team_butto n{
+  margin-bottom: 10px;
+  min-width: 150px;
+}
+
+#fantasy_teams_dropdown_content {
+  font-size: 12px;
+}
+
+.dropdown_fantasy_team {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  cursor: pointer;
+  background-color: lightgray;
+  color: black;
+  padding: 2px;
+}
+
+.dropdown_fantasy_team:hover {
+  background-color: darkgray;
+}
+
+@-webkit-keyframes blink { 
+   50% { border-color: #ff0000; } 
+}
+
+@keyframes blink { 
+   50% { border-color: #ff0000; } 
+}
+
+div.blink_border {
+    padding: 20px;
+    border: 10px solid transparent;
+}
+
+.blink_border {
+    animation: blink .5s step-end infinite alternate;
+    -webkit-animation: blink .5s step-end infinite alternate;
+}
+
+#sum_avg_sort {
+  background-color: black !important;
+}
+
+#spielerprofil_fantasy {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  text-align: center;
+  color: white;
+  background: #333;
+  font-family: Open Sans,sans-serif;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;border-radius: 5px 5px 5px 5px;
+}
+
+#spielerprofil_fantasy_head {
+  padding: 2px;
+  color: lightgray;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+#spielerprofil_fantasy_score {
+  display: inline-flex;
+  padding: 2px;
+  justify-content: space-around;
+}
+
+#spielerprofil_fantasy_score > div {
+  padding: 3px;
+  background: black;
+  color: white;
+  border-radius: 2px 2px 2px 2px;
+  flex: 1 1 0px;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+
+.gesamt_fantasy_score {
+}
+
+.gesamt_fantasy_score_head {
+  text-transform: capitalize;
+  font-size: 9px;
+}
+
+.gesamt_fantasy_score_value{
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#spielerprofil_fantasy_rank {
+  display: inline-flex;
+  padding: 2px;
+  justify-content: space-around;
+  font-size: 9px;
+}
+
+#spielerprofil_fantasy_rank > div { 
+  padding: 3px;
+}

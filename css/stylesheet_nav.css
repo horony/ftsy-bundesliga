@@ -1,0 +1,159 @@
+body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+
+ /* The navigation menu */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+/* Navigation of links */
+.topnav a {
+  float: left;
+  display: block;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+
+/* The subnavigation menu */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.subnav_user {
+  float: right;
+  overflow: hidden;
+}
+
+/* Subnav button */
+.dropdown .dropdownbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+/* Add background color to navigation links on hover */
+.topnav a:hover, .dropdown:hover .dropdownbtn {
+  color: #333;
+  background-color: #4caf50;
+
+}
+
+
+/* Style the subnav content - positioned absolute */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  background-color: #333;
+  z-index: 1;
+
+}
+
+/* Style the subnav links */
+.dropdown-content a {
+  float: left;
+  color: white;
+  text-decoration: none;
+}
+
+/* Add a grey background color on hover */
+.dropdown-content a:hover {
+  color: #333;
+  background-color: #4caf50;
+}
+
+
+/* When you move the mouse over the subnav container, open the subnav content */
+.dropdown:hover .dropdown-content {
+  display: block;
+    color: #333;
+  background-color: #4caf50;
+} 
+
+.topnav .icon {
+  display: none;
+}
+
+@media screen and (max-width: 999px) {
+ a#regeln, a#account, .hide_me{
+  display: none !important
+ }
+ }
+
+
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+@media screen and (max-width: 999px) {
+  .topnav a:not(:first-child), .dropdown .dropdownbtn {
+    display: none;
+  }
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+@media screen and (max-width: 999px) {
+  .topnav.responsive {position: relative;}
+  .topnav.responsive a.icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  .topnav.responsive .dropdown {float: none;}
+  .topnav.responsive .dropdown-content {position: relative;}
+  .topnav.responsive .dropdown .dropdownbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+@media screen and (max-width: 999px) {
+  .topnav a:not(:first-child), .dropdown .dropdownbtn {
+    display: none;
+  }
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+@media screen and (max-width: 999px) {
+  .topnav.responsive {position: relative;}
+  .topnav.responsive a.icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  .topnav.responsive .dropdown {float: none;}
+  .topnav.responsive .dropdown-content {position: relative;}
+  .topnav.responsive .dropdown .dropdownbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
