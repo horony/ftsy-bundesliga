@@ -1,0 +1,419 @@
+<?php
+	include '../db.php';
+	//Hole Daten aus dem AJAX (sollte eine gültige Spieler-ID sein)
+	$id = $_GET["to_draft_player_id"];
+
+	$player = mysqli_query($con, "	SELECT 	drft.*
+											, base.height
+											, base.weight
+											, base.birthplace
+											, base.birthcountry
+											, base.captain
+											, base.number
+											, base.captain
+											, FLOOR(DATEDIFF(CURRENT_DATE, base.birth_dt)/365) as age
+											, case 
+												when base.injured = 1 and  base.injury_reason is not NULL then
+													concat('Verletzt: ', base.injury_reason)
+                                                when base.injured = 1 and  base.injury_reason is NULL then
+                                                    'Verletzt'
+                                                when base.injured = 0 and base.is_suspended = 1 then 
+											  	 	'Gesperrt'
+											  	else 'Fit'
+                                              end as fitness  
+											, base.injured 
+											, base.injury_reason
+											, base.is_suspended
+											, base.number
+											, ord.teamname as fantasy_team_name
+
+									FROM draft_player_base drft
+									INNER JOIN sm_playerbase base
+										ON base.id = drft.id
+									LEFT JOIN draft_order_full ord
+										ON drft.pick = ord.pick
+									WHERE drft.id = '".$id."'
+									");
+
+	$player = mysqli_fetch_array($player);
+
+	$query = mysqli_query($con, " 	select *
+									from player_ranking_2019
+									where player_id = '".$id."'
+						");
+
+	$query = mysqli_fetch_array($query);
+
+	// Gebe das Spielerprofil aus
+	echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
+
+		// Zurück-Button
+		echo "<div class='back_to_grid_div'>";
+			echo "<span class='back_to_grid_button'>Zurück zum Draft-Grid ⮌</span>";
+		echo "</div>";
+
+		// Überschrift
+		echo "<div id='spielerprofil_headline'>";
+			echo "SPIELERPROFIL";
+		echo "</div>";
+
+		echo "<div id ='spielerprofil_basisdaten'>";
+
+			// Spielerbild
+			echo "<div id='spielerprofil_image'>";
+				echo "<div style='background-image: url('".$player['team_logo']."');'><img id='player_image' src='".$player['image_path']."' width='auto' height='auto'></div>";
+			echo "</div>";
+
+			echo "<div id='spielerprofil_metadaten'>";
+
+				// Name
+				echo "<div class='profil_player_name'>";
+					echo $player['display_name'];
+				echo "</div>";
+
+				// Generelle Infos
+				echo "<div class='metadaten_table'>";
+
+					echo "<div class='left_col'>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Verein</div><div class='meta_value'>".mb_convert_encoding($player['teamname'], 'UTF-8')."</div></div>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Position</div><div class='meta_value'>".$player['position_long']."</div></div>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Nummer</div><div class='meta_value'>".$player['number']."</div></div>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>".mb_convert_encoding($player['fitness'],'UTF-8')."</div></div>";
+					echo "</div>";
+
+					echo "<div class=right_col>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Herkunft</div><div class='meta_value'>".mb_convert_encoding($player['birthplace'], 'UTF-8').", ".mb_convert_encoding($player['birthcountry'], 'UTF-8')."</div></div>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Alter</div><div class='meta_value'>".$player['age']."</div></div>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']."</div></div>";
+						echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']."</div></div>";
+					echo "</div>";
+
+				echo "</div>";
+
+			echo "</div>";
+
+			// Top KPIs
+			echo "<div id='spielerprofil_fantasy'>";
+				echo "<div id='spielerprofil_fantasy_head'>";
+					echo "BuLi 19/20";
+				echo "</div>";
+
+				echo "<div id='spielerprofil_fantasy_score'>";
+
+					echo "<div class='gesamt_fantasy_score'>";
+						echo "<div class='gesamt_fantasy_score_head'>Gesamt</div>";
+						echo "<div class='gesamt_fantasy_score_value'>".$query['sum_ftsy']."</div>";
+					echo "</div>";
+
+					echo "<div class='gesamt_fantasy_score'>";
+						echo "<div class='gesamt_fantasy_score_head'>Schnitt</div>";
+						echo "<div class='gesamt_fantasy_score_value'>".$query['avg_ftsy']."</div>";
+					echo "</div>";
+
+				echo "</div>";
+				
+				echo "<div id='spielerprofil_fantasy_rank'>";
+
+					echo "<div>";
+						echo "OVR #" . $query['rank_ovr_ftsy']; 
+					echo "</div>";
+					echo "<div>";
+						echo $query['position_short'] . " #" . $query['rank_pos_ftsy'];
+					echo "</div>";
+
+				echo "</div>";
+
+			echo "</div>";			
+
+		echo "</div>";
+
+		// Top Statistiken abgelaufene Saison
+		echo "<div id='highlights_2019'>";
+
+			if ($player['position_short'] == 'TW') {
+				$relevant_stats_array = ['min_played', 'saves', 'penalties_saved', 'passes', 'clearances'];
+			} elseif ($player['position_short'] == 'AW') {
+				$relevant_stats_array = ['min_played', 'goal', 'penalties', 'assists', 'passes', 'keypasses', 'shots', 'blocks', 'clearances', 'crosses', 'dribbles', 'duel_won', 'ints', 'tackles'];
+			} elseif ($player['position_short'] == 'MF') {
+				$relevant_stats_array = ['min_played', 'goal', 'penalties', 'assists', 'passes', 'keypasses', 'shots', 'crosses', 'dribbles', 'duel_won', 'ints'];
+			} elseif ($player['position_short'] == 'ST') {
+				$relevant_stats_array = ['min_played', 'goal', 'penalties', 'assists', 'passes', 'keypasses', 'shots', 'crosses', 'dribbles', 'duel_won'];
+			}
+
+			foreach ($relevant_stats_array as &$relevant_stat)  {
+				
+				if ($relevant_stat == 'min_played'){
+					$stat_display_name = 'Minuten';
+
+				} elseif ($relevant_stat == 'saves'){
+					$stat_display_name = 'Saves';
+
+				} elseif ($relevant_stat == 'penalites_saved'){
+					$stat_display_name = '11er Saves';
+
+				} elseif ($relevant_stat == 'passes'){
+					$stat_display_name = 'Pässe';
+
+				} elseif ($relevant_stat == 'clearnaces'){
+					$stat_display_name = 'Klärungen';
+
+				} elseif ($relevant_stat == 'goal'){
+					$stat_display_name = 'Tore';
+
+				} elseif ($relevant_stat == 'penalties'){
+					$stat_display_name = '11er Tore';
+
+				} elseif ($relevant_stat == 'assists'){
+					$stat_display_name = 'Vorlagen';
+
+				} elseif ($relevant_stat == 'keypasses'){
+					$stat_display_name = 'Key-Pässe';
+
+				} elseif ($relevant_stat == 'shots'){
+					$stat_display_name = 'Schüsse';
+
+				} elseif ($relevant_stat == 'blocks'){
+					$stat_display_name = 'Blocks';
+
+				} elseif ($relevant_stat == 'crosses'){
+					$stat_display_name = 'Flanken';
+
+				} elseif ($relevant_stat == 'dribbles'){
+					$stat_display_name = 'Dribblings';
+
+				} elseif ($relevant_stat == 'duel_won'){
+					$stat_display_name = 'Duelle gewonnen';
+
+				} elseif ($relevant_stat == 'ints'){
+					$stat_display_name = 'Abgefangen';
+
+				} elseif ($relevant_stat == 'tackles'){
+					$stat_display_name = 'Tackles';
+
+				} 
+				//Variablen konstruieren
+				$rank_ovr = 'rank_ovr_' . $relevant_stat;
+				$rank_pos = 'rank_pos_' . $relevant_stat;
+				$sum_stat = 'sum_' . $relevant_stat;
+				$avg_stat = 'avg_' . $relevant_stat;
+
+
+	            echo "<div class='highlight_stat'>";
+
+	            	echo "<div class='highlight_stat_headline'>";
+	            		echo $stat_display_name;
+	            	echo "</div>";
+
+	            	echo "<div class='higlight_stat_value'>";
+	            		echo $query[$sum_stat];
+		            echo "</div>";
+
+		           	echo "<div class='higlight_stat_ranks'>";
+		            
+		            	echo "<div class='highlight_stat_rank_ovr'>";
+		            		echo 'OVR ' . $query[$rank_ovr];
+			            echo "</div>";
+
+		            	echo "<div class='highlight_stat_rank_pos'>";
+		            		echo  $query['position_short'] . ' ' . $query[$rank_pos];
+			            echo "</div>";
+
+		            echo "</div>";
+
+	            echo "</div>";
+			}
+			
+		echo "</div>";
+
+		// Draft-Button
+		if (is_null($player['pick']) == True) {
+
+			echo "<div id ='draft_button_div'>";
+				echo "<div id='draft_me_button' data-playerid='".$id."'>» Draft ".$player['display_name']." «</div>";
+			echo "</div>";
+
+		} elseif (is_null($player['pick']) == False) {
+			echo "<div id ='draft_button_div'>";
+				echo "<div id='player_is_drafted'>Gedrafted von ".mb_convert_encoding($player['fantasy_team_name'],'UTF-8')." (Runde: ".$player['round'].", Pick: ".$player['pick'].")</div>";
+			echo "</div>";		}
+		
+		// Transfer-Historie
+		echo "<div id='transfer_daten'>";
+
+			echo "<div class='sub_headline'>";
+				echo "Transfer-Historie";
+			echo "</div>";
+
+			$tf_data = mysqli_query($con, "	SELECT 	year(tf.transfer_dt) as tf_year
+													, coalesce(abg.name, 'Unbekannt') as abg_name
+											        , abg.logo_path as abg_logo
+											        , coalesce(auf.name, 'Unbekannt') as auf_name
+											        , auf.logo_path as auf_logo
+											        , tf.transfer_type
+											        , case when tf.transfer_type = 'Transfer' then coalesce(tf.amount, 'Unbekannt') else tf.amount end as amount
+													
+											FROM `sm_player_transfers` tf
+											LEFT JOIN sm_teams abg
+												ON abg.id = tf.from_team_id
+											    
+											LEFT JOIN sm_teams auf
+												ON auf.id = tf.to_team_id
+    
+											WHERE tf.player_id =  '".$id."'
+
+											ORDER BY tf.transfer_dt DESC
+
+											");
+
+			echo "<table id='transfer_table'>";
+					
+					echo "<tr>";
+						echo "<th>Jahr</th>";
+						echo "<th colspan='2'>Aufnehmender Verein</th>";
+						echo "<th colspan='2'>Abgebender Verein</th>";
+						echo "<th>Transfer-Art</th>";
+						echo "<th>Ablösesumme</th>";
+					echo "</tr>";
+		
+			while($row = mysqli_fetch_array($tf_data)) {
+					echo "<tr>";
+						echo "<td>".$row['tf_year']."</td>";
+						echo "<td><img height='15px' src='".$row['auf_logo']."'></td>";
+						echo "<td>".mb_convert_encoding($row['auf_name'], 'UTF-8')."</td>";
+						echo "<td><img height='15px' src='".$row['abg_logo']."'></td>";
+						echo "<td>".mb_convert_encoding($row['abg_name'], 'UTF-8')."</td>";
+						echo "<td>".$row['transfer_type']."</td>";
+						echo "<td>".$row['amount']."</td>";
+					echo "</tr>";
+				}
+
+			echo "</table>";
+
+		echo "</div>";
+
+		// Komplette Statistiken abgelaufene Saison
+		echo "<div id='data_2019'>";
+
+			echo "<div class='sub_headline'>";
+				echo "Statistiken 1. Bundesliga 2019/2020";
+			echo "</div>";
+
+			$data_2019 = mysqli_query($con, "	SELECT 	rds.id
+														, rds.name
+												        , concat(concat(fix.localteam_name_code, ' vs. '), fix.visitorteam_name_code) as matchup
+												        , scr.own_team_code
+												        , concat(concat(fix.localteam_score, ':'), fix.visitorteam_score) as ft_score
+												        
+												        , case when scr.appearance_stat = 1 then scr.ftsy_score else null end as ftsy_score
+												        , case when scr.appearance_stat = 1 then concat(CONVERT(scr.minutes_played_stat,CHAR), ' Min.') else null end as minutes_played
+												        
+												        , case when scr.appearance_stat = 1 then  scr.goals_made_stat + scr.penalties_made_stat else null end as goals
+												   		, case when scr.appearance_stat = 1 then scr.assists_made_stat else null end as assists
+     
+												        , case when scr.appearance_stat = 1 then scr.shots_total_stat else null end as shots
+												        , case when scr.appearance_stat = 1 then scr.passes_key_stat else null end as passes_key
+												        , case when scr.appearance_stat = 1 then concat(concat(concat(scr.passes_complete_stat, ' ('), scr.passes_total_stat),')') else null end as passes
+												        , case when scr.appearance_stat = 1 then concat(concat(concat(scr.crosses_complete_stat, ' ('), scr.crosses_total_stat),')') else null end as crosses_stat
+														
+														, case when scr.appearance_stat = 1 then concat(concat(concat(scr.dribble_success_stat, ' ('), scr.dribble_attempts_stat),')') else null end as dribbles
+												        
+												        , case when scr.appearance_stat = 1 then concat(concat(concat(scr.duels_won_stat, ' ('), scr.duels_total_stat),')') else null end as duels
+												        , case when scr.appearance_stat = 1 then scr.blocks_stat else null end as blocks
+												        , case when scr.appearance_stat = 1 then scr.clearances_stat else null end as clearances
+												        , case when scr.appearance_stat = 1 then scr.interceptions_stat else null end as interceptions
+												        , case when scr.appearance_stat = 1 then scr.tackles_stat else null end as tackles
+												        
+												        , case when scr.appearance_stat = 1 then scr.saves_stat else null end as saves
+												        , case when scr.appearance_stat = 1 then scr.pen_saved_stat else null end as pen_saved
+        
+											FROM `sm_rounds` rds
+
+											LEFT JOIN ftsy_scoring_all_v scr
+												ON scr.round_name = rds.name
+											    
+											LEFT JOIN sm_fixtures_basic_v fix
+												ON fix.fixture_id = scr.fixture_id
+
+											WHERE 	rds.season_id = 16264
+													and scr.player_id = '".$id."'
+											        
+											ORDER BY `rds`.`name`  ASC
+
+											");
+
+			echo "<table id='table_2019'>";
+
+					echo "<tr class='first_th'>";
+						echo "<th class='' rowspan='2' colspan='3'>Spieltag</th>";
+						echo "<th class='' rowspan='2' colspan='1'>Fantasy-Punkte</th>";
+						echo "<th class='' rowspan='2' colspan='1'>Einsatz</th>";
+						echo "<th class='' rowspan='1' colspan='2'>Torbeteiligungen</th>";
+						echo "<th class='' rowspan='1' colspan='5'>Offensiv-Aktionen</th>";
+						echo "<th class='' rowspan='1' colspan='5'>Defensiv-Aktionen</th>";
+						echo "<th class='' rowspan='1' colspan='2'>Torwart-Aktionen</th>";
+
+					echo "</tr>";
+					
+					echo "<tr class='second_th'>";
+						echo "<th class=''>Tore</th>";
+						echo "<th class=''>Vorlagen</th>";
+
+						echo "<th class=''>Schüsse</th>";
+						echo "<th class=''>Key-Pässe</th>";
+						echo "<th class=''>Pässe</th>";
+						echo "<th class=''>Flanken</th>";
+						echo "<th class=''>Dribblings</th>";
+
+						echo "<th class=''>Duelle</th>";
+						echo "<th class=''>Tackles</th>";
+						echo "<th class=''>Blocks</th>";
+						echo "<th class=''>Klärungen</th>";
+						echo "<th class=''>Abgefangen</th>";
+
+						echo "<th class=''>Gehalten</th>";
+						echo "<th class=''>Elfmeter</th>";
+					echo "</tr>";
+		
+			while($row = mysqli_fetch_array($data_2019)) {
+					echo "<tr>";
+						echo "<td class='nobreak'>".$row['name']."</td>";
+						echo "<td class='nobreak'>".mb_convert_encoding($row['matchup'], 'UTF-8')."</td>";
+						echo "<td class='nobreak'>".$row['ft_score']."</td>";
+
+						echo "<td class='highlight_td'>".$row['ftsy_score']."</td>";
+						echo "<td>".$row['minutes_played']."</td>";
+
+						echo "<td>".$row['goals']."</td>";
+						echo "<td>".$row['assists']."</td>";
+
+						echo "<td>".$row['shots']."</td>";
+						echo "<td>".$row['passes_key']."</td>";
+						echo "<td>".$row['passes']."</td>";
+						echo "<td>".$row['crosses_stat']."</td>";
+						echo "<td>".$row['dribbles']."</td>";
+
+						echo "<td>".$row['duels']."</td>";
+						echo "<td>".$row['tackles']."</td>";
+						echo "<td>".$row['blocks']."</td>";
+						echo "<td>".$row['clearances']."</td>";
+						echo "<td>".$row['interceptions']."</td>";
+						
+						echo "<td>".$row['saves']."</td>";
+						echo "<td>".$row['pen_saved']."</td>";
+					echo "</tr>";
+				}
+
+			echo "</table>";
+
+		echo "</div>";
+
+		// Zurück-Button
+		echo "<div class='back_to_grid_div'>";
+			echo "<span class='back_to_grid_button'>Zurück zum Draft-Grid ⮌</span>";
+		echo "</div>";							
+
+
+	echo "</div>";
+	mysqli_close($con);
+
+?>
