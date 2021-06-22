@@ -27,7 +27,6 @@ SELECT	1 as ftsy_league_id
 		, null as league_id
 		, 17361 as season_id
 
-
 FROM 	sm_playerbase base
 
 INNER JOIN sm_teams teams
