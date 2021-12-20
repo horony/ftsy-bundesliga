@@ -219,23 +219,23 @@ if ($aktueller_spieltag_type == 'league'){
 		mysqli_query($con, "INSERT INTO xa7580_db1.ftsy_tabelle_2020 (season_id, league_id, spieltag, round_id, rang, player_id, team_name, score_for, score_against, differenz, avg_for, avg_against, siege, niederlagen, unentschieden, trost, punkte, h2h, serie, updown)
 
 		SELECT 	'$akt_season_id' as season_id
-				, 1 as league_id
-				, '$aktueller_spieltag' as spieltag
-				, '$akt_round_id' as round_id
-				, @curStanding := @curStanding + 1 AS new_standing
-				, complete_table.user_id
-				, complete_table.user_teamname
-				, complete_table.score_for
-				, complete_table.score_against
-				, complete_table.differenz
-				, complete_table.avg_for
-				, complete_table.avg_against
-				, complete_table.s
-				, complete_table.n
-				, complete_table.u
-				, complete_table.t
-				, complete_table.points
-				, complete_table.h2h_tiebraker 
+			, 1 as league_id
+			, '$aktueller_spieltag' as spieltag
+			, '$akt_round_id' as round_id
+			, @curStanding := @curStanding + 1 AS new_standing
+			, complete_table.user_id
+			, complete_table.user_teamname
+			, complete_table.score_for
+			, complete_table.score_against
+			, complete_table.differenz
+			, complete_table.avg_for
+			, complete_table.avg_against
+			, complete_table.s
+			, complete_table.n
+			, complete_table.u
+			, complete_table.t
+			, complete_table.points
+			, complete_table.h2h_tiebraker 
 		    	, CONCAT(CONCAT(CONCAT(CONCAT(complete_table.Last_3,'-'), complete_table.Last_2),'-'),complete_table.Last_1) as serie
 		    	, '-' as updown
 		FROM ( 
@@ -289,12 +289,10 @@ if ($aktueller_spieltag_type == 'league'){
 						, points 
 						
 					   	/* aus [5] berechne H2H-Tiebraker */
-						,SUM(CASE WHEN team_id = ftsy_home_id THEN
-									CASE WHEN ftsy_home_score > ftsy_away_score THEN 1 ELSE 0 END
-						  		 WHEN team_id = ftsy_away_id THEN
-									CASE WHEN ftsy_away_score > ftsy_home_score THEN 1 ELSE 0 END
-								 ELSE 0
-								 END) as h2h_tiebraker
+						,SUM(CASE 	WHEN team_id = ftsy_home_id THEN CASE WHEN ftsy_home_score > ftsy_away_score THEN 1 ELSE 0 END
+						  		WHEN team_id = ftsy_away_id THEN CASE WHEN ftsy_away_score > ftsy_home_score THEN 1 ELSE 0 END
+								ELSE 0
+								END) as h2h_tiebraker
 
 				FROM (
 					/* [1]+[2] S, U, N, T*/
@@ -595,15 +593,40 @@ if ($aktueller_spieltag_type == 'league'){
 					, complete_table.score_against DESC
 					, RAND ()
 		");
+	
+		//update Ranking -- WOKkAROUND --
+		mysqli_query($con, "	UPDATE 	ftsy_tabelle_2020 tab 
+					INNER JOIN (
+						SELECT 	tab.*
+							, @curRank := @curRank + 1 AS rank
+						FROM 	ftsy_tabelle_2020 tab, (SELECT @curRank := 0) r
+						WHERE 	tab.season_id = (select season_id from parameter)
+							and tab.spieltag = (select spieltag from parameter)
+						ORDER BY 	tab.punkte DESC
+								, tab.h2h DESC
+								, tab.siege DESC
+								, tab.score_for DESC
+								, tab.score_against DESC
+								, RAND ()
+						) upd
+						ON 	tab.player_id = upd.player_id
+							and tab.spieltag = upd.spieltag
+							and tab.season_id = upd.season_id
+
+					SET 	tab.rang = upd.rank
+							 
+					WHERE 	tab.season_id = (select season_id from parameter)
+						and tab.spieltag = (select spieltag from parameter)
+					");
 
 		//update Updown
-		mysqli_query($con, "UPDATE xa7580_db1.ftsy_tabelle_2020 tab_akt
-							LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab_before
-								ON 	tab_before.player_id = tab_akt.player_id 
-									AND tab_before.spieltag = '$aktueller_spieltag'-1 
-							SET tab_akt.updown = CASE WHEN (tab_akt.rang > tab_before.rang) THEN '&#9660;' WHEN (tab_akt.rang < tab_before.rang) THEN '&#9650;' ELSE '-' END
-							WHERE tab_akt.spieltag = '$aktueller_spieltag'
-							");
+		mysqli_query($con, "	UPDATE	xa7580_db1.ftsy_tabelle_2020 tab_akt
+					LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab_before
+						ON tab_before.player_id = tab_akt.player_id 
+						   AND tab_before.spieltag = '$aktueller_spieltag'-1 
+					SET tab_akt.updown = CASE WHEN (tab_akt.rang > tab_before.rang) THEN '&#9660;' WHEN (tab_akt.rang < tab_before.rang) THEN '&#9650;' ELSE '-' END
+					WHERE tab_akt.spieltag = '$aktueller_spieltag'
+				");
 	
 	}
 	//Update Waiver
@@ -648,13 +671,13 @@ mysqli_query($con," 	DROP TABLE xa7580_db1.ftsy_points_allowed ");
 mysqli_query($con,"		CREATE TABLE xa7580_db1.ftsy_points_allowed as 
 
 							SELECT  base.position_short
-									, base.opp_team_id
+								, base.opp_team_id
 							        , base.team_name
 							        , base.team_code
 							        , base.sum_allowed
 							        , base.avg_allowed
-									, case 	when base.position_short = 'AW' then @rank_aw := @rank_aw + 1 
-							        		when base.position_short = 'MF' then @rank_mf := @rank_mf + 1  
+								, case 	when base.position_short = 'AW' then @rank_aw := @rank_aw + 1 
+							        	when base.position_short = 'MF' then @rank_mf := @rank_mf + 1  
 							                when base.position_short = 'TW' then @rank_tw := @rank_tw + 1  
 							                when base.position_short = 'ST' then @rank_st := @rank_st + 1  
 							                end as rank 
@@ -669,8 +692,8 @@ mysqli_query($con,"		CREATE TABLE xa7580_db1.ftsy_points_allowed as
 							    FROM 	xa7580_db1.ftsy_scoring_hist hst
 
 							    WHERE 	hst.season_id = (SELECT season_id from parameter)
-							            and hst.round_name < (SELECT spieltag from parameter)
-							            and hst.minutes_played_stat >= 80
+							            	and hst.round_name < (SELECT spieltag from parameter)
+							            	and hst.minutes_played_stat >= 80
 
 							    group by 	hst.position_short
 							                , hst.opp_team_id
