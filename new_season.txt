@@ -1,0 +1,27 @@
+/* NEUE SPIELER */
+
+- Neue Spieler einfügen (Registrierung freischalten)
+- Die beiden User-Tabellen prüfen
+
+/* DIMENSIONS TABELLEN AKTUALISIEREN */
+
+- 1. Lauf sm_dimensionstabellen_sammler -> holt autmatisch neue Season, Flags in der Season-Tabelle anpassen
+- Parameter-Tabelle anpassen (Spieltag & Season)
+- Partitionierung von rounds und fixtures anpassen (neue season_id aufnehmen)
+- 2. Lauf sm_dimensionstabellen_sammler -> holt autmatisch neue Season, Flags in der Season-Tabelle anpassen (sm_rounds und sm_fixtures sollten jetzt komplett sein)
+- Spieler sollten auch automatisch aktualisiert sein
+- Setze alle Besitzer etc. auf NULL
+
+/* SPIELPLAN */
+
+- Excel von Alex ausfüllen lassen
+- Excel als CSV hochladen in Datenbank
+- Insert into selct * in Spielplan
+
+/* DRAFT */
+
+- neue Draft Order einfügen in Tabelle (draft_order)
+- SQL create_draft_playerbase.sql
+- PHP create_ranking_views.php 
+- SQL reset_draft.sql
+- draft_set_order.php anpassen und ausführen ggf. auf Draft-Seite einblenden
