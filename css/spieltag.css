@@ -1,0 +1,71 @@
+body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+
+#hilfscontainer {
+  padding: 15px;
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+}
+
+#headline {
+  flex: 100%;
+  color: white;
+  font-weight: bold;
+  justify-content: center;  
+  text-align: center;
+  }
+
+.col{
+    background: rgba(241, 241, 241, .3);
+    padding: 10px;
+    width: auto;
+    display: table;
+    margin: 0 auto;
+}
+
+#myTable {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  border-collapse: collapse;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+#myTable td, #myTable th {
+  padding: 5px;
+
+}
+
+#myTable tr { 
+  border: solid;
+  border-width: 1px 0;
+  border-color: #4CAF50;
+  cursor: pointer;
+}
+
+#myTable tr:nth-child(even){background-color: #fff;}
+#myTable tr:nth-child(odd){background-color: #fff;}
+#myTable tr:hover {background-color: #ddd;}
+
+#myTable th, {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.button {
+  text-align: center;
+  padding: 7px;
+}
+
+.scr{
+  font-weight: bold;
+  color: black;
+  letter-spacing: 3px;
+  font-size: 20px;
+  padding: 5px;
+  padding-left: 7px;
+  margin: 3px;
+}

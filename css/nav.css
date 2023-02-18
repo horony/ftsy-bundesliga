@@ -6,7 +6,7 @@ body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
   background-color: #333;
 }
 
-/* Navigation of links */
+/* Navigation links */
 .topnav a {
   float: left;
   display: block;
@@ -41,7 +41,7 @@ body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
   margin: 0;
 }
 
-/* Add background color to navigation links on hover */
+/* Add a red background color to navigation links on hover */
 .topnav a:hover, .dropdown:hover .dropdownbtn {
   color: #333;
   background-color: #4caf50;

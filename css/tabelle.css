@@ -1,0 +1,69 @@
+body {
+  font-family: Arial, Helvetica, sans-serif; 
+  background-color: #ffffff;
+}
+
+
+.col{
+    background: rgba(241, 241, 241, .3);
+    padding: 10px;
+    width: auto;
+    display: table;
+    margin: 0 auto; 
+    }
+
+#spielstand {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  border-collapse: collapse;
+  /*width: 100%;*/
+  overflow-y: scroll;
+  margin: 0px auto;
+}
+
+@media screen and (max-width: 999px) {
+  #spielstand {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    border-collapse: collapse;
+    /*width: 100%;*/
+    overflow-y: scroll;
+    overflow-x: scroll;
+    margin: 0px auto;}
+}
+
+#hilfscontainer{
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+  padding: 15px;
+}
+
+#spielstand td, #spielstand th {
+  /*border: 1px solid #ddd;*/
+  padding: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
+
+#spielstand tr:nth-child(even){background-color: #f2f2f2; cursor: pointer;}
+#spielstand tr:nth-child(odd){background-color: white; cursor: pointer;}
+
+#spielstand tr:hover {background-color: #ddd;}
+
+
+#spielstand th {
+	padding-top: 9px;
+	padding-bottom: 9px;
+	text-align: left;
+	background-color: #4CAF50;
+	color: white;
+  cursor: help;
+}
+
+#headline {
+	color: white;
+	text-align: center;
+  padding-bottom: -10px;
+}

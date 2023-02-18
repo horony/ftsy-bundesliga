@@ -1,0 +1,54 @@
+body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+
+* {
+  box-sizing: border-box;
+}
+
+.flex-grid-fantasy {
+  display: flex;
+  justify-content: space-between;
+  height: 80%;
+  }
+
+.flex-grid-fantasy .col {
+}
+
+.flex-grid-buli {
+  display: flex;
+  background: green;
+  height: 20%;
+}
+
+#wrapper {
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+}
+
+#main_section{
+  background: white;
+  border: solid 1px lightgray;
+  padding: 10px;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+/* Column container */
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  justify-content: space-evenly;
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+}
+
+#headline {
+  flex: 100%;
+  /*background-image: none;*/
+  color: white;
+  font-weight: bold;
+  justify-content: center;  
+  text-align: center;
+}
+

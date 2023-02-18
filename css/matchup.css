@@ -1,0 +1,167 @@
+body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Style the body */
+body {
+  font-family: Arial;
+  margin: 8px;
+}
+
+/* Column container */
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+}
+
+#player_img {
+	border-radius: 50%;
+  border: 1px solid white;  border: solid;
+	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+	}
+
+#akt_player_data {
+	width: 100%;
+}
+
+#akt_player_data td {
+  vertical-align: middle;
+  font-size: 11px;
+}
+
+#headline {
+  flex: 100%;
+  background-color: #4caf50;
+  /*background-image: none;*/
+  color: white;
+  font-weight: bold;
+  justify-content: center;  
+  text-align: center;
+}
+
+.pre{
+    color: #003eff !important;
+}
+
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.headscore {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+	margin-bottom: -20px;
+}
+
+.scoreboard{
+  background-color: black;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 3px;
+  font-size: 20px;
+  padding: 5px;
+  padding-left: 7px;
+}
+
+.player_score{
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: 19px;
+  color: black;
+}
+
+.player_score1{
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: 19px;
+}
+
+.pulsate {
+    -webkit-animation: pulsate 2s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.5;
+}
+@-webkit-keyframes pulsate {
+    0% { 
+        opacity: 0.5;
+    }
+    50% { 
+        opacity: 1.0;
+    }
+    100% { 
+        opacity: 0.5;
+    }
+}
+
+
+
+.spieler {
+  flex: 39.5%;
+  background-color: #f1f1f1;
+  padding: 20px;
+  margin: 0.25%;
+  
+}
+
+/* Main column */
+.gegner {
+  flex: 39.5%;
+  background-color: #f1f1f1;
+  padding: 20px;
+  margin: 0.25%;
+}
+
+.info {
+  flex: 19.5%;
+  background-color: white;
+  padding: 20px;
+  margin: 0.25%;
+}
+
+/* Fake image, just for this example */
+.fakeimg {
+  background-color:  #4caf50;
+  width: 100%;
+  height: 2px;
+}
+
+/*.kader {
+  padding: 5px;
+}*/
+
+#myTable {
+  font-size: 16px;
+  width: 100%;
+  background-color: #f2f2f2;
+  border-collapse: collapse;
+  border:none;
+}
+
+#myTable tr:hover {background-color: #ddd; cursor: pointer;
+}
+
+#myTable td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.player_detail {
+  display: none;
+  font-size: 12px;
+  color: #484848;
+  background: #ddd;
+}
+
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 700px) {
+  .row, .navbar {   
+    flex-direction: column;
+  }
+}

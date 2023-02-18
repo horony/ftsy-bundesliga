@@ -1,0 +1,669 @@
+body { 
+  font-family: Arial, Helvetica, sans-serif; 
+  background-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Style the body */
+
+#wrapper {
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+}
+
+#content_wrapper{
+  background: white;
+  border: solid 1px lightgray;
+  padding: 10px;
+  margin-left: 15%;
+  margin-right: 15%;
+
+}
+
+#headline_wrapper{
+
+}
+
+#team_wrapper{
+  font: 13px/1.231 arial,helvetica,clean,sans-serif;
+
+}
+
+#view_nav{
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 18px;
+}
+
+#view_nav ul {
+    list-style-type: none;
+    margin: 8px;
+    padding: 8px;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+    font: 18px Arial;
+    font-weight: bold;
+}
+
+#view_nav li {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#top_wrapper {
+  background-color: #333;
+  color: white;
+  padding: 5px;
+  font-size: 14px;
+}
+
+#top_wrapper hr {
+  color: #999999;
+  border-color: #999999;
+  background-color: #999999;
+  margin-top: 0px;
+}
+
+#info_box_basic, #info_box_detail{
+  display: flex;
+}
+
+#info_box_basic{
+  justify-content: space-between;
+  padding: 5px;
+
+}
+
+#team_name{
+  font: 200 20px/22px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+
+}
+
+#team_owner{
+
+}
+
+#info_box_detail{
+  justify-content: flex-start;
+  margin-top: 7px;
+}
+
+#team_stat_box{
+  display: flex;
+  background: black;
+}
+
+.team_stat{
+  justify-content: flex-start;
+  text-align: center;
+  padding: 5px;
+}
+
+.team_stat_head{
+  color: gray;
+  font-size: 13px;
+  margin-bottom: 6px;
+
+}
+
+.team_stat_content{
+  color: white;
+  font-size: 14px;
+
+}
+
+#versus{
+text-align: center;
+font-weight: bold;
+font-size: 15px;
+margin-left: 10px;
+margin-right: 10px;
+margin-top: 12px;
+}
+
+#opponent_box{
+    background: black;
+    padding: 5px;
+}
+
+#opponent_box a{
+    font-size: 11px;
+    color: gray;
+    text-decoration: none;
+}
+
+#opponent_box a:hover{
+    font-size: 11px;
+    color: #4caf50;
+    text-decoration: underline;  
+    cursor:pointer;
+}
+
+.opponent_team{
+  font-size: 13px;
+  color: white;
+
+}
+
+.opponent_stats{
+  font-size: 11px;
+  color: gray;
+  padding-top: 2px;
+}
+
+#button_show_tabelle{
+
+}
+
+#button_show_grafisch{
+
+}
+
+#aufstellung_wrapper{
+  padding: 20px;
+  font-size: 85%;
+  overflow-x: scroll;
+
+}
+
+.player_card {
+  display: flex;
+}
+
+.player_table, .player_table2 {
+  width: 100%;
+  padding: 20px;
+  border-collapse: collapse;
+}
+
+.player_table th {
+  border: 1px white solid;
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: normal;
+  font-size: 9px;
+}
+
+.first{
+  background-color: #e3e3e3;
+  font-weight: bold;
+}
+
+.second{
+  background-color: #f4f4f4;
+}
+
+
+.player_card img {
+  border-radius: 5px;
+}
+
+.player_card_text{
+  margin-left: 3px;
+  margin-right: 3px;
+  white-space: nowrap;
+}
+
+.player_card_detail {
+  display: flex;
+  align-items: center;
+  color: #666;
+  padding-top: 2px;
+}
+
+.player_card_name {
+  padding-top: 2px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.player_card_name a:hover {
+  color: #4caf50;
+  text-decoration: underline;  
+  font-weight: bold;
+  cursor:pointer;
+}
+
+
+.player_card_name a {
+    text-decoration:none;
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 11px;
+   }
+
+
+.player_table td, .player_table2 td {
+  font-size: 10px;
+  color: #555;
+  padding: 7px 3px 7px 3px;
+  border-bottom:1pt solid lightgray;
+
+}
+
+.stat{
+  text-align: center;
+  white-space: nowrap;
+  font-size: 9px !important;
+}
+
+.highlight_stat{
+  font-size: 11px !important;
+  font-weight: bold !important;
+}
+
+.matchup_stat{
+  white-space: nowrap;
+  font-size: 9px;
+}
+
+.pos_status{
+  background-color: lightgray;
+  border-radius: 5px;
+  text-align: center;
+  color: gray;
+  width: 39.3333px;
+  height: 40px;
+  margin-right: 2px;
+  padding-top: 14px;
+}
+
+.player_wrapper{
+  display: inline-flex;
+  justify-content: flex-start;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+#time_nav{
+  display: inline-flex;
+}
+
+.nav_spieltag{
+  padding: 5px;
+  background-color: #f4f4f4;
+  color: #3f3333;
+  cursor: pointer;
+
+}
+
+.nav_spieltag_head{
+  padding: 5px;
+  background-color: #f4f4f4;
+  color: #3f3333;
+  font-weight: bold;
+}
+
+
+ /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+
+}
+
+.modal_wrapper {
+  background-color: #fefefe;
+  margin: 5% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 8px solid #888;
+  width: 50%; /* Could be more or less, depending on screen size */
+
+}
+
+.modal_header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+
+}
+
+/* The Close Button */
+#modal_close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 3px;
+}
+
+#modal_close:hover,
+#modal_close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} 
+
+.modal_headline{
+  font-size: 20px;
+  font-weight: bold;
+  padding: 3px;
+  text-transform: uppercase;
+}
+
+.modal_subheader{
+  padding: 3px;
+  margin-bottom: 15px;
+}
+
+.player_in, .player_out{
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  text-align: center;
+  color: white;
+  width: 40px;
+  height: 39.3333px;
+  margin-right: -18px;
+}
+
+.player_in {
+  background-color: green;
+}
+
+.player_out {
+  background-color: red;
+}
+
+
+.player_in_click:hover,
+.player_in_click:focus {
+
+  background-color: darkgreen;
+  text-decoration: none;
+  cursor: pointer;
+
+}
+
+.player_out_click:hover,
+.player_out_click:focus {
+
+  background-color: darkred;
+  text-decoration: none;
+  cursor: pointer;
+
+} 
+
+
+.tr_cat_change {
+  /*background-color: gray;*/
+  font-weight: bold;
+}
+
+.td_cat_change {
+
+}
+
+.tr_AW, .tr_MF, .tr_ST {
+  color: black;
+}
+
+.aufstellung_st, .aufstellung_mf, .aufstellung_aw, .aufstellung_tw {
+  display: flex;
+  justify-content: space-around;
+  width: 105%;
+
+  margin-left: -2.5%;
+
+  margin-right: auto;
+}
+
+.aufstellung_bn {
+  display: flex;
+  justify-content: space-around;
+  width: 100%
+
+}
+
+
+
+.player_card_item {
+    display: flex;
+    background-color: #f4f4f4;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 2px;
+    border: 1px solid #dddddd;
+    white-space:nowrap;
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+}
+
+.hover_border:hover {
+  /*border: 3px solid #4caf50;*/
+  outline-style: solid;
+  outline-color: #4caf50;
+} 
+
+         @keyframes flash {
+            0%, 50%, 100% {
+               opacity: 1;
+            }
+            25%, 75% {
+               opacity: 0;
+            }
+         }
+         
+         .flash {
+            animation-name: flash;
+         }
+
+.player_card_score {
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  margin-left: auto;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 37px;
+  border-radius: 5px;
+
+}
+
+.player_card_score_saison {
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  margin-left: auto;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #dddddd;
+  padding-top: 5px;
+
+}
+
+.player_card_score_saison div:first-child {
+  color: #333333;
+  text-decoration: underline;
+}
+
+
+.player_card_score_saison > div:nth-of-type(2) {
+color: blue;
+font-size: 10px;
+  color: #333333;
+
+}
+
+.pre {
+  background-color: #dddddd;
+  color: #483D8B !important;
+}
+
+.live {
+
+}
+
+.aufstellung_headline, .bank_headline {
+
+  /*background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;*/
+  background: url(/images/texturen/dottedBorder.gif) repeat-x bottom left;
+  position: relative;
+  margin-bottom: 10px;
+  position: relative;
+  font: 15px Arial;
+  color: #333333;
+  font-weight: bold;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  justify-content: space-between;
+  display: flex;
+}
+
+.match_score{
+  background: #333333;
+  color: white;
+  padding: 0px;
+  padding-left: 3px;
+padding-right: 3px;
+border-radius: 2px;
+}
+
+.aufstellung_wrapper {
+    
+  border-bottom: 260px solid transparent;
+  border-left: 35px solid white;
+  border-right: 35px solid white;
+  height: 0;
+  width: max;
+  margin-bottom: 30px;
+
+}
+
+.gold_star, .silver_star{
+  background-image:url('https://fantasy-bundesliga.de/images/icons/gold_star.png');
+  background-size:30px;
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: 42%;  
+}
+
+
+.silver_star{
+  filter: grayscale(100);
+  -webkit-filter: grayscale(100); 
+}
+
+
+.on_fire{
+  background-image:url('https://fantasy-bundesliga.de/images/icons/on_fire.png');
+  background-size:25px;
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: 29%;   
+}
+
+.bronze_star{
+  filter: grayscale(100);
+  -webkit-filter: grayscale(100); 
+}
+
+.striped_background {
+  padding: 0px;
+  background: linear-gradient(
+    to bottom,
+    #5d9634,
+    #5d9634 50%,
+    #538c2b 50%,
+    #538c2b);
+  background-size: 100% 40px;
+
+}
+
+.matchup_status_final, .matchup_status_live {
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.matchup_status_final{
+  color: black;
+}
+
+.matchup_status_live{
+  color: red;
+}
+
+.pulsate {
+    -webkit-animation: pulsate 1.5s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.5;
+}
+@-webkit-keyframes pulsate {
+    0% { 
+        opacity: 0.5;
+    }
+    50% { 
+        opacity: 1.0;
+    }
+    100% { 
+        opacity: 0.5;
+    }
+}
+
+
+@media screen and (max-width: 900px){
+/** Mobile hide **/
+    #versus, #opponent_box {
+        display: none !important;
+    }
+
+    .hide_mobile {
+        display: none !important;
+    }
+
+    #wrapper {
+      padding-top: 12px !important;
+      padding-bottom: 12px !important;
+
+    }
+
+    #content_wrapper {
+      margin-left: 2% !important;
+      margin-right: 2% !important;
+    }
+
+    #aufstellung_wrapper{
+      padding: 8px !important;
+    }
+
+    .modal_wrapper {
+      width: 85% !important;
+    }
+}

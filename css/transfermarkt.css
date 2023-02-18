@@ -1,0 +1,170 @@
+body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+
+.flex-grid {
+  /*display: flex;
+  justify-content: space-between;
+  height: 80%;*/
+}
+
+.flex-grid .col {
+  width: 50%;
+  display: flex;
+  background: white;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 8px;
+  padding: 5px;
+}
+
+.flex-grid .row {
+  background: white;
+  flex-direction: row;
+  text-align: center;
+}
+
+.filter_wrapper{
+  display: flex;
+}
+
+.search_bar_wrapper{
+  width: 100%;
+}
+
+.filter_button_row{
+  display: flex;
+  justify-content: ;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.filter_button{
+padding: 5px;
+border-radius: 5px;
+color: white;
+background-color: green;
+font-size: 11;
+border: 0;
+cursor: pointer;
+margin: 3px;
+height: max-content;
+
+}
+
+#usr_filter{
+  background-color: red;
+}
+
+.inactive_filter_pos_tw, .inactive_filter_pos_aw, .inactive_filter_pos_mf, .inactive_filter_pos_st, .inactive_usr, .inactive_wvr, .inactive_fa{
+  display: none;
+}
+
+.player {
+  display: flex;
+  flex-direction: flex-end;
+  font-weight: bold;
+  color: #4CAF50;
+  background: #4CAF50;
+  text-align: center;
+  padding: 8px;
+}
+
+.flex-grid .row_outer {
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+}
+
+
+.kader{
+  overflow-y: auto;
+  /*height: 380px*/
+  height: 55vh;
+  }
+
+.sub_header {
+  background: white;
+  color: #4caf50;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#hilfscontainer {
+  height: 100%;
+}
+
+#myInput, #myInput2 {
+  background-image: url('/css/search_icon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  background-size: 20px 20px;
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+
+#myTable, #myTable2 {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  border-collapse: collapse;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+#myTable td,#myTable2 td, #myTable th,#myTable2 th {
+  padding: 3px;
+
+}
+
+#myTable tr:nth-child(even){background-color: #f2f2f2;}
+#myTable2 tr:nth-child(even){background-color: #f2f2f2;}
+#myTable tr:nth-child(odd){background-color: white;}
+#myTable2 tr:nth-child(odd){background-color: white;}
+
+#myTable tr:hover {background-color: #ddd;}
+#myTable2 tr:hover {background-color: #ddd;}
+
+#myTable th, #myTable2 th {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+#selected_players, #dropped_players {
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  box-shadow: 0 -5px 3px -5px grey;
+  ;
+  }
+
+#submit_button_div {
+    /*position: fixed;*/
+    width:100%;
+    padding-bottom: 5px;
+    bottom:0;
+    text-align: center;
+}
+
+#waiver_speichern{
+  margin:auto;
+  display:block;
+  }
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover{
+  text-decoration: underline;
+  color: #4caf50;
+}

@@ -1,0 +1,107 @@
+
+* {
+  box-sizing: border-box;
+}
+
+/* Style the body */
+body {
+  font-family: font-family: Arial, Helvetica, sans-serif;
+  margin: 8px;
+  background-color: white;
+}
+
+#hilfscontainer {
+
+}
+
+/* Column container */
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  justify-content: space-evenly;
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+}
+
+#headline {
+  flex: 100%;
+  /*background-image: none;*/
+  color:  white;
+  font-weight: bold;
+  justify-content: center;  
+}
+
+#stats{
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  justify-content: space-around;
+}
+
+.center {
+  text-align: center;
+  background-color: #f1f1f1;
+}
+
+
+
+.wrapper {
+  flex: 100%;
+  background-color: #f1f1f1;
+  padding: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  background: rgba(241, 241, 241, .3);
+}
+
+.box {
+  padding: 5px;
+  margin: 5px;
+  background: white;
+  text-align: center;
+}
+
+.top_3 {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.top_3 tr:first-child {
+  font-weight: bold; 
+  font-size: 16px
+}
+
+.top_3 tr:nth-child(2) {
+  font-size: 14px
+}
+
+.top_3 tr:nth-child(3) {
+  font-size: 14px
+}
+
+.top_3 tr {
+  width: 100%;
+  text-align: center;
+
+}
+
+.top_3 td {
+  width: 100%;
+}
+
+.stat_detail{
+  color: gray;
+  font-size: 9px;
+}
+
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .row, .navbar {   
+    flex-direction: column;
+  }
+}

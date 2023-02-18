@@ -1,0 +1,127 @@
+body { 
+  font-family: Arial, Helvetica, sans-serif; 
+  background-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Style the body */
+
+#wrapper {
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+}
+
+#content_wrapper{
+  background: white;
+  border: solid 1px lightgray;
+  padding: 10px;
+  margin-left: 15%;
+  margin-right: 15%;
+
+}
+
+#view_nav{
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 18px;
+}
+
+#view_nav ul {
+    list-style-type: none;
+    margin: 8px;
+    padding: 8px;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+    font: 18px Arial;
+    font-weight: bold;
+}
+
+#view_nav li {
+  margin-left: 10px;
+  margin-right: 10px;
+  color: #333333;
+}
+
+.position_button{
+  padding: 5px;
+  background-color: #f4f4f4;
+  color: #3f3333;
+  cursor: pointer;
+
+}
+
+.position_button_head{
+  padding: 5px;
+  background-color: #f4f4f4;
+  color: #3f3333;
+  font-weight: bold;
+}
+
+#content{
+  padding: 5px;
+  font-size: 85%;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+
+.stat_wrapper{
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  width: max-content;
+  margin: 10px;
+}
+
+.stat_table{
+  display: table;
+  width: 100%;
+  font-size: smaller;
+  margin-top: 5px;
+}
+
+.stat_head{
+  font-weight: bold;
+  font-size: 14px;
+  padding-bottom: 5px;
+  text-align: center;
+  border-bottom: 1px white solid;
+}
+
+.stat_tr{
+  display: table-row;
+}
+
+.stat_td{
+  display: table-cell;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.detail_info{
+  font-size: 9px;
+  color: gray;
+}
+
+.my_team{
+  color: #4caf50 !important;
+}
+
+.no_team{
+  color: lightblue !important;
+}
+
+
