@@ -327,11 +327,15 @@
 											, ftsy.dispossessed_stat
 											, ftsy.dribbled_past_stat
 											, ftsy.pen_won_stat
+							        , proj.ftsy_score_projected 
 
 							FROM xa7580_db1.sm_playerbase_basic_v base 
 
 							LEFT JOIN xa7580_db1.ftsy_scoring_akt_v ftsy 
 								ON ftsy.player_id = base.id
+
+							LEFT JOIN xa7580_db1.ftsy_scoring_projection_v proj
+								ON proj.player_id = base.id		
 
 							INNER JOIN xa7580_db1.sm_fixtures_basic_v buli
 								ON 	( base.team_id = buli.localteam_id OR base.team_id = buli.visitorteam_id) 
@@ -591,7 +595,7 @@
 								$matchup_to_display = $row['kickoff_weekday'] . ", " . $row['kickoff_day'] . "." . $row['kickoff_month'] . ". " . strval($row['kickoff_time_trunc']). " vs. ".$row['gegner_code']. " (".$row['homeaway'] . ")";
 
 								echo "<td style='color: gray;'>".$matchup_to_display."</td>";
-								echo "<td align='center' class='player_score'><span class=''>" . $row['ftsy_score'] . "</span></td>";
+								echo "<td align='center' title='Projection' class='player_score'><span class='pre'>" . $row['ftsy_score_projected'] . "</span></td>";
 
 							} elseif ( $row['kickoff_ts'] <= date('Y-m-d H:i:s') && $row['fixture_status'] != 'FT' ) {
 
@@ -639,6 +643,7 @@
 								echo( ($row['dribbled_past_stat'] != NULL AND $row['dribbled_past_stat'] != 0)? 'Ausgedribbelt: ' . $row['dribbled_past_stat'] . ' | ' : NULL);	
 								echo( ($row['redcards_stat'] != NULL AND $row['redcards_stat'] != 0)? 'Rot: ' . $row['redcards_stat'] . ' | ' : NULL);	
 								echo( ($row['yellowredcards_stat'] != NULL AND $row['yellowredcards_stat'] != 0)? 'Gelb-Rot: ' . $row['yellowredcards_stat'] . ' | ' : NULL);	
+								echo( 'Projection: ' . $row['ftsy_score_projected'] . ' Punkte');	
 									
 							} else {
 								
