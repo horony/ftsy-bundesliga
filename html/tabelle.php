@@ -42,7 +42,18 @@
 			<!-- Display Fantasy standings -->
 
 				<?php
-					$result = mysqli_query($con,"SELECT * FROM xa7580_db1.ftsy_tabelle_2020 tab INNER JOIN xa7580_db1.users_gamedata usr ON usr.user_id = tab.player_id WHERE tab.spieltag = '$vorheriger_spieltag' ORDER BY tab.rang ASC");
+					$result = mysqli_query($con,"	
+						SELECT * 
+						FROM xa7580_db1.ftsy_tabelle_2020 tab 
+
+						INNER JOIN xa7580_db1.users_gamedata usr 
+							ON usr.user_id = tab.player_id 
+												 	
+						WHERE 	tab.spieltag = (select max(spieltag) from ftsy_tabelle_2020 where season_id = (SELECT season_id FROM parameter) ) 
+							 			and tab.season_id = (SELECT season_id FROM parameter)
+
+						ORDER BY tab.rang ASC
+						");
 
 					// Print table header
 
@@ -73,7 +84,7 @@
 						echo "<tr>";	
 						echo "<td style='text-align: center; font-weight:bold; padding-right:10px; padding-left:10px;'>" . $col['rang'] . "</td>";
 						echo "<td style='text-align: center;' class='updown'>" . $col['updown'] . "</td>";
-						echo "<td style='padding-right:35px; font-weight:bold'>" . utf8_encode($col['team_name']) . "</td>";
+						echo "<td style='padding-right:35px; font-weight:bold'>" . utf8_encode($col['team_name']) . ' ' . utf8_encode($col['achievement_icons']) . "</td>";
 						echo "<td style='text-align: right;'>" . $col['score_for'] . "</td>";
 						echo "<td style='text-align: right;'>" . $col['score_against'] . "</td>";
 						echo "<td style='text-align: right;'>" . $col['differenz'] . "</td>";

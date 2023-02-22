@@ -6,18 +6,20 @@ $(document).ready(function() {
 	$('#spielstand tr').click(function() {
 	    	
 	  // Get table row element with teams user id
-	  var click_team=$(this).closest('tr').children('td:nth-child(3)').text();
+	  var show_team=$(this).closest('tr').children('td:nth-child(3)').text();
+	  show_team=show_team.split('🥇').join(',').split('🏆').join(',').split('🏮').join(',').split(',');
+	  show_team=show_team[0];
 
 	  // Redirect user to team page
 		request = $.ajax({
 			type: "GET",
-			url: "view_team.php?",
-			data: ({ click_team: click_team })
+			url: "mein_team.php?",
+			data: ({ show_team: show_team })
 		});	
 		
 		// Success
 		request.done(function (response, textStatus, jqXHR){
-			window.open("https://fantasy-bundesliga.de/view_team.php?click_team="+click_team);
+			window.open("https://fantasy-bundesliga.de/mein_team.php?show_team="+show_team, "_self");
 			prevAjaxReturned = true;
     });
 	
