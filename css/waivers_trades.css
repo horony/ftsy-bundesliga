@@ -1,0 +1,153 @@
+body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+
+#hilfscontainer {
+  padding: 15px;
+  background-image: url(grass2.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+
+}
+
+.div_wrap{
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 15px;
+
+}
+
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.flex-grid {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: flex; 
+  text-align: center;
+  height: 100%;
+
+}
+
+.col{
+    background: rgba(241, 241, 241, .3);
+    padding: 10px;
+    width: auto;
+    display: table;
+    margin: 0 auto;
+}
+
+
+
+.flex-grid .row {
+  background: #e5e5e5;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  height:100%;
+}
+
+
+
+
+.sub_header {
+  background: white;
+  color: #4caf50;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.submit {
+      cursor: pointer;
+        border-radius: 5em;
+        color: #fff;
+        background: darkred;
+        text-decoration: none;
+        border: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+    }
+	
+	.submitpos {
+      cursor: pointer;
+        border-radius: 5em;
+        color: #fff;
+        background: darkgreen;
+        text-decoration: none;
+        border: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+    }
+	
+#hilfscontainer {
+  height: 100%;
+}
+
+
+
+#myTable, #myTable2 {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  border-collapse: collapse;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+#myTable td, #myTable th {
+  padding: 5px;
+
+}
+
+table {
+  border-collapse: collapse;
+}
+tr { 
+  border: solid;
+  border-width: 1px 0;
+  border-color: #4CAF50;
+}
+
+#myTable tr:nth-child(even){background-color: #fff;}
+#myTable tr:nth-child(odd){background-color: #e5e5e5;}
+
+#myTable tr:hover {background-color: #ddd;}
+
+#myTable th, #myTable2 th {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+#headline {
+  flex: 100%;
+  color: white;
+  font-weight: bold;
+  justify-content: center;  
+  text-align: center;
+  }
+  
+#submit_button_div {
+    /*position: fixed;*/
+    padding: 2px;
+    width:100%;
+    bottom:0;
+    text-align: center;
+}
+
+#waiver_speichern{
+  margin:auto;
+  display:block;
+  }
