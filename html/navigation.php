@@ -47,7 +47,7 @@
           $team_name = strval(mb_convert_encoding($_SESSION["user_teamname"],'UTF-8'));
           echo "<a href='mein_team.php?show_team='".$team_name."'.php'>Team verwalten</a>";
         ?>
-        <a href="../php/redirect_game_center.php">Game-Center</a>
+        <a href="../php/redirect-to-active-match.php">Game-Center</a>
       </div>
     </div>
 
