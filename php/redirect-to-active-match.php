@@ -12,7 +12,7 @@ $match = mysqli_query($con, "
 					AND season_id = (SELECT season_id FROM parameter) and (ftsy_home_id = '".$user_id."' OR ftsy_away_id = '".$user_id."')
 	") -> fetch_object() -> ftsy_match_id;
 
-$newURL = "https://fantasy-bundesliga.de/view_match.php?ID=".$match;
+$newURL = "https://fantasy-bundesliga.de/html/view_match.php?ID=".$match;
 
 header('Location: '.$newURL);
 ?>
