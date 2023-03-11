@@ -225,14 +225,21 @@ for fixture in data_match:
                 fixture_list_stats.append(team_stats['goals'])
                 fixture_list_stats.append(team_stats['injuries'])
                 fixture_list_stats.append(team_stats['offsides'])
-                fixture_list_stats.append(team_stats['passes']['total'])
-                fixture_list_stats.append(team_stats['passes']['accurate']) 
                 
-                                       
-                if team_stats['passes']['total'] is None or team_stats['passes']['accurate'] is None:
+                # Passes, accounting for that this field is sometimes empty
+                if team_stats['passes'] is None:
                     fixture_list_stats.append(None)
+                    fixture_list_stats.append(None)
+                    fixture_list_stats.append(None)   
                 else:
-                    fixture_list_stats.append(team_stats['passes']['total']-team_stats['passes']['accurate'])
+                    fixture_list_stats.append(team_stats['passes']['total'])
+                    fixture_list_stats.append(team_stats['passes']['accurate']) 
+                    
+                    if team_stats['passes']['total'] is None or team_stats['passes']['accurate'] is None:
+                        fixture_list_stats.append(None)
+                    else:
+                        fixture_list_stats.append(team_stats['passes']['total']-team_stats['passes']['accurate'])
+                    
                 fixture_list_stats.append(team_stats['penalties'])
                 fixture_list_stats.append(team_stats['possessiontime'])
                 fixture_list_stats.append(team_stats['saves'])
