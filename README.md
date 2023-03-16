@@ -5,8 +5,19 @@
 
 ## Features
 
+Solarized dark             |  Solarized Ocean         | Sss
+:-------------------------:|:-------------------------:-----------------
+![](/documentation/ftsy-buli-screenshot-aufstellung.png)  |  ![](/documentation/ftsy-buli-screenshot-home.png)  | ![](/documentation/ftsy-buli-screenshot-stats.png)
+
+* 
 *
+*
+
+
 
 ## Architecture
 
-![tsTux, the Linux mascot](/documentation/ftsy-buli-architecture-sketch.png)
+
+
+**Architecture sketch:**
+![Architecture sketch of Fantasy Bundesliga](/documentation/ftsy-buli-architecture-sketch.png)
