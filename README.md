@@ -5,8 +5,8 @@
 
 ## Features
 
-Solarized dark             |  Solarized Ocean         | Sss
-:-------------------------:|:-------------------------:-----------------
+Solarized dark             |  Solarized Ocean         | Sss 
+:-------------------------:|:-------------------------:|:-----------------:
 ![](/documentation/ftsy-buli-screenshot-aufstellung.png)  |  ![](/documentation/ftsy-buli-screenshot-home.png)  | ![](/documentation/ftsy-buli-screenshot-stats.png)
 
 * 
