@@ -17,7 +17,7 @@ Formation page           |  Home page         |
 * Head-to-head between users each round counting towards league standings or cup progress.
 * Near-realtime scoring for each fixture and each round.
 * Transfer system with waivers, trades and free agency.
-* Extensive stats that users can harness to research player and user performance (e.g. which player attempts the most crosses? Is attempting tacklings or completing passes more important for a good fantasy performance?).
+* Extensive stats that users can harness to research player statistics and optimize user performance (e.g. which player attempts the most crosses? Is attempting tacklings or completing passes more important for a good fantasy performance?).
 * Player projections for the upcoming fixture.
 * Player and Bundesliga news to keep users informed within the website (e.g. real world injuries or transfers).
 
