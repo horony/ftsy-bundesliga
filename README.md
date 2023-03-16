@@ -23,7 +23,7 @@ Formation page           |  Home page         |
 
 ## Architecture
 
-The **frontend** is a - I suppose - typical website frontend (*HTML* + *CSS* + *JavaScript* + *PHP*). Heart of the **backend** is a small **MySQL Database**. 
+The **frontend** is a - I suppose - typical website frontend (*HTML* + *CSS* + *JavaScript* + *PHP*). Heart of the **backend** is a small *MySQL Database*. 
 
 The database is fueld by a number of *Python* ETLs. These **external data-pipelines** are essentially 1.) live scoring data pulled from a data providers API (see */data-pipelines/sm_player_stats.py*), 2.) daily updates on dimension tables data pulled from the same data providers API (see */data-pipelines/sm_dim_table_update.py*) and 3.) daily Bundesliga news updates collected by web scraping (see */data-pipelines/soccer-news-crawler.py*). 
 
