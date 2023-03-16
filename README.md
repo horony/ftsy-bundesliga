@@ -1,11 +1,10 @@
 # ftsy-bundesliga
 
-*Fantasy Bundesliga* is a private fantasy soccer manager game for Bundesliga. Around 2018 a friend and me grew tired from the likes of *Comunio* or 
-*Kickbase* while at the same time discovering NFL Fantasy managers. By developing *Fantasy Bundesliga* we tried to translate the game mode of NFL Fantasy to the Bundesliga world. At first in a impromptu Google sheets + Web Crawler solution. With the 2020 season we switched over to this small website project.
+*Fantasy Bundesliga* is a private fantasy soccer manager game for Bundesliga. Around 2018 a friend and me grew tired from the likes of *Comunio* & Co. while at the same time discovering NFL Fantasy managers. By developing *Fantasy Bundesliga* we tried to translate the game mode of NFL Fantasy to the Bundesliga world. At first with an impromptu Google sheets + Web Crawler solution. By the 2020 we left Google sheets behind us and switched over to this small website project.
 
 ## Features
 
-*Fantasy Bundesliga* contains most features known from regular NFL fantasy managers. Starting from a live draft, transfer system with waivers and trades, near-realtime scoring on match days and extensive player statistics.
+*Fantasy Bundesliga* contains most features known from regular NFL fantasy managers. Starting from a live draft, transfer system with waivers and trades, near-realtime scoring up to extensive player statistics.
 
 **Examples:**
 Formation page           |  Home page         |
@@ -13,13 +12,14 @@ Formation page           |  Home page         |
 ![](/documentation/ftsy-buli-screenshot-aufstellung.png)  |  ![](/documentation/ftsy-buli-screenshot-home.png)
 
 **List of features:**
-* Live draft with 10-12 users
-* Each season features a league mode and a cup mode
-* Head-to-head matchups each match day playing out league and cup
-* Near-realtime scoring on each match day
-* Transfer system with waivers and trades
-* Extensive stats that users can harness to research player and user performance
-* Player and Bundesliga news to keep users informed within the website
+* Live draft with 10-12 users.
+* Each season features a league mode and a cup mode.
+* Head-to-head between users each round counting towards league standings or cup progress.
+* Near-realtime scoring for each fixture and each round.
+* Transfer system with waivers, trades and free agency.
+* Extensive stats that users can harness to research player and user performance (e.g. which player attempts the most crosses? Is attempting tacklings or completing passes more important for a good fantasy performance?).
+* Player projections for the upcoming fixture.
+* Player and Bundesliga news to keep users informed within the website (e.g. real world injuries or transfers).
 
 ## Architecture
 
