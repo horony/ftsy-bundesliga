@@ -18,12 +18,12 @@ Formation page           |  Home page         |
 * Head-to-head matchups each match day playing out league and cup
 * Near-realtime scoring on each match day
 * Transfer system with waivers and trades
-* Extensive stats that users can research player and users performance
+* Extensive stats that users can harness to research player and user performance
 * Player and Bundesliga news to keep users informed within the website
 
 ## Architecture
 
-
+The *frontend* is a - I suppose - typical website frontend (**HTML**, **CSS**, **JavaScript**). The *backend* consists of a **MySQL Database**. **Cron** orchesetrate the data-pipelines fueling the database.  
 
 **Architecture sketch:**
 ![Architecture sketch of Fantasy Bundesliga](/documentation/ftsy-buli-architecture-sketch.png)
