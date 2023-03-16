@@ -26,4 +26,5 @@ Formation page           |  Home page         |
 The **frontend** is a - I suppose - typical website frontend (*HTML* + *CSS* + *JavaScript* + *PHP*). Heart of the *backend* is a small **MySQL Database**. The database is fueld by a number of *Python* ETLs. These **external data-pipelines* are essentially 1.) live scoring data pulled from a data providers API (see */data-pipelines/sm_player_stats.py*), 2.) daily updates on dimension tables data pulled from a data providers API (see */data-pipelines/sm_dim_table_update.py*) 3.) daily Bundesliga news updates through web scraping (see */data-pipelines/soccer-news-crawler.py*). In addition to the external data-pipelines two types of **internal data-pipelines** are in use: Firstly after each Bundesliga round data is reaggregated to calculate standings and statisitics (see */data-pipelines/spieltag-abschluss.php*) and scripts. Secondly a number of scripts and jobs triggerd by user interaction (see */php/jobs/*).
 
 **Architecture sketch:**
-![Architecture sketch of Fantasy Bundesliga](/documentation/ftsy-buli-architecture-sketch.png)
+
+![](/documentation/ftsy-buli-architecture-sketch.png)
