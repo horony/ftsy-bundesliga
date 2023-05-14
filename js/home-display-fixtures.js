@@ -28,7 +28,7 @@ function showFantasy(str) {
     document.getElementById("boxscores").innerHTML = this.responseText;
     }
   };
-  xhttp.open("GET", "php/get-current-fantasy-fixtures.php?q="+str, true);
+  xhttp.open("GET", "../php/get-current-fantasy-fixtures.php?q="+str, true);
   xhttp.send();
 }
 
