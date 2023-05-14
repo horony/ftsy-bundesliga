@@ -20,7 +20,7 @@ body {
   flex-wrap: wrap;
   overflow: hidden;
   justify-content: space-evenly;
-  background-image: url(grass2.jpg);
+  background-image: url(../img/textures/grass.jpg);
   background-repeat: repeat;
   overflow: hidden;
 }

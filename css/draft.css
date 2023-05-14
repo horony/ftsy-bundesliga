@@ -10,7 +10,7 @@ body {
 /* Style the body */
 
 #wrapper {
-  background-image: url(grass2.jpg);
+  background-image: url(../img/textures/grass.jpg);
   background-repeat: repeat;
   padding-top: 30px;
   padding-bottom: 30px;

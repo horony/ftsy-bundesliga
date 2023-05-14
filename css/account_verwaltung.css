@@ -20,7 +20,7 @@ body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
 }
 
 #wrapper {
-  background-image: url(grass2.jpg);
+  background-image: url(../img/textures/grass.jpg);
   background-repeat: repeat;
 }
 
