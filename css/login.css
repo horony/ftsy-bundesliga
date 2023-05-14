@@ -1,6 +1,6 @@
  body {
     /*background-color: #F3EBF6;*/
-    background-image: url(css/grass2.jpg);
+    background-image: url(../img/textures/grass.jpg);
     background-repeat: repeat;
     overflow: hidden;
     font-family: Arial, Helvetica, sans-serif;
