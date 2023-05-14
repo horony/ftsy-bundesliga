@@ -44,7 +44,7 @@
                     $_SESSION['user_role'] = $row["user_role"];
                 }
                 // Redirect user to index.php
-                $page = 'index.php';
+                $page = '../index.php';
                 echo '<script type="text/javascript">';
                 echo 'window.location.href="'.$page.'";';
                 echo '</script>';
