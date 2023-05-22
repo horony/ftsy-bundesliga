@@ -1,8 +1,4 @@
-<?php
-//include auth.php file on all secure pages
-include("/php/auth.php");
-?>
-<!DOCTYPE html>
+<?php require('php/auth.php'); ?>
 
 <html>
 
@@ -20,16 +16,18 @@ include("/php/auth.php");
 	<!-- Custom scripts -->
 	<script type="text/javascript" src="js/home-display-fixtures.js"></script>
 	<script type="text/javascript" src="js/home-display-standings.js"></script>
-	<script type="text/javascript" src="js/home-clickable-elements.js"></script>
+	<script type="text/javascript" src="js/home-clickable-elements.js"></script>	
+
 </head>
 
 <body onload="showFantasy(); changeColorScores1(); showFantasyTabelle(); changeColorTabelle1()">
+
 <header><h1>FANTASY BUNDESLIGA</h1></header>
 
 <!-- Navigation menu -->
 
 <div id = "hilfscontainer">
-	<?php include("html/navigation.php"); ?>
+	<?php require "html/navigation.php"; ?>
 </div>
 
 <div id = "wrapper">
@@ -426,7 +424,7 @@ include("/php/auth.php");
 	  		</div>
 
 	  		<div id="table_nav">
-					<a id="" href='spieltag.php'>>> Zum Spieltag</a>
+					<a id="" href='html/spieltag.php'>>> Zum Spieltag</a>
 		  	</div>
 	  		
 	  	<div>
@@ -452,7 +450,7 @@ include("/php/auth.php");
 		  	</div>
 		  	<div id="tabellen"></div>
 		  		<div id="table_nav">
-						<a id="" href='spielstand.php'>>> Zur Tabelle</a>
+						<a id="" href='html/tabelle.php'>>> Zur Tabelle</a>
 		  		</div>
 		  	<div>	
 	  		</div>	
@@ -460,4 +458,5 @@ include("/php/auth.php");
 	</div>
 </div>
 </body>
+
 </html>
