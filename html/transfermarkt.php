@@ -1,4 +1,7 @@
-<?php include 'auth.php'; ?>
+<?php
+//include auth.php file on all secure pages
+require("../php/auth.php");
+?>
 <html>
 <head>
  	<meta name="robots" content="noindex">

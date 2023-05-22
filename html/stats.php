@@ -11,6 +11,9 @@
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
 	<!-- Custom scripts -->
+	<script type="text/javascript" src="../js/stats-clickable-elements.js"></script>
+	<script type="text/javascript" src="../js/stats-display-stats.js"></script>
+
 	<script>
 		/* Default settings */
 		$choice = 'FANTASY-TEAMS';
@@ -21,8 +24,7 @@
 			showStats();
 		});
 	</script>
-	<script type="text/javascript" src="../js/stats-clickable-elements.js"></script>
-	<script type="text/javascript" src="../js/stats-display-stats.js"></script>
+		
 </head>
 
 <body onload="default_load()">
