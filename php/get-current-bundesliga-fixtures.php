@@ -1,4 +1,4 @@
- <?php
+<?php
 include("auth.php");
 include("../secrets/mysql_db_connection.php");
 

@@ -1,6 +1,6 @@
- <?php
-include("auth.php");
-include("../secrets/mysql_db_connection.php");
+<?php
+require("auth.php");
+require("../secrets/mysql_db_connection.php");
 
 // Get actual meta-data from MySQL DB
 
@@ -11,7 +11,7 @@ $ftsy_status_column = strval($_SESSION['league_id']) . '_ftsy_match_status';
 $akt_spieltag = mysqli_query($con, "SELECT spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
 $akt_season_id = mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;  
 
-// Fetch Fantasy fixtures and warnings from MySQL DB
+// Fetch Fantasy fixtures from MySQL DB
 
 $result = mysqli_query($con,"	SELECT 	sch.ftsy_home_name as home
 										, sch.ftsy_away_name as away
