@@ -56,7 +56,7 @@ $result = mysqli_query($con,"	SELECT 	sch.ftsy_home_name as home
 echo "<table class='scores_table'>";
 
 while($row = mysqli_fetch_array($result)) {
-	$link = 'view_match.php?ID=' . strval($row['match_id']);
+	$link = 'html/view_match.php?ID=' . strval($row['match_id']);
 	echo "<tr class='tr_home'><td><a href='" . $link . "' >" . mb_convert_encoding($row['home'], 'UTF-8') . "</a></td><td><a href='" . $link . "' >" . mb_convert_encoding($row['score_home'],'UTF-8') . "</a></td></tr>";
 	echo "<tr class='tr_away'><td><a href='" . $link . "' >" . mb_convert_encoding($row['away'], 'UTF-8') . "</a></td><td><a href='" . $link . "' >" . mb_convert_encoding($row['score_away'],'UTF-8') . "</a></td></tr>";
 	}

@@ -27,7 +27,7 @@ $result = mysqli_query($con,"	SELECT 	rang, team_name as team, siege, niederlage
 echo "<table class='scores_table'>";
 
 while($row = mysqli_fetch_array($result)) {
-	$link = 'mein_team.php?show_team=' . mb_convert_encoding($row['team'], 'UTF-8');
+	$link = 'html/mein_team.php?show_team=' . mb_convert_encoding($row['team'], 'UTF-8');
 	echo "<tr class='tr_home'><td>".$row['rang']."</td><td><a href='" . $link . "' class='news_team' data-id='" . mb_convert_encoding($row['team'], 'UTF-8') . "'>" . mb_convert_encoding($row['team'], 'UTF-8') . "</td><td>".$row['siege'].":".$row['niederlagen']."</td><td>".$row['punkte']."</td>";
 	}
 echo "</table>";
