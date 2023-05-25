@@ -6,12 +6,12 @@ $(document).ready(function() {
 
 		request = $.ajax({
 			type: "GET",
-			url: "mein_team.php?",
+			url: "/html/mein_team.php?",
 			data: ({ show_team: show_team })
 	  });	
 	
 		request.done(function (response, textStatus, jqXHR){
-			window.open("https://fantasy-bundesliga.de/mein_team.php?show_team="+show_team, "_self");
+			window.open("/html/mein_team.php?show_team="+show_team, "_self");
 			prevAjaxReturned = true;
 	  });
 
@@ -29,12 +29,12 @@ $(document).ready(function() {
 
 		request = $.ajax({
 			type: "GET",
-			url: "mein_team.php?",
+			url: "html/mein_team.php?",
 			data: ({ show_team: show_team })
 		});	
 
 		request.done(function (response, textStatus, jqXHR){
-			window.open("https://fantasy-bundesliga.de/mein_team.php?show_team="+show_team, "_self");
+			window.open("html/mein_team.php?show_team="+show_team, "_self");
 			prevAjaxReturned = true;
 		});
 			
@@ -52,12 +52,12 @@ $(document).ready(function() {
 
 		request = $.ajax({
 			type: "GET",
-				url: "view_match.php?",
+				url: "html/view_match.php?",
 				data: ({ ID: click_match })
 		});	
 
 		request.done(function (response, textStatus, jqXHR){
-			window.open("https://fantasy-bundesliga.de/view_match.php?ID="+click_match, "_self");
+			window.open("html/view_match.php?ID="+click_match, "_self");
 			prevAjaxReturned = true;
 		});
 
@@ -75,12 +75,12 @@ $(document).ready(function() {
 
 	request = $.ajax({
 		type: "GET",
-		url: "spieler_datenbank.php?",
+		url: "html/research.php?",
 		data: ({ click_player: click_player })
 	});	
 	
 	request.done(function (response, textStatus, jqXHR){
-	  window.open("https://fantasy-bundesliga.de/research.php?click_player="+click_player);
+	  window.open("html/research.php?click_player="+click_player);
 		prevAjaxReturned = true;
   });
 	

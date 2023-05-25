@@ -135,9 +135,9 @@
 							    /* User adds player from free agency */
 
 							    if ($row['news_type'] == 'free_agent') {
-							    	$link = 'mein_team.php?show_team=' . strval(mb_convert_encoding($row['teamname'], 'UTF-8'));
-							    	$link_player_add = 'spieler_datenbank.php?click_player=' . strval($row['add_id']);
-							    	$link_player_drop = 'spieler_datenbank.php?click_player=' . strval($row['drop_id']);
+							    	$link = 'html/mein_team.php?show_team=' . strval(mb_convert_encoding($row['teamname'], 'UTF-8'));
+							    	$link_player_add = 'html/research.php?click_player=' . strval($row['add_id']);
+							    	$link_player_drop = 'html/research.php?click_player=' . strval($row['drop_id']);
 
 							    	echo "<div class='img_player added_player'>";
 							    		echo "<img class='news_player_img' src='" . $row['added_img'] . "'>";
@@ -154,9 +154,9 @@
 							    /* User adds player from waiver */
 
 							   	elseif ($row['news_type'] == 'waiver_wire') {
-							    	$link = 'mein_team.php?show_team=' . strval(mb_convert_encoding($row['teamname'], 'UTF-8'));
-							    	$link_player_add = 'spieler_datenbank.php?click_player=' . strval($row['add_id']);
-							    	$link_player_drop = 'spieler_datenbank.php?click_player=' . strval($row['drop_id']);
+							    	$link = 'html/mein_team.php?show_team=' . strval(mb_convert_encoding($row['teamname'], 'UTF-8'));
+							    	$link_player_add = 'html/research.php?click_player=' . strval($row['add_id']);
+							    	$link_player_drop = 'html/research.php?click_player=' . strval($row['drop_id']);
 
 							    	echo "<div class='img_player added_player'>";
 							    		echo "<img class='news_player_img' src='" . $row['added_img'] . "'>";
@@ -172,7 +172,7 @@
 
 							    /* Bundesliga team added new player (transfer) */
 							    elseif ($row['news_type'] == 'neuzugang') {
-							    	$link_player_add = 'spieler_datenbank.php?click_player=' . strval($row['add_id']);
+							    	$link_player_add = 'html/research.php?click_player=' . strval($row['add_id']);
 
 							    	echo "<div class='img_player added_player'>";
 							    		echo "<img class='news_player_img' src='" . $row['added_team_img'] . "'>";
@@ -204,13 +204,13 @@
 							    /* Trade between two users */
 							    elseif ($row['news_type'] == 'trade') {
 										// Define team links
-										$link = 'view_team.php?click_team=' . strval(utf8_encode($row['teamname']));
+										$link = 'html/view_team.php?click_team=' . strval(utf8_encode($row['teamname']));
 						    		$second_team = mysqli_query($con, "SELECT teamname from xa7580_db1.users where username = '". $row['add_besitzer'] ."'") -> fetch_object() -> teamname;
-							    	$link_2 = 'view_team.php?click_team=' . strval(utf8_encode($second_team));
+							    	$link_2 = 'html/view_team.php?click_team=' . strval(utf8_encode($second_team));
 
 										// Define player links
-							    	$link_player_add = 'spieler_datenbank.php?click_player=' . strval($row['add_id']);
-							    	$link_player_drop = 'spieler_datenbank.php?click_player=' . strval($row['drop_id']);
+							    	$link_player_add = 'html/research.php?click_player=' . strval($row['add_id']);
+							    	$link_player_drop = 'html/research.php?click_player=' . strval($row['drop_id']);
 
 							    	echo "<div class='img_player added_player'>";
 							    		echo "<img class='news_player_img' src='/img/spieler/" . $row['added_img'] . "'>";
