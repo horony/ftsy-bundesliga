@@ -1,4 +1,7 @@
 // Display current Fantasy fixtures
+
+var request;
+
 $(document).ready(function(){
 	
 	$("select").change(function(event){
@@ -16,7 +19,7 @@ $(document).ready(function(){
 		
 		// On success print current fixtures into HTML page
 		request.done(function (response, textStatus, jqXHR){
-			$("#spieltag_tabelle").load("https://fantasy-bundesliga.de/php/display-current-fantasy-fixtures.php?spieltag="+spieltag);
+			$("#spieltag_tabelle").load("../php/display-current-fantasy-fixtures.php?spieltag="+spieltag);
 			prevAjaxReturned = true;
 		});
 

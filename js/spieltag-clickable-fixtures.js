@@ -15,7 +15,7 @@ function viewMatch(input) {
 	
 	// On success link user to match page
 	request.done(function (response, textStatus, jqXHR){
-		window.open("https://fantasy-bundesliga.de/view_match.php?ID="+ID);
+		window.open("view_match.php?ID="+ID);
 		prevAjaxReturned = true;
 	});
 
