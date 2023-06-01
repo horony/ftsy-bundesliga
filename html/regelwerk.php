@@ -140,7 +140,7 @@
   <p>
     <br>
 	  <br>
-	  Du möchtest dir dieses spannende Dokument noch einmal durchlesen? <a href="./regelwerk.php">Zurück zum Anfang springen</a>.
+	  Du möchtest dir dieses spannende Dokument noch einmal durchlesen? <a href="regelwerk.php">Zurück zum Anfang springen</a>.
   </p>
 </div>
 </body>

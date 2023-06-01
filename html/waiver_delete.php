@@ -10,7 +10,7 @@ require("../php/auth.php");
 	<meta name="robots" content="noindex">
 	<meta charset="UTF-8">  
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/waivers_trades.css">
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/stylesheet_nav.css">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 
