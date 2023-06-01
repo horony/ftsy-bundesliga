@@ -5,16 +5,16 @@ function showStats(str) {
 	window.choice = $choice;
 
 	if (str == "") {
-    	document.getElementById("content").innerHTML = "";
-    	return;
-  	}
+   	document.getElementById("content").innerHTML = "";
+   	return;
+  }
   	
-  	xhttp = new XMLHttpRequest();
-  	xhttp.onreadystatechange = function() {
-    	if (this.readyState == 4 && this.status == 200) {
-   			document.getElementById("content").innerHTML = this.responseText;
-    	}
-  	};
+  xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+   	if (this.readyState == 4 && this.status == 200) {
+  		document.getElementById("content").innerHTML = this.responseText;
+   	}
+  };
 
 	xhttp.open("GET", "../php/display-stats.php?q=ALL&stat="+$choice, true);
   xhttp.withCredentials = true;

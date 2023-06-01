@@ -27,7 +27,7 @@
 		
 </head>
 
-<body onload="default_load()">
+<body>
 
 <header><h1>FANTASY BUNDESLIGA</h1></header>
 	
