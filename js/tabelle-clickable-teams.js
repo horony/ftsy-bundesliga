@@ -19,7 +19,7 @@ $(document).ready(function() {
 		
 		// Success
 		request.done(function (response, textStatus, jqXHR){
-			window.open("https://fantasy-bundesliga.de/mein_team.php?show_team="+show_team, "_self");
+			window.open("mein_team.php?show_team="+show_team, "_self");
 			prevAjaxReturned = true;
     });
 	
