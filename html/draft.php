@@ -6,8 +6,8 @@ require("../php/auth.php");
 <html>
 <head>
 	<title>FANTASY BUNDESLIGA</title> 
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="css/nav.css">
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="css/draft.css">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/draft.css">
 	<meta name="robots" content="noindex">
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
