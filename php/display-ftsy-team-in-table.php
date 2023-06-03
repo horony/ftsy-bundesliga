@@ -437,9 +437,9 @@ if ($clicked_spieltag == 'Saison') {
 				if ($row['kickoff_ts'] > date('Y-m-d H:i:s') ){
 
 					if ($is_my_team == 1){
-					echo "<div class='myBtn' style='cursor: pointer;' data-id='" . $row['id'] . "' onclick='changePlayer(this)'><img height='15px' width='auto' title='Spieler austauschen' src='/images/icons/exchange.png'></div>";
+					echo "<div class='myBtn' style='cursor: pointer;' data-id='" . $row['id'] . "' onclick='changePlayer(this)'><img height='15px' width='auto' title='Spieler austauschen' src='../img/icons/exchange.png'></div>";
 					} else {
-					echo "<div class='myBtn' style='cursor:;' data-id='" . $row['id'] . "' onclick='#'><img height='15px' width='auto' title='Spieler austauschen' src='/images/icons/exchange.png'></div>";
+					echo "<div class='myBtn' style='cursor:;' data-id='" . $row['id'] . "' onclick='#'><img height='15px' width='auto' title='Spieler austauschen' src='../img/icons/exchange.png'></div>";
 					}
 
 				}
@@ -457,11 +457,11 @@ if ($clicked_spieltag == 'Saison') {
 						echo "</div>";
 						echo "<div class='player_card_text'>";
 							echo "<div class='player_card_name'>";
-								$link_datenbank = 'spieler_datenbank.php?click_player=' . strval($row['id']);
+								$link_datenbank = 'research.php?click_player=' . strval($row['id']);
 								echo "<a href='" . $link_datenbank . "'>" . ($row['display_name']) . "</a>";
 							echo "</div>";
 							echo "<div class='player_card_detail'>";
-								echo  $row['position_short'] . " - " . $row['team_code'] . "<img title='" . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='13px' width='auto' src='/images/fitness/" . $row['fitness_img'] . "'>";			
+								echo  $row['position_short'] . " - " . $row['team_code'] . "<img title='" . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='13px' width='auto' src='../img/icons/" . $row['fitness_img'] . "'>";			
 							echo "</div>";									
 						echo "</div>";			
 					echo "</div>";

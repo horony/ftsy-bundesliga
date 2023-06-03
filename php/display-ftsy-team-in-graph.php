@@ -248,14 +248,14 @@ echo "<div class='striped_background'>";
 						echo "<img style='position: relative; left: 0; top: 0; border-radius: 5px;' height='40px' width='auto' src='" . $row['image_path'] . "'>";
 						// Status
 						if ($clicked_spieltag == 'Aktueller Spieltag' or $clicked_spieltag == 'Saison'){
-						echo "<img style='position: absolute; right: 0.2px; bottom: 0.2px; ' title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='15px' width='auto' src='/images/fitness/" . $row['fitness_img'] . "'>";
+						echo "<img style='position: absolute; right: 0.2px; bottom: 0.2px; ' title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='15px' width='auto' src='../img/icons/" . $row['fitness_img'] . "'>";
 						}
 					echo "</div>";		
 
 					// Player text
 					echo "<div class='player_card_text'>";
 					echo "<div class='player_card_name'>";
-						$link_datenbank = 'spieler_datenbank.php?click_player=' . strval($row['id']);
+						$link_datenbank = 'research.php?click_player=' . strval($row['id']);
 						echo "<a href='" . $link_datenbank . "'>" . mb_convert_encoding($row['display_name'], 'UTF-8') . "</a>";
 					echo "</div>";
 
@@ -366,14 +366,14 @@ echo "<div class='bank_wrapper'>";
 							echo "<img style='position: relative; left: 0; top: 0; border-radius: 5px;' height='40px' width='auto' src='" . $row['image_path'] . "'>";
 							// Status
 							if ($clicked_spieltag == 'Aktueller Spieltag' or $clicked_spieltag == 'Saison'){
-							echo "<img style='position: absolute; right: 0.2px; bottom: 0.2px; ' title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='15px' width='auto' src='/images/fitness/" . $row['fitness_img'] . "'>";
+							echo "<img style='position: absolute; right: 0.2px; bottom: 0.2px; ' title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='15px' width='auto' src='../img/icons/" . $row['fitness_img'] . "'>";
 							}
 						echo "</div>";		
 
 						// Player text
 						echo "<div class='player_card_text'>";
 							echo "<div class='player_card_name'>";
-								$link_datenbank = 'spieler_datenbank.php?click_player=' . strval($row['id']);
+								$link_datenbank = 'research.php?click_player=' . strval($row['id']);
 								echo "<a href='" . $link_datenbank . "'>" . mb_convert_encoding($row['display_name'], 'UTF-8') . "</a>";
 							echo "</div>";
 
