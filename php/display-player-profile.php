@@ -95,20 +95,20 @@ echo "<div id='data_2019'>";
 	$data_2019 = mysqli_query($con, "	
 		SELECT 	ses.season_name			        
 		        , SUM(scr.ftsy_score) AS ftsy_score_SUM
-		        , ROUNDavg(CASE WHEN scr.appearance_stat = 1 THEN scr.ftsy_score ELSE NULL END),1) AS ftsy_score_avg
+		        , ROUND(AVG(CASE WHEN scr.appearance_stat = 1 THEN scr.ftsy_score ELSE NULL END),1) AS ftsy_score_avg
 		        , SUM(CASE WHEN scr.appearance_stat = 1 THEN 1 else 0 end) AS appearances
 		        , SUM(scr.goals_made_stat + scr.penalties_made_stat) AS goals
 		   			, SUM(scr.assists_made_stat) AS assists
 		        , SUM(scr.shots_total_stat) AS shots
 		        , SUM(scr.passes_key_stat) AS passes_key
 		        , SUM(scr.passes_complete_stat) AS passes
-				    , ROUND(SUM(scr.passes_complete_stat)/SUM(scr.passes_total_stat))*100,0) AS passes_perc
+				    , ROUND(SUM(scr.passes_complete_stat)/SUM(scr.passes_total_stat)*100,0) AS passes_perc
 		        , SUM(scr.crosses_complete_stat) AS crosses
-				  	, ROUND(SUM(scr.crosses_complete_stat)/SUM(scr.crosses_total_stat))*100,0) AS crosses_perc
+				  	, ROUND(SUM(scr.crosses_complete_stat)/SUM(scr.crosses_total_stat)*100,0) AS crosses_perc
 						, SUM(scr.dribble_success_stat) AS dribbles
-				    , ROUND(SUM(scr.dribble_success_stat)/SUM(scr.dribble_attempts_stat))*100,0) AS dribbles_perc
+				    , ROUND(SUM(scr.dribble_success_stat)/SUM(scr.dribble_attempts_stat)*100,0) AS dribbles_perc
 		        , SUM(scr.duels_won_stat) AS duels
-			      , ROUND(SUM(scr.duels_won_stat)/SUM(scr.duels_won_stat+scr.duels_lost_stat))*100,0) AS duels_perc
+			      , ROUND(SUM(scr.duels_won_stat)/SUM(scr.duels_won_stat+scr.duels_lost_stat)*100,0) AS duels_perc
 		        , SUM(scr.blocks_stat) AS blocks
 		        , SUM(scr.clearances_stat) AS clearances
 		        , SUM(scr.interceptions_stat) AS interceptions
