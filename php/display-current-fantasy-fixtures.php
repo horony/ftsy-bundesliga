@@ -56,7 +56,7 @@ if ( $_GET["spieltag"] != $akt_spieltag ) {
 
 	echo "<table id='myTable'>";
 		while($col = mysqli_fetch_array($result)){
-			echo "<tr onclick='DoNav(".$col['match_id'].");'>";
+			echo "<tr onclick='viewMatch(".$col['match_id'].");'>";
 			echo "<td style='display:none;'>" . $col['match_id'] . "</td>";	
 			echo "<td align='right'><small>#" . $col['pos_1'] . "</small> " . mb_convert_encoding($col['ftsy_home_name'], 'UTF-8') . "</td>";
 			echo "<td style='font-size: 26px; padding: 5px;' align='center' class='scr'>" . $col['ftsy_home_score'] . "</td>";
@@ -141,7 +141,7 @@ if ( $_GET["spieltag"] != $akt_spieltag ) {
 
 		echo "<table id='myTable'>";
 			while($col = mysqli_fetch_array($result)) {
-				echo "<tr onclick='DoNav(".strval($col['match_id']).");'>";
+				echo "<tr onclick='viewMatch(".strval($col['match_id']).");'>";
 				echo "<td style='display:none;'>" . $col['match_id'] . "</td>";	
 				echo "<td align='right'><small>#" . $col['pos_1'] . "</small> " . mb_convert_encoding($col['ftsy_home_name'], 'UTF-8') . "</td>";
 
