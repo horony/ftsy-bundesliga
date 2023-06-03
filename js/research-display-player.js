@@ -1,7 +1,5 @@
-// Defaul settings
-var geklickter_spieler = <?php echo $_GET['click_player']?>;
 $(document).ready(function() {
-  $(".spieler_spotlight").load("https://fantasy-bundesliga.de/php/generate_db_spieler.php?player_id="+geklickter_spieler);
+  $(".spieler_spotlight").load("../php/display-player-profile.php?player_id="+geklickter_spieler);
 });
       
 // Load clicked players with all their stats into HTML div
@@ -16,12 +14,12 @@ $(document).ready(function() {
 		// Call php-script with player_id to retrieve data from MySQL DB
  		request = $.ajax({
 			type: "GET",
-			url: "php/display-player-profile.php?",
+			url: "../php/display-player-profile.php?",
 			data: ({ player_id: player_id }),
 	  });	
 		
 		request.done(function (response, textStatus, jqXHR){
-			$(".spieler_spotlight").load("https://fantasy-bundesliga.de/php/display-player-profile.php?player_id="+player_id);
+			$(".spieler_spotlight").load("../php/display-player-profile.php?player_id="+player_id);
 			prevAjaxReturned = true;
 		});
 

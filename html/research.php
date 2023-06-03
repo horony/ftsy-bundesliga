@@ -18,6 +18,11 @@ require("../php/auth.php");
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   
   <!-- Custom Scripts -->
+  <script>
+    // Defaul settings
+    var geklickter_spieler = '<?php echo $_GET['click_player']; ?>'
+  </script>
+
   <script type="text/javascript" src="../js/research-display-player.js"></script>  
   <script type="text/javascript" src="../js/research-search-function.js"></script>  
 </head>
