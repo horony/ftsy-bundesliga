@@ -166,7 +166,7 @@
 							</div>							
 							<div class="">
 								<?php 
-									$link_to_match = 'https://fantasy-bundesliga.de/html/view_match.php?ID=' . strval($team_info_array['match_id']);
+									$link_to_match = 'view_match.php?ID=' . strval($team_info_array['match_id']);
 									echo "<a href='" . $link_to_match . "'>>> Gehe zu Game Center</a>";
 								?>
 							</div>
