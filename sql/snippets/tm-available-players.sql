@@ -10,7 +10,7 @@ SELECT 	base.id
 	      , snap.ftsy_score_avg_last_3 as last3_avg_fb_score
 	      , snap.ftsy_score_last as last1_total_fb_score
 	      , snap.ftsy_score_avg as avg_fb_score
-	      , ".$ftsy_owner_type_column." as Besitzer
+	      , own.1_ftsy_owner_type as Besitzer
 	      , opp.opp_code
 	      , opp.opp_name
 	      , pts_allowed.rank as rank_allowed
@@ -38,7 +38,7 @@ LEFT JOIN xa7580_db1.ftsy_points_allowed pts_allowed
 LEFT JOIN xa7580_db1.ftsy_scoring_projection_v proj
 	ON  proj.player_id = base.id 
 
-WHERE	( ".$ftsy_owner_id_column." IS NULL OR ".$ftsy_owner_id_column." != ".$user_id." )
+WHERE	( own.1_ftsy_owner_id IS NULL OR own.1_ftsy_owner_type != ? )
 			AND base.rostered = 1
 
 ORDER BY  total_fb_score DESC, avg_fb_score DESC, last3_avg_fb_score DESC, last1_total_fb_score DESC
