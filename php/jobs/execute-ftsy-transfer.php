@@ -1,5 +1,5 @@
 <?php 
-include("auth.php");
+include("../auth.php");
 
 // Get player IDs from AJAX
 $Aufzunehmender_Spieler_ID = $_GET['clicked_player1']; 
@@ -16,7 +16,7 @@ if ($Aufzunehmender_Spieler_ID == 0 OR $Abzugebender_Spieler_ID == 0){
 } else {
 
 	// Get Meta data from MySQL DB 
-  include("../secrets/mysql_db_connection.php");
+  include("../../secrets/mysql_db_connection.php");
 	
 	$aktueller_spieltag = mysqli_query($con, "SELECT spieltag FROM xa7580_db1.parameter") -> fetch_object() -> spieltag;
   $ftsy_owner_type_column = strval($_SESSION['league_id']) . '_ftsy_owner_type';
