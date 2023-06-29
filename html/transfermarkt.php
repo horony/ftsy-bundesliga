@@ -48,14 +48,19 @@ require("../php/auth.php");
 						include("../secrets/mysql_db_connection.php");
 						mysqli_set_charset($con,"utf8");
 						
+						// prepare and bind
+ 		        $stmt_sql_ava = file_get_contents('../sql/snippets/tm-available-players.sql');
+						$stmt_ava = $con->prepare($stmt_sql_ava);
+						$stmt_ava->bind_param("s", $user_id );
+
+						// set parameters and execute
 						$user = $_SESSION['username']; 							
 						$user_id = intval($_SESSION['user_id']);
-						$ftsy_owner_type_column = strval($_SESSION['league_id']) . '_ftsy_owner_type';
-		        $ftsy_owner_id_column = strval($_SESSION['league_id']) . '_ftsy_owner_id';
 
-		        // Query all players
-		        $sql = file_get_contents('../sql/snippets/tm-available-players.sql');
-						$result = mysqli_query($con,$sql);
+		        // execute
+						$stmt_ava->execute();
+						#$stmt->store_result();
+						$result_ava = $stmt_ava->get_result();
 
 						echo "<div class='filter_button_row'>";
 							echo "<div id='tw_filter' class='filter_button' data-active='1' data-filter-value='filter_pos_tw'>TW</div>";
@@ -84,7 +89,8 @@ require("../php/auth.php");
 						</tr>";
 
 						// Display SQL results
-						while($row = mysqli_fetch_array($result)) {
+						while($row = mysqli_fetch_array($result_ava)) {
+
 							$filter_class = 'filter_pos_' . strtolower($row['pos']);
 							$filter_own = 'filter_own_' . strtolower($row['Besitzer']);
 							if ($row['rank_allowed'] <= 5){
@@ -121,7 +127,8 @@ require("../php/auth.php");
 						}
 						echo "</table></div>";
 
-						mysqli_close($con);
+						$stmt_ava->close();
+
 					?>
 
 				<br>
@@ -142,9 +149,18 @@ require("../php/auth.php");
 				</div>
 
 				<?php 
-		      // Query all players
-		      $sql = file_get_contents('../sql/snippets/tm-owned-players.sql');
-					$result = mysqli_query($con,$sql);
+		      // Query all players owned by user
+
+					// prepare and bind
+ 		      $stmt_sql_own = file_get_contents('../sql/snippets/tm-owned-players.sql');
+					$stmt_own = $con->prepare($stmt_sql_own);
+					$stmt_own->bind_param("s", $user_id_owned );
+
+					// set parameters and execute
+					$user_id_owned = intval($_SESSION['user_id']);
+
+					$stmt_own->execute();
+					$result_own = $stmt_own->get_result();
 				
 					echo "<div class='kader row'><table id='myTable2' border='0'>
 					<tr>
@@ -160,7 +176,7 @@ require("../php/auth.php");
 						<th>Drop</th>
 					</tr>";
 
-					while($row = mysqli_fetch_array($result)) {
+					while($row = mysqli_fetch_array($result_own)) {
 						if ($row['rank_allowed'] <= 5){
 							$opp_color = '#d0001f';
 						} elseif ($row['rank_allowed'] >= 14){
@@ -192,6 +208,7 @@ require("../php/auth.php");
 					}
 					echo "</table></div>";
 
+					$stmt_own->close();
 					mysqli_close($con);
 				?>
 				<br><div id="dropped_players" class="row player">Wähle Spieler</div> 
