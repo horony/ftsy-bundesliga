@@ -14,6 +14,7 @@ from sm_api_connection import sportmonks_token
 
 sys.path.insert(2, '../py/')
 from logging_function import log, log_headline
+from dataprep_functions import isNone
 
 import requests
 import pandas as pd 
@@ -65,11 +66,15 @@ log("Processing stage data + round data")
 round_data = response.json()
 
 # append current stage id
-league_data.append(round_data['data'][0]['id'])
+league_data.append(isNone(round_data['data'][0]['id'],None))
 
 # append current round id and round name
-league_data.append(round_data['data'][0]['currentround']['id'])
-league_data.append(round_data['data'][0]['currentround']['name'])
+if round_data['data'][0]['currentround'] is None:
+    league_data.append(None)
+    league_data.append(None)
+else:
+    league_data.append(round_data['data'][0]['currentround']['id'])
+    league_data.append(round_data['data'][0]['currentround']['name'])
 
 # create load timestamp
 league_data.append(strftime("%Y-%m-%d %H:%M:%S", time.localtime()))    
