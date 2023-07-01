@@ -10,7 +10,7 @@ $(document).delegate('div.players_tr', 'click', function() {
 
 	request.done(function (response, textStatus, jqXHR){
 		// Display player profile through PHP into the main section of the page
-		$(".main").load("https://fantasy-bundesliga.de/php/draft-display-player-profile.php?to_draft_player_id="+to_draft_player_id);
+		$(".main").load("../php/draft-display-player-profile.php?to_draft_player_id="+to_draft_player_id);
 		prevAjaxReturned = true;
 	});
 	

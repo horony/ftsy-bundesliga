@@ -12,7 +12,7 @@ $(document).ready(function() {
 		});	
 
 		request.done(function (response, textStatus, jqXHR){
-			$("#draft_by_team").load("https://fantasy-bundesliga.de/php/draft-display-team.php?player_id="+dropdown_player_id);
+			$("#draft_by_team").load("../php/draft-display-team.php?player_id="+dropdown_player_id);
 			document.getElementById("view_team_button").innerHTML = dropdown_chosen_team;
 			prevAjaxReturned = true;
 		});
