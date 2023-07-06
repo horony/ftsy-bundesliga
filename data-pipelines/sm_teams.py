@@ -63,7 +63,7 @@ log("Processing venues data")
 data = response.json()
 data = data['data']
 
-# Loop results and append to list
+# loop results and append to list
 
 team_data = []
 
