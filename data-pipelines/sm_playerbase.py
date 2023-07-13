@@ -1,295 +1,479 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun 11 16:37:44 2020
+Created for API 2.0 on Thu Jun 11 16:37:44 2020
+Updated for API 3.0 on Thu Jul 13 23:56:33 2023
 
-Updates the dimension tables for Bundesliga players (e.g. Robert Lewandowski) and coaches (e.g. Julian Nagelsmann).
-Addionatly also the transfer history of each player is updated.
+General purpose is updating the table sm_playerbase containing all currently active players in Bundesliga and informations on the player.
+In doing so also the table sm_player_transfers is updated cotaining all transfers of currently acitve players in Bundesliga.
 
 @author: lennart
 """
 
-import sys
-sys.path.insert(1, './secrets/')
-import requests
-import pandas as pd 
-import json
-import time
-from time import gmtime, strftime
-from datetime import datetime
+import pandas as pd
+
 from sqlalchemy import create_engine
+import requests
+ 
+import sys
+sys.path.insert(1, '../secrets/')
+from sm_api_connection import sportmonks_token
+
+sys.path.insert(2, '../py/')
+from logging_function import log, log_headline
+from dataprep_functions import isNone
+
 
 ###############################
 #   METAINFOS FROM MYSQL DB   #
 ###############################
 
-print('\n>>> GET META-DATA FROM MYSQL DB<<<\n')
+log_headline('(1/4) GET META-DATA FROM MYSQL DB')
+log('Connecting to MySQL database')
 
-# Connect to MySQL-database
+# connect to MySQL-database
 from mysql_db_connection import db_user, db_pass, db_port, db_name
 engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
 
 with engine.connect() as con:
-    sql_select = con.execute('SELECT spieltag FROM parameter')
-    sql_first_row = sql_select.fetchone()
-    aktueller_fantasy_spieltag =  sql_first_row['spieltag']
-    
-    sql_select = con.execute('SELECT season_id FROM sm_seasons WHERE is_current_season = 1')
+    log("Selecting current season_id from table parameter")
+    sql_select = con.execute('SELECT season_id FROM parameter')
     sql_first_row = sql_select.fetchone()
     aktuelle_buli_season =  sql_first_row['season_id']
+  
+"""
+# uncomment for testing
+aktuelle_buli_season = 19744
+"""
+
+log("Current season-id in fantasy-game: " + str(aktuelle_buli_season))
+con.close()
+
+########################################################
+#   GET TEAMS AND SIDELINED DATA FROM TEAMS ENDPOINT   #
+########################################################
+
+log_headline('(2/4) GET TEAM-IDS AND SIDELINED DATA FROM API')
+log("Sending query to teams endpoint")
+
+response_teams = requests.get(
+    "https://api.sportmonks.com/v3/football/teams/seasons/"
+    + str(aktuelle_buli_season)
+    + "?api_token=" + sportmonks_token
+    + "&include=sidelined.type;sidelined.player"
+)
+
+log("API response code: " + str(response_teams.status_code))
+
+log("Processing teams data and sidelined data")
+data_teams = response_teams.json()['data']
+
+list_teams = []
+list_sidelined = []
+
+for team in data_teams:
         
-        
-print("Current round in fantasy-game:", aktueller_fantasy_spieltag)
-print("Current season-id in fantasy-game:", aktuelle_buli_season)
-
-#########################
-#   GET DATA FROM API   #
-#########################
-
-from sm_api_connection import sportmonks_token
-print("API Query for squads")
-response = requests.get("https://soccer.sportmonks.com/api/v2.0/teams/season/"+str(aktuelle_buli_season)+"?api_token="+sportmonks_token+"&include=coach,squad.player.sidelined,squad.player.transfers")
-print("API response code: " + str(response.status_code))
-
-squad_response = response.json()
-squad_response = squad_response['data']
-
-
-# Loop each Bundesliga squad for players, coaches and player transfer-history and append to list
-
-squad_data = []
-coach_data = []
-player_transfer_data = []
-
-for team in squad_response:
+    ####################
+    #   1. TEAM DATA   #
+    ####################
     
-    current_team_id = team['id']
-    current_team_name = team['name']
-
-    # Get coach data from squad
-    coach_list = []
-    coach_list.append(team['coach']['data']['coach_id'])
-    coach_list.append(team['coach']['data']['fullname'])
-    coach_list.append(team['coach']['data']['common_name'])
-    coach_list.append(team['coach']['data']['firstname'])
-    coach_list.append(team['coach']['data']['lastname'])
-    coach_list.append(team['coach']['data']['image_path'])
-    coach_list.append(current_team_id)
-    coach_list.append(team['coach']['data']['birthdate'])
-    coach_list.append(team['coach']['data']['birthplace'])
-    coach_list.append(team['coach']['data']['birthcountry'])
-    coach_list.append(team['coach']['data']['nationality'])
-    coach_list.append(team['coach']['data']['country_id'])      
-    coach_data.append(coach_list)
+    # set up list to collect currently parsed team data
+    list_current_team = []
     
-    # Get player data for every player on squad
-    for player in team['squad']['data']:
-        squad_list = []
-        transfer_list = []
+    # team_id and team name
+    list_current_team.append(team['id'])
+    list_current_team.append(team['name'])
+    
+    list_teams.append(list_current_team)  
+    
+    #########################
+    #   2. SIDELINED DATA   #
+    #########################
+    
+    if team.get("sidelined") is not None and len(team['sidelined']):
 
-        squad_list.append(player['player_id'])
-        current_player_id = player['player_id']
+        # loop trough transfers of player
+        for player_sidelined in team['sidelined']:
+            
+            # set up list to collect currently parsed player data
+            list_current_sidelined = []
+            
+            list_current_sidelined.append(player_sidelined['player_id'])
+            list_current_sidelined.append(player_sidelined['player']['display_name'])
+            list_current_sidelined.append(player_sidelined['type']['name'])
+            list_current_sidelined.append(player_sidelined['start_date'])
+            list_current_sidelined.append(player_sidelined['end_date'])
+            list_current_sidelined.append(player_sidelined['completed'])
                
-        squad_list.append(1)
-        squad_list.append(player['player']['data']['fullname'])        
-        squad_list.append(player['player']['data']['common_name'])
-        current_player_name = player['player']['data']['common_name']
-        
-        squad_list.append(player['player']['data']['display_name'])        
-        squad_list.append(player['player']['data']['firstname'])        
-        squad_list.append(player['player']['data']['lastname'])        
-        squad_list.append(current_team_id)
-        squad_list.append(current_team_name)
-        squad_list.append(player['number'])        
-        squad_list.append(player['position_id'])
+            list_sidelined.append(list_current_sidelined)      
 
-        #  Recode player positions
-        if player['position_id'] == 1:
-            squad_list.append('TW')
-        elif player['position_id'] == 2:
-            squad_list.append('AW')
-        elif player['position_id'] == 3:
-            squad_list.append('MF')
-        elif player['position_id'] == 4:
-            squad_list.append('ST')
-        else:
-            squad_list.append(None)
+log('Extractigng teamd-ids')              
+df_teams = pd.DataFrame(columns=['team_id','name'], data=list_teams)    
+aktuelle_buli_teams = df_teams['team_id'].tolist()
+log("Current team-ids are: " + str(aktuelle_buli_teams))
 
-        #  Recode player positions
-        if player['position_id'] == 1:
-            squad_list.append('Torwart')
-        elif player['position_id'] == 2:
-            squad_list.append('Abwehr')
-        elif player['position_id'] == 3:
-            squad_list.append('Mittelfeld')
-        elif player['position_id'] == 4:
-            squad_list.append('Sturm')
+log('Building DataFrame from parsed sidelined data')              
+df_sidelined = pd.DataFrame(columns=['player_id','display_name','injury_reason','start_date','end_date','completed'], data=list_sidelined)
+df_sidelined = df_sidelined.drop_duplicates(subset=['player_id'], keep='first')
+log('Created DataFrame containing ' + str(df_sidelined.shape[0]) + ' unique sidelined players')
+
+##############################################################
+#   GET PLAYER DATA AND TRANSFER DATA FROM SQUADS ENDPOINT   #
+##############################################################
+
+log_headline('(3/4) GET SQUADS FROM API')
+log("Sending query to squads endpoint for each team")
+
+list_players = []
+list_transfers = []
+cnt_processed_teams = 1
+
+print('')
+
+# iterate through teams
+for team_id in aktuelle_buli_teams:
+
+    log('Processing team ' + str(cnt_processed_teams) + '/' + str(len(aktuelle_buli_teams)))
+    
+    # query squads endpoint with team_id
+    log('.. Sending query to squads endpoint')
+    
+    response_sqds = requests.get(
+        "https://api.sportmonks.com/v3/football/squads"
+        + "/teams/" + str(team_id) 
+        + "?api_token=" + sportmonks_token
+        + "&include=team;player.transfers;player.country;player.city;player.nationality;player.metadata;position;detailedPosition"
+        )
+    
+    log(".. API response code: " + str(response_sqds.status_code))
+
+    data_sqds = response_sqds.json()['data']
+    
+    # iterate through players in squad
+    
+    log('.. Parsing player data')
+    for player in data_sqds:
+        
+        ######################
+        #   1. PLAYER DATA   #
+        ######################
+        
+        # set up list to collect currently parsed player data
+        list_current_player = []
+        
+        # player_id
+        list_current_player.append(player['player_id'])
+        
+        # player is on squad
+        list_current_player.append(1)
+        
+        # player_name
+        list_current_player.append(player['player']['name'])        
+        list_current_player.append(player['player']['common_name'])
+        list_current_player.append(player['player']['display_name'])        
+        list_current_player.append(player['player']['firstname'])        
+        list_current_player.append(player['player']['lastname'])
+
+        # current team & jersey number
+        list_current_player.append(player['team_id'])
+        list_current_player.append(player['team']['name'])
+        list_current_player.append(isNone(player['jersey_number'], None))
+
+        # position        
+        list_current_player.append(isNone(player['position_id'], None))
+        
+        # recode player positions to German namings
+        if player['position'] is None:
+            list_current_player.append(None)
+            list_current_player.append(None)
         else:
-            squad_list.append(None)
-            
-        squad_list.append(player['captain'])
-        squad_list.append(player['injured'])
-        
-        suspension_list = [None]
-        sidelined_other_list = [None]
-        
-        # If player is sidelined get additional information, categorize in injuries and suspensions and append most recent 
-        for sidelined in player['player']['data']['sidelined']['data']:
-            
-            start_dt = datetime.strptime(sidelined['start_date'], '%Y-%m-%d') 
-            if sidelined['end_date'] is None:
-                end_dt = datetime.strptime('2099-12-31', '%Y-%m-%d') 
+            if player['position']['id'] == 24:
+                list_current_player.append('TW')
+                list_current_player.append('Torwart')
+            elif player['position']['id'] == 25:
+                list_current_player.append('AW')
+                list_current_player.append('Abwehr')
+            elif player['position']['id'] == 26:
+                list_current_player.append('MF')
+                list_current_player.append('Mittelfeld')
+            elif player['position']['id'] == 27:
+                list_current_player.append('ST')
+                list_current_player.append('Sturm')
             else:
-                end_dt = datetime.strptime(sidelined['end_date'], '%Y-%m-%d') 
+                list_current_player.append(None)
+                list_current_player.append(None)
+                
+        # detailed position
+        if player.get("detailedposition") is not None and len(player['detailedposition']):
+            list_current_player.append(isNone(player['detailedposition']['id'],None)) 
+            list_current_player.append(isNone(player['detailedposition']['name'],None)) 
+        else:
+            list_current_player.append(None)
+            list_current_player.append(None)           
+        
+        """
+        Sidelined needs to be reworked with next SportMonks release
+        """
+        # if player['player_id'] in df_sidelined['player_id'].values:
+        
+        list_current_player.append(None) # captain
+        list_current_player.append(None) # injured
             
-            if start_dt <= datetime.now() and end_dt >= datetime.now():
-                if sidelined['description'].upper() == 'SUSPENDED':
-                    suspension_list.append(sidelined['description'])
+        # currently injured or suspended
+        list_current_player.append(None) #sus
+        list_current_player.append(None) #inj
+        list_current_player.append(False)
+        
+        # player image
+        list_current_player.append(isNone(player['player']['image_path'],None))
+
+        # height and weight        
+        list_current_player.append(isNone(player['player']['height'],None))       
+        list_current_player.append(isNone(player['player']['weight'],None)) 
+        
+        # nationality, birth date and place of birth
+        list_current_player.append(isNone(player['player']['nationality_id'],None)) 
+        
+        if player['player']['nationality'] is not None:
+            list_current_player.append(player['player']['nationality']['name']) 
+        else:
+            list_current_player.append(None) 
+
+        list_current_player.append(isNone(player['player']['date_of_birth'],None)) 
+        list_current_player.append(isNone(player['player']['city'],None)) 
+        
+        # add data to list
+        list_players.append(list_current_player)
+        
+        ########################
+        #   2. TRANSFER DATA   #
+        ########################
+        
+        # check if key 'transfers' exists
+        if player['player'].get("transfers") is not None and len(player['player']['transfers']):
+
+            # loop trough transfers of player
+            for transfer in player['player']['transfers']:
+                
+                # set up list to collect currently parsed player data
+                list_current_transfers = []
+                
+                # transfer_id
+                list_current_transfers.append(transfer['id'])
+                
+                # player_id and player name
+                list_current_transfers.append(player['player_id'])
+                list_current_transfers.append(player['player']['common_name'])
+                
+                # infos on transfer
+                list_current_transfers.append(transfer['date'])
+                list_current_transfers.append(transfer['from_team_id'])
+                list_current_transfers.append(transfer['to_team_id'])
+                
+                # type 
+                if transfer['type_id'] == 218:
+                    list_current_transfers.append('Leihe')
+                elif transfer['type_id'] == 219:
+                    list_current_transfers.append('Transfer')
+                elif transfer['type_id'] == 220:
+                    list_current_transfers.append('Ablösefrei')
                 else:
-                    sidelined_other_list.append(sidelined['description'])
-        
-        squad_list.append(suspension_list[-1])
-        squad_list.append(sidelined_other_list[-1])
-        
-        if suspension_list[-1] is not None or sidelined_other_list[-1] is not None:
-            squad_list.append(True)
-        else:
-            squad_list.append(False)
-            
-        squad_list.append(player['player']['data']['image_path'])        
-        squad_list.append(player['player']['data']['height'])        
-        squad_list.append(player['player']['data']['weight'])                
-        squad_list.append(player['player']['data']['country_id'])        
-        squad_list.append(player['player']['data']['birthcountry'])
-        if player['player']['data']['birthdate'] is None:
-            squad_list.append(None)
-        else:
-            squad_list.append(datetime.strptime(player['player']['data']['birthdate'] , '%d/%m/%Y').date())
-        squad_list.append(player['player']['data']['birthplace'])
-        squad_list.append(strftime("%Y-%m-%d %H:%M:%S", time.localtime()))    
-        
-        squad_data.append(squad_list)
-        
-        # Get transfer history of each player
-        for transfer in player['player']['data']['transfers']['data']:
-            transfer_list = []
+                    list_current_transfers.append(None)
+                
+                # amount paid
+                if transfer['amount'] is not None and transfer['type_id'] != 220:
+                    list_current_transfers.append(int(transfer['amount']))
+                elif transfer['amount'] is not None and transfer['type_id'] == 220:
+                    list_current_transfers.append(0)
+                else:
+                    list_current_transfers.append(None)
+                    
+                # add data to list
+                list_transfers.append(list_current_transfers)  
+    
+    cnt_processed_teams = cnt_processed_teams + 1
+    
+print('')
 
-            transfer_list.append(current_player_id)
-            transfer_list.append(current_player_name)
-            transfer_list.append(datetime.strptime(transfer['date'], '%Y-%m-%d'))
-            transfer_list.append(transfer['from_team_id'])
-            transfer_list.append(transfer['to_team_id'])
+# store player results to DataFrame
+log('Building DataFrame from parsed player data')              
+column_names_players = ['id','rostered','fullname','common_name','display_name'
+                      ,'firstname','lastname','current_team_id','current_team_name'
+                      ,'number','position_id','position_short', 'position_long','position_detail_id','position_detail_name'
+                      , 'captain','injured', 'is_suspended', 'injury_reason'
+                      , 'is_sidelined', 'image_path','height','weight'
+                      , 'country_id','birthcountry','birth_dt','birthplace'
+                      ]
+df_players = pd.DataFrame(columns=column_names_players, data=list_players)
+log('Created DataFrame containing ' + str(df_players.shape[0]) + ' players')
 
-            # Recode transfer type
-            if transfer['transfer'] == 'loan':
-                transfer_type = 'Leihe'
-            elif transfer['transfer'] in ['bought','sold']:
-                transfer_type = 'Transfer'
-            elif transfer['transfer'] == 'N/A':
-                transfer_type = None
-            elif transfer['transfer'] == 'free':
-                transfer_type = 'Ablösefrei'
-            else:
-                transfer_type = None
-            transfer_list.append(transfer_type)
-            transfer_list.append(transfer['amount'])
-            transfer_list.append(strftime("%Y-%m-%d %H:%M:%S", time.localtime()))    
-
-            player_transfer_data.append(transfer_list)
-
-# Setup the three DataFrames
-
-column_names_coaches = ['id','fullname','common_name','firstname','lastname','image_path','current_team_id',
-                        'birth_dt','birthplace','birthcountry', 'nationality', 'country_id']
-df_coaches = pd.DataFrame(columns=column_names_coaches, data=coach_data)     
-
-column_names_squad = ['id','rostered','fullname','common_name','display_name','firstname','lastname','current_team_id','current_team_name',
-                'number','position_id','position_short', 'position_long', 'captain','injured', 'is_suspended', 'injury_reason', 'is_sidelined', 'image_path','height','weight',
-                'country_id','birthcountry','birth_dt','birthplace','load_ts']
-df_squads = pd.DataFrame(columns=column_names_squad, data=squad_data)
-
-column_names_transfers = ['player_id','player_common_name','transfer_dt','from_team_id','to_team_id','transfer_type','amount','load_ts']
-df_transfers = pd.DataFrame(columns=column_names_transfers, data=player_transfer_data)
-df_transfers = df_transfers.drop_duplicates(subset=['player_id', 'transfer_dt', 'from_team_id', 'to_team_id'], keep='first')
+# store transfers results to DataFrame
+log('Building DataFrame from parsed transfer data')              
+column_names_transfers = ['transfer_id','player_id','player_common_name','transfer_dt','from_team_id','to_team_id','transfer_type','amount']
+df_transfers = pd.DataFrame(columns=column_names_transfers, data=list_transfers)
+df_transfers = df_transfers.drop_duplicates(subset=['transfer_id'], keep='first')
+log('Created DataFrame containing ' + str(df_transfers.shape[0]) + ' transfers')
 
 ##########################
 #   WRITE INTO DATABASE  #
 ##########################
 
-print('\n>>> WRITE INTO DATABASE <<<\n')
+log_headline('(4/4) WRITE INTO DATABASE')
+log('Connecting to MySQL database')     
 
-# Connect to MySQL-database
+# connect to MySQL-database
 from mysql_db_connection import db_user, db_pass, db_port, db_name
 engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
 
-# TRANSFERS
+# 1.) transfers
+log('Starting refresh process for sm_player_transfers ')
 
-# Create table if not exists 
-try:
-    df_transfers.to_sql(name='sm_player_transfers', con=engine, index=False, if_exists='fail')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `sm_player_transfers` ADD PRIMARY KEY (`player_id`,`transfer_dt`,`to_team_id`,`from_team_id`)')
-        con.execute('ALTER TABLE xa7580_db1.`sm_player_transfers` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')        
-    message = 'Table sm_player_transfers created'
+# create tmp table needed for update
+log('Creating tmp table tmp_sm_player_transfers')
+df_transfers.to_sql(name='tmp_sm_player_transfers', con=engine, index=False, if_exists='replace')
 
-# If exists update table through temp table
-except:
-    df_transfers.to_sql(name='tmp_sm_player_transfers', con=engine, index=False, if_exists='replace')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `tmp_sm_player_transfers` ADD PRIMARY KEY (`player_id`,`transfer_dt`,`to_team_id`,`from_team_id`);')
-        con.execute('ALTER TABLE xa7580_db1.`tmp_sm_player_transfers` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')
-        con.execute('INSERT INTO sm_player_transfers SELECT * FROM tmp_sm_player_transfers t2 ON DUPLICATE KEY UPDATE player_common_name=t2.player_common_name, transfer_type=t2.transfer_type, amount=t2.amount;')    
-        #con.execute('UPDATE sm_coches SET current_team_id = NULL WHERE id NOT IN (SELECT id from tmp_sm_coaches)')
-        con.execute('DROP TABLE tmp_sm_player_transfers;')    
-    message = "Table sm_player_transfers updated"
+with engine.connect() as con:
+    
+    # set collation and primary key for tmp table
+    log('Setting primary key for tmp_sm_player_transfers to transfer_id')
+    con.execute('ALTER TABLE `tmp_sm_player_transfers` ADD PRIMARY KEY (`transfer_id`);')
+    log('Setting collation for tmp_sm_player_transfers to utf8mb4_unicode_520_ci')    
+    con.execute('ALTER TABLE `tmp_sm_player_transfers` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')
+    
+    # updating prod table through tmp table
+    log('Executing INSERT + UPDATE on sm_player_transfers')
+    con.execute('''
+                INSERT INTO xa7580_db1.sm_player_transfers 
+                SELECT  t2.transfer_id
+                        , t2.player_id
+                        , t2.player_common_name
+                        , t2.transfer_dt
+                        , t2.from_team_id
+                        , t2.to_team_id
+                        , t2.transfer_type
+                        , t2.amount
+                        , sysdate() as insert_ts
+                        , null as update_ts
+                        
+                FROM tmp_sm_player_transfers t2 
+                
+                ON DUPLICATE KEY UPDATE 
+                    player_id = t2.player_id
+                    , player_common_name = t2.player_common_name
+                    , transfer_dt = t2.transfer_dt
+                    , from_team_id = t2.from_team_id
+                    , to_team_id = t2.to_team_id
+                    , transfer_type = t2.transfer_type
+                    , amount = t2.amount
+                    , update_ts = sysdate()    
+                ;
+                ''')    
 
-print(message)
+    # drop tmp table as not needed anymore
+    log('Dropping tmp table tmp_sm_player_transfers')
+    con.execute('DROP TABLE tmp_sm_player_transfers;')    
 
-# COACHES
+log('Finished refresh process for sm_player_transfers')
+print('')
 
-# Create table if not exists
-try:
-    df_coaches.to_sql(name='sm_coaches', con=engine, index=False, if_exists='fail')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `sm_coaches` ADD PRIMARY KEY (`id`);')
-        con.execute('ALTER TABLE xa7580_db1.`sm_coaches` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')        
-    message = 'Table sm_coaches created'
+# 2.) players
+log('Starting refresh process for sm_playerbase ')
 
-# If exists update table through temp table
-except:
-    df_coaches.to_sql(name='tmp_sm_coaches', con=engine, index=False, if_exists='replace')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `tmp_sm_coaches` ADD PRIMARY KEY (`id`);')
-        con.execute('ALTER TABLE xa7580_db1.`tmp_sm_coaches` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')
-        con.execute('INSERT INTO sm_coaches SELECT * FROM tmp_sm_coaches t2 ON DUPLICATE KEY UPDATE fullname=t2.fullname, common_name=t2.common_name, firstname=t2.firstname, lastname=t2.lastname, current_team_id=t2.current_team_id, image_path=t2.image_path, country_id=t2.country_id, nationality=t2.nationality, birthcountry=t2.birthcountry, birth_dt=t2.birth_dt, birthplace=t2.birthplace;')    
-        con.execute('UPDATE sm_coaches SET current_team_id = NULL WHERE id NOT IN (SELECT id from tmp_sm_coaches)')
-        con.execute('DROP TABLE tmp_sm_coaches;')    
-    message = "Table sm_coaches updated"
+# create tmp table need for update
+log('Creating tmp table tmp_sm_playerbase')
+df_players.to_sql(name='tmp_sm_playerbase', con=engine, index=False, if_exists='replace')
 
-print(message)
+with engine.connect() as con:
+    
+    # set collation and primary key for tmp table
+    log('Setting primary key for tmp_sm_playerbase to id')
+    con.execute('ALTER TABLE `tmp_sm_playerbase` ADD PRIMARY KEY (`id`);')
+    log('Setting collation for tmp_sm_playerbase to utf8mb4_unicode_520_ci')
+    con.execute('ALTER TABLE `tmp_sm_playerbase` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')    
 
-# PLAYERS
+    # updating prod table through tmp table
+    log('Executing INSERT + UPDATE on sm_playerbase')    
+    con.execute('''
+                INSERT INTO sm_playerbase 
+                SELECT  id
+                        , rostered 
+                        , fullname
+                        , common_name
+                        , display_name
+                        , firstname
+                        , lastname
+                        , current_team_id
+                        , current_team_name
+                        , number
+                        , position_id
+                        , position_short
+                        , position_long
+                        , position_detail_id
+                        , position_detail_name
+                        , captain
+                        , injured
+                        , is_suspended
+                        , injury_reason
+                        , is_sidelined
+                        , image_path
+                        , height
+                        , weight
+                        , country_id
+                        , birthcountry
+                        , birth_dt
+                        , birthplace
+                        , sysdate() as insert_ts
+                        , null as update_ts
+                        
+                FROM tmp_sm_playerbase t2 
+                
+                ON DUPLICATE KEY UPDATE 
+                    rostered = t2.rostered
+                    , fullname = t2.fullname
+                    , common_name = t2.common_name
+                    , firstname = t2.firstname
+                    , lastname = t2.lastname
+                    , current_team_id = t2.current_team_id
+                    , current_team_name = t2.current_team_name
+                    , number = t2.number
+                    , captain = t2.captain
+                    , injured = t2.injured
+                    , is_suspended = t2.is_suspended
+                    , injury_reason = t2.injury_reason
+                    , is_sidelined = t2.is_sidelined
+                    , image_path = t2.image_path
+                    , position_detail_id = t2.position_detail_id
+                    , position_detail_name = t2.position_detail_name
+                    , height = t2.height
+                    , weight = t2.weight
+                    , country_id = t2.country_id
+                    , birthcountry = t2.birthcountry
+                    , birth_dt = t2.birth_dt
+                    , birthplace = t2.birthplace
+                    , update_ts = sysdate()
+                ;
+                ''')    
+                
+    # setting rostered = 0 if player is currently not on a squad
+    log('Setting variable sm_playerbase.rostered = 0 if player is not in tmp table tmp_sm_playerbase')    
+    con.execute('''
+                UPDATE  sm_playerbase 
+                SET     rostered = 0
+                        , current_team_id = NULL
+                        , current_team_name = NULL
+                        , captain = NULL
+                        , injured = NULL
+                        , is_suspended = NULL
+                        , injury_reason = NULL
+                        , is_sidelined = NULL 
+                WHERE id NOT IN (SELECT id from tmp_sm_playerbase)
+                ;
+                ''')
+                
+    # drop tmp table as not needed anymore
+    log('Dropping tmp table tmp_sm_playerbase')
+    con.execute('DROP TABLE tmp_sm_playerbase;')    
 
-# Create table if not exists
-try:
-    df_squads.to_sql(name='sm_playerbase', con=engine, index=False, if_exists='fail')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `sm_playerbase` ADD PRIMARY KEY (`id`);')
-        con.execute('ALTER TABLE xa7580_db1.`sm_playerbase` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')
-        
-    message = 'Table sm_playerbase created'
+log('Finished refresh process for sm_playerbase')
 
-# If exists update table through temp table
-except:
-    df_squads.to_sql(name='tmp_sm_playerbase', con=engine, index=False, if_exists='replace')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `tmp_sm_playerbase` ADD PRIMARY KEY (`id`);')
-        con.execute('ALTER TABLE xa7580_db1.`tmp_sm_playerbase` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')
-        con.execute('INSERT INTO sm_playerbase SELECT * FROM tmp_sm_playerbase t2 ON DUPLICATE KEY UPDATE rostered=t2.rostered,fullname=t2.fullname, common_name=t2.common_name, firstname=t2.firstname, lastname=t2.lastname, current_team_id=t2.current_team_id, current_team_name=t2.current_team_name,number=t2.number, captain=t2.captain, injured=t2.injured, is_suspended=t2.is_suspended, injury_reason=t2.injury_reason, is_sidelined=t2.is_sidelined, image_path=t2.image_path, height=t2.height, weight=t2.weight,country_id=t2.country_id, birthcountry=t2.birthcountry, birth_dt=t2.birth_dt, birthplace=t2.birthplace;')    
-        con.execute('UPDATE sm_playerbase SET rostered = 0,current_team_id = NULL, current_team_name = NULL, captain = NULL, injured=NULL, is_suspended=NULL, injury_reason=NULL, is_sidelined=NULL WHERE id NOT IN (SELECT id from tmp_sm_playerbase)')
-        con.execute('DROP TABLE tmp_sm_playerbase;')    
-    message = "Table sm_playerbase updated"
-
-finally:
-    con.close()
-print(message)
+con.close()
