@@ -20,8 +20,8 @@ from dataprep_functions import isNone
 import requests
 import pandas as pd 
 from datetime import datetime
-import time
-from time import gmtime, strftime
+#import time
+#from time import gmtime, strftime
 from sqlalchemy import create_engine
 import sys
 
@@ -75,13 +75,14 @@ list_round = []
 for spieltag in data_round:
     
     list_round_parsed = []
-    
-    # season_id
-    list_round_parsed.append(spieltag['season_id'])
-    
+
     # round_id and round name
     list_round_parsed.append(spieltag['id'])
     list_round_parsed.append(int(spieltag['name']))
+    
+    # league_id and season_id
+    list_round_parsed.append(isNone(spieltag['league_id'],None))    
+    list_round_parsed.append(spieltag['season_id'])
     
     # start_dt and end_dt
     if spieltag['starting_at'] is not None:
@@ -102,18 +103,11 @@ for spieltag in data_round:
     list_round_parsed.append(False)  
     list_round_parsed.append(True)   
     
-    # league_id and stage_id
-    list_round_parsed.append(isNone(spieltag['league_id'],None))
-    list_round_parsed.append(isNone(spieltag['stage_id'],None))
-    
-    # load_ts
-    list_round_parsed.append(strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-
     # append parsed data to list_round
     list_round.append(list_round_parsed)
 
 # safe results to DataFrame
-df_rounds = pd.DataFrame(columns=['season_id', 'id', 'name', 'start_dt', 'end_dt', 'is_round_complete', 'is_fantasy_league_round', 'is_fantasy_cup_round', 'is_fantasy_active', 'league_id', 'stage_id', 'load_ts'], data=list_round)
+df_rounds = pd.DataFrame(columns=['id', 'name', 'league_id', 'season_id', 'start_dt', 'end_dt', 'is_round_complete', 'is_fantasy_league_round', 'is_fantasy_cup_round', 'is_fantasy_active'], data=list_round)
 log('Found ' + str(df_rounds.shape[0]) + ' rounds')
 
 ##########################
@@ -127,33 +121,53 @@ log('Connecting to MySQL database')
 from mysql_db_connection import db_user, db_pass, db_port, db_name
 engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
 
-# create table if not exists
-try:
-    df_rounds.to_sql(name='sm_rounds', con=engine, index=False, if_exists='fail')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `sm_rounds` ADD PRIMARY KEY (`season_id`,`id`,`league_id`,`stage_id`);')
-    db_message = 'Table sm_rounds created'
+log('Starting refresh process for sm_rounds')
 
-# if exists update table through temp table
-except:
+with engine.connect() as con:
+    
+    # create tmp table need for update
+    log('Creating tmp table tmp_sm_rounds')
     df_rounds.to_sql(name='tmp_sm_rounds', con=engine, index=False, if_exists='replace')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `tmp_sm_rounds` ADD PRIMARY KEY (`season_id`,`id`,`league_id`,`stage_id`);')   
-        con.execute('''
-                    INSERT INTO sm_rounds 
-                    SELECT * FROM tmp_sm_rounds t2 
-                    ON DUPLICATE KEY UPDATE  
-                        start_dt = t2.start_dt
-                        , end_dt = t2.end_dt
-                        , is_round_complete = t2.is_round_complete
-                    ;
-                    ''')    
-        con.execute('DROP TABLE tmp_sm_rounds;')    
-        
-    db_message = "Table sm_rounds updated"
+    
+    # set collation and primary key for tmp table
+    log('Setting primary key for tmp_sm_rounds to id')
+    con.execute('ALTER TABLE `tmp_sm_rounds` ADD PRIMARY KEY (`id`);')
+    log('Setting collation for tmp_sm_rounds to utf8mb4_unicode_520_ci')
+    con.execute('ALTER TABLE `tmp_sm_rounds` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')    
 
-finally:
-    con.close()
-  
-log(db_message)
+    # updating prod table through tmp table
+    log('Executing INSERT + UPDATE on sm_rounds')    
+    con.execute('''
+                INSERT INTO sm_rounds 
+                SELECT  id
+                        , name 
+                        , league_id 
+                        , season_id
+                        , start_dt
+                        , end_dt
+                        , is_round_complete
+                        , is_fantasy_league_round
+                        , is_fantasy_cup_round
+                        , is_fantasy_active
+                        , sysdate() as insert_ts
+                        , null as update_ts
+                        
+                FROM tmp_sm_rounds t2 
+                
+                ON DUPLICATE KEY UPDATE  
+                    start_dt = t2.start_dt
+                    , end_dt = t2.end_dt
+                    , is_round_complete = t2.is_round_complete
+                    , update_ts = sysdate()
+                ;
+                ''')    
+        
+                
+    # drop tmp table as not needed anymore
+    log('Dropping tmp table tmp_sm_rounds')
+    con.execute('DROP TABLE tmp_sm_rounds;')    
+
+log('Finished refresh process for sm_rounds')
 print('')
+
+con.close()
