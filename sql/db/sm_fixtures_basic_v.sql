@@ -14,7 +14,7 @@ select 	`sea`.`league_id` AS `league_id`
 				,`fix`.`kickoff_dt` AS `kickoff_dt`
 				,`fix`.`kickoff_ts` AS `kickoff_ts`
 				,`fix`.`kickoff_time` AS `kickoff_time`
-				,`fix`.`fixture_status` AS `fixture_status`
+				,`fix`.`match_status` AS `fixture_status`
 				,`fix`.`localteam_id` AS `localteam_id`
 				,`fix`.`visitorteam_id` AS `visitorteam_id`
 				,`fix`.`localteam_score` AS `localteam_score`
