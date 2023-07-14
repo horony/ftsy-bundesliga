@@ -164,6 +164,9 @@ for spieltag in data_round:
             fixture_list.append(away_team_id)
             
             # scores
+            home_score = None
+            away_score = None
+            
             for score in matchup['scores']:
                 if score['type_id'] == 1525 and score['score']['participant'] == 'home':
                     home_score = score['score']['goals']
