@@ -3,7 +3,7 @@
 """
 Created on Thu Jun 11 12:23:12 2020
 
-Orchestration script updating different dimension tables.
+Scprit to orchestrate updating slowly changing dimension tables
 
 @author: lennart
 """
