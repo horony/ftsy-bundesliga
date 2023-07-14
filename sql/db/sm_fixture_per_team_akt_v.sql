@@ -15,8 +15,8 @@ select 	/* Team */
 				/* Kickoff */
 				,`base`.`kickoff_dt` AS `kickoff_dt`
 				,`base`.`kickoff_ts` AS `kickoff_ts`
-				,`base`.`kickoff_time` AS `kickoff_time`
-				,`base`.`minute` AS `minute`
+				, null AS `kickoff_time`
+				, null AS `minute`
 
 				,case 	when (dayofweek(`base`.`kickoff_dt`) = 1) then 'Sonntag' 
 								when (dayofweek(`base`.`kickoff_dt`) = 2) then 'Montag' 
@@ -54,11 +54,9 @@ from (
 					,`sm_fixtures`.`visitorteam_id` AS `opp_id`
 					,`sm_fixtures`.`kickoff_dt` AS `kickoff_dt`
 					,`sm_fixtures`.`kickoff_ts` AS `kickoff_ts`
-					,`sm_fixtures`.`kickoff_time` AS `kickoff_time`
-					,`sm_fixtures`.`minute` AS `minute`
 					,`sm_fixtures`.`match_status` AS `match_status`
-					,`sm_fixtures`.`localteam_goals` AS `goals_for`
-					,`sm_fixtures`.`visitorteam_goals` AS `goals_against` 
+					,`sm_fixtures`.`localteam_score` AS `goals_for`
+					,`sm_fixtures`.`visitorteam_score` AS `goals_against` 
 
 	from 	`sm_fixtures` 
 
@@ -73,16 +71,16 @@ from (
 					,`sm_fixtures`.`localteam_id` AS `opp_id`
 					,`sm_fixtures`.`kickoff_dt` AS `kickoff_dt`
 					,`sm_fixtures`.`kickoff_ts` AS `kickoff_ts`
-					,`sm_fixtures`.`kickoff_time` AS `kickoff_time`
-					,`sm_fixtures`.`minute` AS `minute`
 					,`sm_fixtures`.`match_status` AS `match_status`
-					,`sm_fixtures`.`visitorteam_goals` AS `goals_for`
-					,`sm_fixtures`.`localteam_goals` AS `goals_against` 
+					,`sm_fixtures`.`visitorteam_score` AS `goals_for`
+					,`sm_fixtures`.`localteam_score` AS `goals_against` 
 
 	from `sm_fixtures` 
 
-	where 	`sm_fixtures`.`round_name` = (select `parameter`.`spieltag` from `parameter`)
-					and (`sm_fixtures`.`season_id` = (select `parameter`.`season_id` from `parameter`)
+	where 	(
+        	`sm_fixtures`.`round_name` = (select `parameter`.`spieltag` from `parameter`)
+			and `sm_fixtures`.`season_id` = (select `parameter`.`season_id` from `parameter`)
+        	)
 
 	) `base` 
 
