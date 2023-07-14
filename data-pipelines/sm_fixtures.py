@@ -186,7 +186,7 @@ for spieltag in data_round:
 
 # set column names
 columns_names_fixtures = []
-columns_names_fixtures += ['season_id','round_id','round_name', 'fixture_id','kickoff_dt','kickoff_ts','fixture_status','localteam_id',
+columns_names_fixtures += ['season_id','round_id','round_name', 'fixture_id','kickoff_dt','kickoff_ts','match_status','localteam_id',
                            'visitorteam_id','localteam_score','visitorteam_score','league_id','stage_id']
 
 # Create dataframe
@@ -227,7 +227,7 @@ except:
                             , t2.fixture_id
                             , t2.kickoff_dt
                             , t2.kickoff_ts
-                            , t2.fixture_status
+                            , t2.match_status
                             , t2.localteam_id
                             , t2.visitorteam_id
                             , t2.localteam_score
@@ -237,14 +237,14 @@ except:
                             , null as kickoff_time
                             , null as ft_score
                             , null as ht_score
-                            , sysdate() as update_ts
+                            , null as update_ts
                             , sysdate() as insert_ts
                             
                     FROM tmp_sm_fixtures t2 
                     ON DUPLICATE KEY UPDATE 
                             kickoff_dt = t2.kickoff_dt
                             , kickoff_ts = t2.kickoff_ts
-                            , fixture_status = t2.fixture_status
+                            , match_status = t2.match_status
                             , localteam_id = t2.localteam_id
                             , visitorteam_id = t2.visitorteam_id
                             , localteam_score = t2.localteam_score
