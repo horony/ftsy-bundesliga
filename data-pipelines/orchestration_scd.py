@@ -20,17 +20,23 @@ print("#  RUNNING ORCHESTRATION SCD  #")
 print("###############################")
 print("")
 
-log('Calling script 1/5 - sm_seasons.py')
-
 print("")
 print("###################")
 print("#  SM_SEASONS.PY  #")
 print("###################")
 print("")
 
+log('Calling script 1/6 - sm_seasons.py')
 os.system('python3.6 sm_seasons.py')
 
-log('Calling script 2/5 - sm_fixtures.py')
+print("")
+print("##################")
+print("#  SM_ROUNDS.PY  #")
+print("##################")
+print("")
+
+log('Calling script 2/6 - sm_rounds.py')
+os.system('python3.6 sm_rounds.py')
 
 print("")
 print("####################")
@@ -38,9 +44,8 @@ print("#  SM_FIXTURES.PY  #")
 print("####################")
 print("")
 
+log('Calling script 3/6 - sm_fixtures.py')
 os.system('python3.6 sm_fixtures.py')
-
-log('Calling script 3/5 - sm_venues.py')
 
 print("")
 print("##################")
@@ -48,9 +53,8 @@ print("#  SM_VENUES.PY  #")
 print("##################")
 print("")
 
+log('Calling script 4/6 - sm_venues.py')
 os.system('python3.6 sm_venues.py')
-
-log('Calling script 4/5 - sm_teams.py')
 
 print("")
 print("#################")
@@ -58,9 +62,8 @@ print("#  SM_TEAMS.PY  #")
 print("#################")
 print("")
 
+log('Calling script 5/6 - sm_teams.py')
 os.system('python3.6 sm_teams.py')
-
-log('Calling script 5/5 - sm_playerbase.py')
 
 print("")
 print("######################")
@@ -68,4 +71,5 @@ print("#  SM_PLAYERBASE.PY  #")
 print("######################")
 print("")
 
+log('Calling script 6/6 - sm_playerbase.py')
 os.system('python3.6 sm_playerbase.py')
