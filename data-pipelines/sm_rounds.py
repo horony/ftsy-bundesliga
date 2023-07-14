@@ -149,9 +149,9 @@ with engine.connect() as con:
                         , is_fantasy_league_round
                         , is_fantasy_cup_round
                         , is_fantasy_active
-                        , sysdate() as insert_ts
                         , null as update_ts
-                        
+                        , sysdate() as insert_ts
+          
                 FROM tmp_sm_rounds t2 
                 
                 ON DUPLICATE KEY UPDATE  
