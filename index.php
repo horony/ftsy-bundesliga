@@ -1,5 +1,5 @@
 <?php require('php/auth.php'); ?>
-
+<!DOCTYPE html>
 <html>
 
 <head>
