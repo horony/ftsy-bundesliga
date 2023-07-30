@@ -1,5 +1,7 @@
 /* Creates view with detailed stats and ftsy score for each player in each fixture he was on a team */
 
+drop view if exists ftsy_scoring_akt_v;
+
 create view ftsy_scoring_akt_v as
 
 with ftsy_stats as (
@@ -130,7 +132,7 @@ with ftsy_stats as (
 					/* Cards */
 					,round((rules.redcards * stats.redcards),1) AS redcards_ftsy
 					,stats.redcards AS redcards_stat
-					,round((rules.redyellowcards * stats.redyellowcards),1) AS redcyellowards_ftsy
+					,round((rules.redyellowcards * stats.redyellowcards),1) AS redyellowcards_ftsy
 					,stats.redyellowcards AS redyellowcards_stat
 	
 	from 	sm_player_stats stats 
@@ -208,7 +210,7 @@ select 	ftsy_stats.*
 					+ coalesce(outside_box_saves_ftsy,0)
 					+ coalesce(punches_ftsy,0)
 					+ coalesce(redcards_ftsy,0)
-					+ coalesce(redcyellowards_ftsy,0)
+					+ coalesce(redyellowcards_ftsy,0)
 					as ftsy_score
 
 from ftsy_stats
