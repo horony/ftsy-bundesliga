@@ -36,100 +36,101 @@ if ($clicked_spieltag == 'Aktueller Spieltag') {
 	/* SQL CURRENT ROUND */
 	/*********************/
 
-	$kader = mysqli_query($con,"		SELECT 	base.id #
-		, base.display_name #
-        , base.position_short #
-        , base.image_path #
-        , case 	when base.is_suspended is not null then 'rote-karte.png'
-		        		when base.injured = 1 then 'verletzung.png'
-		        		when base.is_sidelined = 1 then 'verbannung.png'
-		        		else 'fit.png'
-								end as fitness_img
-        , base.injury_reason
-        , base.team_id
-        , base.short_code as team_code
-        , case when base.current_team_id = fix.localteam_id then fix.localteam_score else fix.visitorteam_score end as matchup_score_for 
-        , case when base.current_team_id = fix.localteam_id then fix.visitorteam_score else fix.localteam_score end as matchup_score_against
-        , case when base.current_team_id = fix.localteam_id then team_away.short_code else team_home.short_code end as gegner 
-        , case when base.current_team_id = fix.localteam_id then team_away.name else team_home.name end as gegner_name        
-        , case when base.current_team_id = fix.localteam_id then 'H' else 'A' end as homeaway         
-        , base.1_ftsy_match_status
-        , fix.round_name
-        , fix.fixture_id
-        , fix.kickoff_dt
-        , fix.kickoff_ts
-        , fix.match_status
-        , case 	when dayname(fix.kickoff_dt) = 'Monday' then 'Mo.'
-		        		when dayname(fix.kickoff_dt) = 'Tuesday' then 'Di.'
-		        		when dayname(fix.kickoff_dt) = 'Wednesday' then 'Mi.'
-		        		when dayname(fix.kickoff_dt) = 'Thursday' then 'Do.'
-		        		when dayname(fix.kickoff_dt) = 'Friday' then 'Fr.'
-		        		when dayname(fix.kickoff_dt) = 'Saturday' then 'Sa.'
-		        		when dayname(fix.kickoff_dt) = 'Sunday' then 'So.'
-		        		end as kickoff_weekday
-        , fix.kickoff_time - INTERVAL EXTRACT(SECOND FROM fix.kickoff_time) SECOND as kickoff_time_trunc
-        , month(fix.kickoff_dt) as kickoff_month
-        , day(fix.kickoff_dt) as kickoff_day
+$kader = mysqli_query($con,"		
+	SELECT 	base.id #
+					, base.display_name #
+	        , base.position_short #
+	        , base.image_path #
+	        , case 	when base.is_suspended is not null then 'rote-karte.png'
+			        		when base.injured = 1 then 'verletzung.png'
+			        		when base.is_sidelined = 1 then 'verbannung.png'
+			        		else 'fit.png'
+									end as fitness_img
+	        , base.injury_reason
+	        , base.team_id
+	        , base.short_code as team_code
+	        , case when base.current_team_id = fix.localteam_id then fix.localteam_score else fix.visitorteam_score end as matchup_score_for 
+	        , case when base.current_team_id = fix.localteam_id then fix.visitorteam_score else fix.localteam_score end as matchup_score_against
+	        , case when base.current_team_id = fix.localteam_id then team_away.short_code else team_home.short_code end as gegner 
+	        , case when base.current_team_id = fix.localteam_id then team_away.name else team_home.name end as gegner_name        
+	        , case when base.current_team_id = fix.localteam_id then 'H' else 'A' end as homeaway         
+	        , base.1_ftsy_match_status
+	        , fix.round_name
+	        , fix.fixture_id
+	        , fix.kickoff_dt
+	        , fix.kickoff_ts
+	        , fix.match_status
+	        , case 	when dayname(fix.kickoff_dt) = 'Monday' then 'Mo.'
+			        		when dayname(fix.kickoff_dt) = 'Tuesday' then 'Di.'
+			        		when dayname(fix.kickoff_dt) = 'Wednesday' then 'Mi.'
+			        		when dayname(fix.kickoff_dt) = 'Thursday' then 'Do.'
+			        		when dayname(fix.kickoff_dt) = 'Friday' then 'Fr.'
+			        		when dayname(fix.kickoff_dt) = 'Saturday' then 'Sa.'
+			        		when dayname(fix.kickoff_dt) = 'Sunday' then 'So.'
+			        		end as kickoff_weekday
+	        , fix.kickoff_time - INTERVAL EXTRACT(SECOND FROM fix.kickoff_time) SECOND as kickoff_time_trunc
+	        , month(fix.kickoff_dt) as kickoff_month
+	        , day(fix.kickoff_dt) as kickoff_day
 
-        , ftsy.ftsy_score
-        , ftsy.appearance_stat
-        , ftsy.appearance_ftsy
-        , case 	when ftsy.minutes_played_stat is null and ftsy.appearance_stat = 1 then '1 Min.' 
-		        		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
-		        		else null
-		        		end as appearance_stat_adv
-        , ftsy.goals_made_ftsy
-        , ftsy.goals_made_stat
-        , case when ftsy.appearance_stat = 1 then
-        	ftsy.penalties_made_ftsy - ftsy.pen_missed_ftsy
-        	else null end as penalties_ftsy
-        , case when ftsy.appearance_stat = 1 then
-        	concat(concat(concat(ftsy.penalties_made_stat, ' ('), ftsy.penalties_made_stat + ftsy.pen_missed_stat), ')')
-        	else null end as penalties_stat      
-        , ftsy.assists_made_ftsy
-        , ftsy.assists_made_stat
-        , ftsy.clean_sheet_ftsy
-        , case when ftsy.clean_sheet_ftsy > 0 then 'ja' when ftsy.clean_sheet_ftsy = 0 then 'nein' else null end as clean_sheet_stat
-        , ftsy.shots_total_ftsy
-        , base.".$ftsy_status_column." as ftsy_match_status
-        , snap.ftsy_score_avg
-        , allowed.rank as allowed_rank
-        , allowed.avg_allowed as allowed_avg
-        , case 	when allowed.rank between 1 and 5 then '#d0001f'
-		        		when allowed.rank between 14 and 18 then '#079c07'
-		        		else '#666'
-		        		end as allowed_color
-        , proj.ftsy_score_projected
+	        , ftsy.ftsy_score
+	        , ftsy.appearance_stat
+	        , ftsy.appearance_ftsy
+	        , case 	when ftsy.minutes_played_stat is null and ftsy.appearance_stat = 1 then '1 Min.' 
+			        		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
+			        		else null
+			        		end as appearance_stat_adv
+	        , ftsy.goals_total_ftsy
+	        , ftsy.goals_total_stat
+	        , case when ftsy.appearance_stat = 1 then
+	        	ftsy.pen_scored_ftsy - ftsy.pen_missed_ftsy
+	        	else null end as penalties_ftsy
+	        , case when ftsy.appearance_stat = 1 then
+	        	concat(concat(concat(ftsy.pen_scored_stat, ' ('), ftsy.pen_scored_stat + ftsy.pen_missed_stat), ')')
+	        	else null end as penalties_stat      
+	        , ftsy.assists_ftsy
+	        , ftsy.assists_stat
+	        , ftsy.clean_sheet_ftsy
+	        , case when ftsy.clean_sheet_ftsy > 0 then 'ja' when ftsy.clean_sheet_ftsy = 0 then 'nein' else null end as clean_sheet_stat
+	        , ftsy.shots_total_ftsy
+	        , base.".$ftsy_status_column." as ftsy_match_status
+	        , snap.ftsy_score_avg
+	        , allowed.rank as allowed_rank
+	        , allowed.avg_allowed as allowed_avg
+	        , case 	when allowed.rank between 1 and 5 then '#d0001f'
+			        		when allowed.rank between 14 and 18 then '#079c07'
+			        		else '#666'
+			        		end as allowed_color
+	        , proj.ftsy_score_projected
 
-		FROM sm_playerbase_basic_v base
+	FROM sm_playerbase_basic_v base
 
-		LEFT JOIN sm_fixtures fix 
-			ON 	( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id )
-				AND fix.round_name = '".$akt_spieltag."'
-				AND fix.season_id = '".$akt_season_id."'
-		        
-		LEFT JOIN ftsy_scoring_akt_v ftsy
-			ON	ftsy.player_id = base.id
-		    	AND ftsy.round_name = '".$akt_spieltag."'
+	LEFT JOIN sm_fixtures fix 
+		ON 	( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id )
+			AND fix.round_name = '".$akt_spieltag."'
+			AND fix.season_id = '".$akt_season_id."'
+	        
+	LEFT JOIN ftsy_scoring_akt_v ftsy
+		ON	ftsy.player_id = base.id
+	    	AND ftsy.round_name = '".$akt_spieltag."'
 
-		LEFT JOIN sm_teams team_home
-			ON fix.localteam_id = team_home.id
+	LEFT JOIN sm_teams team_home
+		ON fix.localteam_id = team_home.id
 
-		LEFT JOIN sm_teams team_away
-			ON fix.visitorteam_id = team_away.id
+	LEFT JOIN sm_teams team_away
+		ON fix.visitorteam_id = team_away.id
 
-		LEFT JOIN ftsy_scoring_snap snap
-			ON snap.id = base.id
+	LEFT JOIN ftsy_scoring_snap snap
+		ON snap.id = base.id
 
-		LEFT JOIN ftsy_points_allowed allowed
-			ON 	allowed.opp_team_id = case when base.current_team_id = fix.localteam_id then team_away.id else team_home.id end
-				AND allowed.position_short = base.position_short
+	LEFT JOIN ftsy_points_allowed allowed
+		ON 	allowed.opp_team_id = case when base.current_team_id = fix.localteam_id then team_away.id else team_home.id end
+			AND allowed.position_short = base.position_short
 
-		LEFT JOIN ftsy_scoring_projection_v proj
-			ON  base.id = proj.player_id
+	LEFT JOIN ftsy_scoring_projection_v proj
+		ON  base.id = proj.player_id
 
-		WHERE 	".$ftsy_owner_column." = '".$user_id."'
-	");
+	WHERE 	".$ftsy_owner_column." = '".$user_id."'
+");
 
 } elseif ($clicked_spieltag == 'Saison') {
 
