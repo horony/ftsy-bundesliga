@@ -288,16 +288,17 @@ require("../php/auth.php");
 											, day(buli.kickoff_dt) as kickoff_day
 															
 											, ftsy.ftsy_score
+
 											, case 	when ftsy.minutes_played_stat is null and ftsy.appearance_stat = 1 then '1 Min.' 
 											     		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
 											     		else null
 											     		end as appearance_stat
-											, ftsy.goals_made_stat
-											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.penalties_made_stat, ' ('), ftsy.penalties_made_stat + ftsy.pen_missed_stat), ')')
+											, ftsy.goals_total_stat
+											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.pen_scored_stat, ' ('), ftsy.pen_scored_stat + ftsy.pen_missed_stat), ')')
 											     		else null 
 											     		end as penalties_stat     
-											, ftsy.penalties_made_stat + ftsy.pen_missed_stat as penalties_total
-											, ftsy.assists_made_stat
+											, ftsy.pen_scored_stat + ftsy.pen_missed_stat as penalties_total
+											, ftsy.assists_stat
 											, ftsy.shots_total_stat
 											, ftsy.passes_complete_stat + ftsy.passes_incomplete_stat as passes_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.passes_complete_stat,' ('),ftsy.passes_complete_stat+ftsy.passes_incomplete_stat),')') 
@@ -307,29 +308,36 @@ require("../php/auth.php");
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.crosses_complete_stat,' ('),ftsy.crosses_complete_stat+ftsy.crosses_incomplete_stat),')') 
 															else null 
 															end as crosses_stat				
-											, ftsy.passes_key_stat
+											, ftsy.key_passes_stat
+											, ftsy.big_chances_created_stat
 											, ftsy.duels_won_stat + ftsy.duels_lost_stat as duels_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.duels_won_stat,' ('),ftsy.duels_won_stat+ftsy.duels_lost_stat),')') 
 															else null 
 													    end as duels_stat
-											, ftsy.dribble_success_stat + ftsy.dribble_fail_stat as dribble_total
-											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.dribble_success_stat,' ('),ftsy.dribble_success_stat+ftsy.dribble_fail_stat),')') 
+											, ftsy.dribbles_success_stat + ftsy.dribbles_failed_stat as dribble_total
+											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.dribbles_success_stat,' ('),ftsy.dribbles_success_stat+ftsy.dribbles_failed_stat),')') 
 															else null 
 													    end as dribble_stat
 											, ftsy.tackles_stat
 											, ftsy.interceptions_stat
 											, ftsy.blocks_stat
 											, ftsy.clearances_stat
+											, ftsy.clearances_offline_stat
 											, ftsy.outside_box_saves_stat
 											, ftsy.inside_box_saves_stat
 											, ftsy.pen_saved_stat
 											, ftsy.redcards_stat
-											, ftsy.yellowredcards_stat
+											, ftsy.redyellowcards_stat
 											, ftsy.pen_committed_stat
 											, ftsy.owngoals_stat
 											, ftsy.dispossessed_stat
 											, ftsy.dribbled_past_stat
 											, ftsy.pen_won_stat
+											, ftsy.big_chances_missed_stat
+											, ftsy.error_lead_to_goal_stat
+											, ftsy.punches_stat
+											, ftsy.goals_conceded_stat
+											, ftsy.clean_sheet_stat
 							        , proj.ftsy_score_projected 
 
 							FROM xa7580_db1.sm_playerbase_basic_v base 
@@ -428,16 +436,19 @@ require("../php/auth.php");
 										, left(buli.kickoff_time,5) as kickoff_time_trunc
 										, month(buli.kickoff_dt) as kickoff_month
 										, day(buli.kickoff_dt) as kickoff_day
+										
 										, ftsy.ftsy_score
+
 										, case 	when ftsy.minutes_played_stat is null and ftsy.appearance_stat = 1 then '1 Min.' 
 										     		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
 										     		else null
 										     		end as appearance_stat
-										, ftsy.goals_made_stat
-										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.penalties_made_stat, ' ('), ftsy.penalties_made_stat + ftsy.pen_missed_stat), ')')
-													  else null end as penalties_stat     
-										, ftsy.penalties_made_stat + ftsy.pen_missed_stat as penalties_total
-										, ftsy.assists_made_stat
+										, ftsy.goals_total_stat
+										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.pen_scored_stat, ' ('), ftsy.pen_scored_stat + ftsy.pen_missed_stat), ')')
+										     		else null 
+										     		end as penalties_stat     
+										, ftsy.pen_scored_stat + ftsy.pen_missed_stat as penalties_total
+										, ftsy.assists_stat
 										, ftsy.shots_total_stat
 										, ftsy.passes_complete_stat + ftsy.passes_incomplete_stat as passes_total
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.passes_complete_stat,' ('),ftsy.passes_complete_stat+ftsy.passes_incomplete_stat),')') 
@@ -447,29 +458,36 @@ require("../php/auth.php");
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.crosses_complete_stat,' ('),ftsy.crosses_complete_stat+ftsy.crosses_incomplete_stat),')') 
 														else null 
 														end as crosses_stat				
-										, ftsy.passes_key_stat
+										, ftsy.key_passes_stat
+										, ftsy.big_chances_created_stat
 										, ftsy.duels_won_stat + ftsy.duels_lost_stat as duels_total
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.duels_won_stat,' ('),ftsy.duels_won_stat+ftsy.duels_lost_stat),')') 
 														else null 
-													  end as duels_stat
-										, ftsy.dribble_success_stat + ftsy.dribble_fail_stat as dribble_total
-										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.dribble_success_stat,' ('),ftsy.dribble_success_stat+ftsy.dribble_fail_stat),')') 
+												    end as duels_stat
+										, ftsy.dribbles_success_stat + ftsy.dribbles_failed_stat as dribble_total
+										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.dribbles_success_stat,' ('),ftsy.dribbles_success_stat+ftsy.dribbles_failed_stat),')') 
 														else null 
-													  end as dribble_stat
-											, ftsy.tackles_stat
-											, ftsy.interceptions_stat
-											, ftsy.blocks_stat
-											, ftsy.clearances_stat
-											, ftsy.outside_box_saves_stat
-											, ftsy.inside_box_saves_stat
-											, ftsy.pen_saved_stat
-											, ftsy.redcards_stat
-											, ftsy.yellowredcards_stat
-											, ftsy.pen_committed_stat
-											, ftsy.owngoals_stat
-											, ftsy.dispossessed_stat
-											, ftsy.dribbled_past_stat
-											, ftsy.pen_won_stat
+												    end as dribble_stat
+										, ftsy.tackles_stat
+										, ftsy.interceptions_stat
+										, ftsy.blocks_stat
+										, ftsy.clearances_stat
+										, ftsy.clearances_offline_stat
+										, ftsy.outside_box_saves_stat
+										, ftsy.inside_box_saves_stat
+										, ftsy.pen_saved_stat
+										, ftsy.redcards_stat
+										, ftsy.redyellowcards_stat
+										, ftsy.pen_committed_stat
+										, ftsy.owngoals_stat
+										, ftsy.dispossessed_stat
+										, ftsy.dribbled_past_stat
+										, ftsy.pen_won_stat
+										, ftsy.big_chances_missed_stat
+										, ftsy.error_lead_to_goal_stat
+										, ftsy.punches_stat
+										, ftsy.goals_conceded_stat
+										, ftsy.clean_sheet_stat
 
 						FROM xa7580_db1.sm_playerbase base 
 
