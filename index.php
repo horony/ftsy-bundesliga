@@ -333,19 +333,19 @@
   				<?php
   					// Formation
 						if ($cnt_aufstellung != 11){
-							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>1</span></div><div class='alert_text'><b>Aufstellung: </b>Du hast ".$cnt_aufstellung." Spieler aufgestellt.<br><br><a href='mein_team.php?show_team='".mb_convert_encoding($_SESSION["user_teamname"],'UTF-8')."''>>> Bearbeite Aufstellung</a></div></div>";
+							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>1</span></div><div class='alert_text'><b>Aufstellung: </b>Du hast ".$cnt_aufstellung." Spieler aufgestellt.<br><br><a href='html/mein_team.php?show_team='".mb_convert_encoding($_SESSION["user_teamname"],'UTF-8')."''>>> Bearbeite Aufstellung</a></div></div>";
 						} elseif ($cnt_aufstellung_verletzt > 0) {
-							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>".$cnt_aufstellung_verletzt."</span></div><div class='alert_text'><b>Aufstellung: </b>Du hast aktuell nicht fitte Spieler aufgestellt.<br><br><a href='mein_team.php?show_team='".mb_convert_encoding($_SESSION["user_teamname"],'UTF-8')."''>>> Bearbeite Aufstellung</a></div></div>";
+							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>".$cnt_aufstellung_verletzt."</span></div><div class='alert_text'><b>Aufstellung: </b>Du hast aktuell nicht fitte Spieler aufgestellt.<br><br><a href='html/mein_team.php?show_team='".mb_convert_encoding($_SESSION["user_teamname"],'UTF-8')."''>>> Bearbeite Aufstellung</a></div></div>";
 						}
 
 						// Trades
 						if ($cnt_trades > 0){
-							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>".$cnt_trades."</span></div><div class='alert_text'><b>Trades:</b> Du hast ".$cnt_trades." aktive Trade-Anfragen.<br><br><a href='delete_waiver.php'>>> Verwalte Trades</a></div></div>";
+							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>".$cnt_trades."</span></div><div class='alert_text'><b>Trades:</b> Du hast ".$cnt_trades." aktive Trade-Anfragen.<br><br><a href='html/waiver_delete.php'>>> Verwalte Trades</a></div></div>";
 						}
 
 						// Waivers
 						if ($cnt_waiver > 0){
-							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>".$cnt_waiver."</span></div><div class='alert_text'><b>Waiver:</b> Du hast ".$cnt_waiver." aktive Waiver-Anfragen.<br><br><a href='delete_waiver.php'>>> Verwalte Waiver</a></div></div>";
+							echo "<div class='alert_wrap'><div class='alert_badge'><span class='red_badge'>".$cnt_waiver."</span></div><div class='alert_text'><b>Waiver:</b> Du hast ".$cnt_waiver." aktive Waiver-Anfragen.<br><br><a href='html/waiver_delete.php'>>> Verwalte Waiver</a></div></div>";
 						}
 					?>
   			</div>
