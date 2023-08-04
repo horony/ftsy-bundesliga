@@ -6,8 +6,24 @@ date_default_timezone_set('Europe/Amsterdam');
 
 $draft_meta = mysqli_query($con, "SELECT * FROM draft_meta WHERE league_id = 1 ") -> fetch_assoc();
 
+/*
+// Uncomment for bug fixing
+echo($draft_meta['draft_status']), "\n";
+echo($draft_meta['update_lock']), "\n";
+echo strtotime("now"), "\n";
+echo date("Y-m-d\TH:i:s\Z", strtotime("now")),  "\n";
+
+echo($draft_meta['expire_ts']),  "\n";
+echo(strtotime($draft_meta['expire_ts'])),  "\n";
+echo(date("Y-m-d\TH:i:s\Z", strtotime($draft_meta['expire_ts']))),  "\n";
+
+echo 'update_lock Check: ', $draft_meta['update_lock'] == 0;
+echo 'draft_status Check: ', $draft_meta['draft_status'] == 'running',  "---";
+echo 'time Check: ', (date("Y-m-d\TH:i:s\Z", strtotime($draft_meta['expire_ts'])) < date("Y-m-d\TH:i:s\Z", strtotime("now")));
+*/
+
 // Check if lock is disabled, draft is running and time is expired
-if ($draft_meta['update_lock'] == 0 and $draft_meta['draft_status'] == 'running' and (strtotime($draft_meta['expire_ts']) < mktime())) {
+if (	$draft_meta['update_lock'] == 0 and $draft_meta['draft_status'] == 'running' and (date("Y-m-d\TH:i:s\Z", strtotime($draft_meta['expire_ts'])) < date("Y-m-d\TH:i:s\Z", strtotime("now")))	) {
 	
 	mysqli_query($con, "UPDATE draft_meta SET update_lock = 1 WHERE league_id = 1 ");
 	
@@ -29,7 +45,8 @@ if ($draft_meta['update_lock'] == 0 and $draft_meta['draft_status'] == 'running'
 		ORDER BY 	SUM(scr.ftsy_score) desc
 		LIMIT 1
 	") -> fetch_assoc();
-
+	
+	
 	mysqli_query($con, "
 		UPDATE 	draft_order_full 
 		SET 	player_id = '".$best_available_player['id']."'
@@ -81,16 +98,13 @@ if ($draft_meta['update_lock'] == 0 and $draft_meta['draft_status'] == 'running'
 						, expire_ts = DATE_ADD(sysdate(), INTERVAL '".$seconds_to_add."' SECOND)
 			");	
 	}
-
+	
 	mysqli_query($con, "UPDATE draft_meta SET update_lock = 0 WHERE league_id = 1 ");
 
+
 } else {
-
-	echo strtotime($draft_meta['expire_ts']);
-	echo $draft_meta['expire_ts'];
+	echo date("Y-m-d\TH:i:s\Z", strtotime($draft_meta['expire_ts']));
 	echo "---";
-	echo mktime();
-	
+	echo date("Y-m-d\TH:i:s\Z", strtotime("now"));
 }
-
 ?>
