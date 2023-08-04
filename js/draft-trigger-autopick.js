@@ -2,7 +2,7 @@ window.setInterval(function(){
 
 	request = $.ajax({
 		type: "GET",
-		url: "..php/jobs/draft-execute-autopick.php",
+		url: 	"https://fantasy-bundesliga.de/php/jobs/draft-execute-autopick.php",
 		data: ({}) 	
 	});	
 
