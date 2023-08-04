@@ -1,6 +1,7 @@
 <?php
 //include auth.php file on all secure pages
 require("../php/auth.php");
+$session_value=(isset($_SESSION['username']))?$_SESSION['username']:'';
 ?>
 
 <html>
@@ -14,6 +15,7 @@ require("../php/auth.php");
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
 	<!-- Individual Scripts -->
+	<script> var php_session_user_id = "<?php echo $session_value; ?>"</script>
 	<script type="text/javascript" src="../js/draft-search-function.js"></script> 
 	<script type="text/javascript" src="../js/draft-pop-player-carousel-by-sse.js"></script> 
 	<script type="text/javascript" src="../js/draft-mark-user-status-by-sse.js"></script> 
