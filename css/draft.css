@@ -107,7 +107,8 @@ body {
 }
 
 .left_column{
-  background: url(/images/texturen/dottedBorder_vert.gif) repeat-y bottom right;
+  background: url(../img/textures/dottedBorder_vert.gif) repeat-y bottom right;
+
   margin-left: 1px;
   margin-right: 5px;
   padding: 5px;
@@ -186,7 +187,7 @@ margin: 3px;
 }
 
 .right_column{
-  background: url(/images/texturen/dottedBorder_vert.gif) repeat-y bottom left;
+  background: url(../img/textures/dottedBorder_vert.gif) repeat-y bottom left;
   margin-right: 1px;
   margin-left: 5px;
   padding: 5px;
@@ -229,7 +230,7 @@ margin: 3px;
 .view_team_position_head{
   display: flex;
   justify-content: space-between;
-  background: url(/images/texturen/dottedBorder.gif) repeat-x bottom left;
+  background: url(../img/textures/dottedBorder.gif) repeat-x bottom left;
   padding: 3px;
   margin-top: 3px;
   font-size: 12px;
