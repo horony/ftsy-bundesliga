@@ -25,11 +25,10 @@ if ($draft_meta['update_lock'] == 0){
 
 			// Make sure that the handled request is by the user which is on the clock
 
-			$pick_in_unix = date('Y-m-d h:i:s', strtotime($pick_in_ts));
-			$pick_in_unix = strtotime($pick_in_unix);
-			$pick_expire_unix = strtotime($draft_meta['expire_ts']);
+			$pick_in_ts = date('Y-m-d h:i:s', strtotime($pick_in_ts));
+			$pick_expire_ts = date("Y-m-d\TH:i:s\Z", strtotime($draft_meta['expire_ts']));
 
-			if ($pick_in_unix <= $pick_expire_unix) {   
+			if ($pick_in_ts <= $pick_expire_ts) {   
 
 				// Check if pick was made in time
 
