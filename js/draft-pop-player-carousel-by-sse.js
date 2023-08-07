@@ -1,6 +1,3 @@
-var php_session_user_id = <?php echo $_SESSION['user_id']; ?>;
-
-
 if(typeof(EventSource) !== "undefined") {
 
 	var pick_event = new EventSource("../php/sse/draft-sse-recent-picks.php");
