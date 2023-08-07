@@ -2,13 +2,13 @@
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
 
-include("../../secrets/mysql_db_connection.php");
+require("../../secrets/mysql_db_connection.php");
 
 // Get draft status (e.g. running etc.)
 $draft_status = mysqli_query($con, "SELECT draft_status FROM xa7580_db1.draft_meta WHERE league_id = 1 ") -> fetch_object() -> draft_status;
 
 // Get data from 5 recent and 4 upcoming picks
-$recent_picks = mysqli_query($con, "
+$sql_picks = mysqli_query($con, "
 	SELECT 	dof.round
 					, dof.pick
 					, dof.teamname
@@ -27,10 +27,18 @@ $recent_picks = mysqli_query($con, "
 	ORDER BY 	dof.pick ASC
 ");
 
-$recent_picks = array(); 		
+// Loop over results and parse into array
+$round_array = array(); 		
 
-while($row = mysqli_fetch_array($recent_picks)) {
-	$round_array[] = array($row["round"], $row["pick"], mb_convert_encoding($row["teamname"], 'UTF-8'), mb_convert_encoding($row["lastname"], 'UTF-8'), $bild_array[] = $row["image_path"], $row['user_id']);
+while($row = mysqli_fetch_array($sql_picks)) {
+	$round_array[] = array(
+		$row["round"]
+		, $row["pick"]
+		, mb_convert_encoding($row["teamname"], 'UTF-8')
+		, mb_convert_encoding($row["lastname"], 'UTF-8')
+		, $bild_array[] = $row["image_path"]
+		, $row['user_id']
+	);
 }
 
 // Output data
