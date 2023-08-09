@@ -119,7 +119,7 @@ echo "<div id='data_2019'>";
 		        , SUM(scr.pen_saved_stat) AS pen_saved
    		      , SUM(scr.error_lead_to_goal_stat) AS patzer
    		      , SUM(scr.pen_committed_stat) AS elfmeter_verursacht
-   		      , COALESCE(SUM(coalesce(scr.redyellowcards_stat,0)) + SUM(coalesce(scr.redcards_stat,0)),0) AS platzverweise
+   		      , CASE WHEN SUM(coalesce(scr.redyellowcards_stat,0)) + SUM(coalesce(scr.redcards_stat,0)) > 0 THEN 1 ELSE 0 END AS platzverweise
 		
 		FROM ftsy_scoring_all_v scr
 
@@ -252,7 +252,7 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 					    , CASE WHEN scr.appearance_stat = 1 THEN scr.pen_saved_stat ELSE NULL END AS pen_saved
 					    , CASE WHEN scr.appearance_stat = 1 THEN scr.error_lead_to_goal_stat ELSE NULL END AS patzer
 			        , CASE WHEN scr.appearance_stat = 1 THEN scr.pen_committed_stat ELSE NULL END AS elfmeter_verursacht
-					    , CASE WHEN scr.appearance_stat = 1 THEN coalesce(scr.redyellowcards_stat) + coalesce(scr.redcards_stat) > 0 THEN 1 ELSE NULL END AS platzverweise
+					    , CASE WHEN scr.appearance_stat = 1 THEN CASE WHEN (coalesce(scr.redyellowcards_stat,0) + coalesce(scr.redcards_stat,0)) > 0 THEN 1 ELSE 0 END ELSE NULL END AS platzverweise
 
 					FROM `sm_rounds` rds
 
