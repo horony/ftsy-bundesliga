@@ -102,6 +102,7 @@ echo "<div id='data_2019'>";
 		   			, SUM(scr.assists_stat) AS assists
 		        , SUM(scr.shots_total_stat) AS shots
 		        , SUM(scr.key_passes_stat) AS passes_key
+   		      , SUM(scr.big_chances_created_stat) AS big_chances
 		        , SUM(scr.passes_complete_stat) AS passes
 				    , ROUND(SUM(scr.passes_complete_stat)/SUM(scr.passes_total_stat)*100,0) AS passes_perc
 		        , SUM(scr.crosses_complete_stat) AS crosses
@@ -116,6 +117,9 @@ echo "<div id='data_2019'>";
 		        , SUM(scr.tackles_stat) AS tackles
 		        , SUM(scr.saves_stat) AS saves
 		        , SUM(scr.pen_saved_stat) AS pen_saved
+   		      , SUM(scr.error_lead_to_goal_stat) AS patzer
+   		      , SUM(scr.pen_committed_stat) AS elfmeter_verursacht
+   		      , COALESCE(SUM(coalesce(scr.redyellowcards_stat,0)) + SUM(coalesce(scr.redcards_stat,0)),0) AS platzverweise
 		
 		FROM ftsy_scoring_all_v scr
 
@@ -139,9 +143,11 @@ echo "<div id='data_2019'>";
 			echo "<th class='' rowspan='1' colspan='2'>Fantasy-Punkte</th>";
 			echo "<th class='' rowspan='2' colspan='1'>Einsätze</th>";
 			echo "<th class='' rowspan='1' colspan='2'>Torbeteiligungen</th>";
-			echo "<th class='' rowspan='1' colspan='5'>Offensiv-Aktionen</th>";
+			echo "<th class='' rowspan='1' colspan='6'>Offensiv-Aktionen</th>";
 			echo "<th class='' rowspan='1' colspan='5'>Defensiv-Aktionen</th>";
 			echo "<th class='' rowspan='1' colspan='2'>Torwart-Aktionen</th>";
+			echo "<th class='' rowspan='1' colspan='3'>Fehler</th>";
+
 		echo "</tr>";
 		
 		echo "<tr class='second_th'>";
@@ -154,6 +160,7 @@ echo "<div id='data_2019'>";
 
 			echo "<th class=''>Schüsse</th>";
 			echo "<th class=''>Key-Pässe</th>";
+			echo "<th class=''>Großchance kreiert</th>";			
 			echo "<th class=''>Pässe</th>";
 			echo "<th class=''>Flanken</th>";
 			echo "<th class=''>Dribblings</th>";
@@ -165,7 +172,12 @@ echo "<div id='data_2019'>";
 			echo "<th class=''>Abgefangen</th>";
 
 			echo "<th class=''>Gehalten</th>";
-			echo "<th class=''>Elfmeter</th>";
+			echo "<th class=''>11er</th>";
+
+			echo "<th class=''>Patzer</th>";
+			echo "<th class=''>11er verursacht</th>";
+			echo "<th class=''>Platzverweis</th>";
+
 		echo "</tr>";
 
 	while($row = mysqli_fetch_array($data_2019)) {
@@ -182,6 +194,7 @@ echo "<div id='data_2019'>";
 
 			echo "<td>".$row['shots']."</td>";
 			echo "<td>".$row['passes_key']."</td>";
+			echo "<td>".$row['big_chances']."</td>";
 			echo "<td>".$row['passes']." (". $row['passes_perc'] ."%)</td>";
 			echo "<td>".$row['crosses']." (". $row['crosses_perc'] ."%)</td>";
 			echo "<td>".$row['dribbles']." (". $row['dribbles_perc'] ."%)</td>";
@@ -194,6 +207,11 @@ echo "<div id='data_2019'>";
 			
 			echo "<td>".$row['saves']."</td>";
 			echo "<td>".$row['pen_saved']."</td>";
+
+			echo "<td>".$row['patzer']."</td>";
+			echo "<td>".$row['elfmeter_verursacht']."</td>";
+			echo "<td>".$row['platzverweise']."</td>";
+
 		echo "</tr>";
 	}
 	echo "</table>";
@@ -221,6 +239,7 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 			   			, CASE WHEN scr.appearance_stat = 1 THEN scr.assists_stat ELSE NULL END AS assists
 			        , CASE WHEN scr.appearance_stat = 1 THEN scr.shots_total_stat ELSE NULL END AS shots
 			        , CASE WHEN scr.appearance_stat = 1 THEN scr.key_passes_stat ELSE NULL END AS passes_key
+			        , CASE WHEN scr.appearance_stat = 1 THEN scr.big_chances_created_stat ELSE NULL END AS big_chances
 			        , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.passes_complete_stat, ' ('), scr.passes_total_stat),')') ELSE NULL END AS passes
 			        , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.crosses_complete_stat, ' ('), scr.crosses_total_stat),')') ELSE NULL END AS crosses_stat
 							, CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.dribbles_success_stat, ' ('), scr.dribble_attempts_stat),')') ELSE NULL END AS dribbles		        
@@ -231,6 +250,9 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 			        , CASE WHEN scr.appearance_stat = 1 THEN scr.tackles_stat ELSE NULL END AS tackles
 			        , CASE WHEN scr.appearance_stat = 1 THEN scr.saves_stat ELSE NULL END AS saves
 					    , CASE WHEN scr.appearance_stat = 1 THEN scr.pen_saved_stat ELSE NULL END AS pen_saved
+					    , CASE WHEN scr.appearance_stat = 1 THEN scr.error_lead_to_goal_stat ELSE NULL END AS patzer
+			        , CASE WHEN scr.appearance_stat = 1 THEN scr.pen_committed_stat ELSE NULL END AS elfmeter_verursacht
+					    , CASE WHEN scr.appearance_stat = 1 THEN coalesce(scr.redyellowcards_stat) + coalesce(scr.redcards_stat) > 0 THEN 1 ELSE NULL END AS platzverweise
 
 					FROM `sm_rounds` rds
 
@@ -255,17 +277,20 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 				echo "<th class='' rowspan='2' colspan='1'>Fantasy-Punkte</th>";
 				echo "<th class='' rowspan='2' colspan='1'>Einsatz</th>";
 				echo "<th class='' rowspan='1' colspan='2'>Torbeteiligungen</th>";
-				echo "<th class='' rowspan='1' colspan='5'>Offensiv-Aktionen</th>";
+				echo "<th class='' rowspan='1' colspan='6'>Offensiv-Aktionen</th>";
 				echo "<th class='' rowspan='1' colspan='5'>Defensiv-Aktionen</th>";
 				echo "<th class='' rowspan='1' colspan='2'>Torwart-Aktionen</th>";
+				echo "<th class='' rowspan='1' colspan='3'>Fehler</th>";
 			echo "</tr>";
-				
+			
 			echo "<tr class='second_th'>";
+
 				echo "<th class=''>Tore</th>";
 				echo "<th class=''>Vorlagen</th>";
 
 				echo "<th class=''>Schüsse</th>";
 				echo "<th class=''>Key-Pässe</th>";
+				echo "<th class=''>Großchance kreiert</th>";			
 				echo "<th class=''>Pässe</th>";
 				echo "<th class=''>Flanken</th>";
 				echo "<th class=''>Dribblings</th>";
@@ -277,7 +302,12 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 				echo "<th class=''>Abgefangen</th>";
 
 				echo "<th class=''>Gehalten</th>";
-				echo "<th class=''>Elfmeter</th>";
+				echo "<th class=''>11er</th>";
+
+				echo "<th class=''>Patzer</th>";
+				echo "<th class=''>11er verursacht</th>";
+				echo "<th class=''>Platzverweis</th>";
+
 			echo "</tr>";
 
 			while($row = mysqli_fetch_array($data_2019)) {
@@ -294,6 +324,7 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 
 					echo "<td>".$row['shots']."</td>";
 					echo "<td>".$row['passes_key']."</td>";
+					echo "<td>".$row['big_chances']."</td>";
 					echo "<td>".$row['passes']."</td>";
 					echo "<td>".$row['crosses_stat']."</td>";
 					echo "<td>".$row['dribbles']."</td>";
@@ -306,6 +337,10 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 					
 					echo "<td>".$row['saves']."</td>";
 					echo "<td>".$row['pen_saved']."</td>";
+
+					echo "<td>".$row['patzer']."</td>";
+					echo "<td>".$row['elfmeter_verursacht']."</td>";
+					echo "<td>".$row['platzverweise']."</td>";
 				echo "</tr>";
 			}
 		echo "</table>";
