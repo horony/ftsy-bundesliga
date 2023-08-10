@@ -76,8 +76,8 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
 				echo "<div class=right_col>";
 					echo "<div class='meta_stat_row'><div class='meta_stat'>Herkunft</div><div class='meta_value'>".mb_convert_encoding($player['birthplace'], 'UTF-8').", ".mb_convert_encoding($player['birthcountry'], 'UTF-8')."</div></div>";
 					echo "<div class='meta_stat_row'><div class='meta_stat'>Alter</div><div class='meta_value'>".$player['age']."</div></div>";
-					echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']."</div></div>";
-					echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']."</div></div>";
+					echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']." cm</div></div>";
+					echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']." kg</div></div>";
 				echo "</div>";
 
 			echo "</div>";
@@ -87,7 +87,7 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
 		echo "<div id='spielerprofil_fantasy'>";
 
 			echo "<div id='spielerprofil_fantasy_head'>";
-				echo "BuLi 20/21";
+				echo "BuLi 22/23";
 			echo "</div>";
 
 			echo "<div id='spielerprofil_fantasy_score'>";
@@ -290,8 +290,8 @@ echo "</div>";
 
 // Display match data from past seasons
 
-$season_ids_for_stats = array(18444, 17361, 16264);
-$season_names_for_stats = array('2021/2022','2020/2021','2019/2020');
+$season_ids_for_stats = array(19744, 18444);
+$season_names_for_stats = array('2022/2023','2021/2022');
 $season_counter = 0;
 $season_counter_max = count($season_ids_for_stats)-1;
 
@@ -309,16 +309,16 @@ echo "<div id='data_2019'>";
 						, sum(scr.ftsy_score) as ftsy_score_sum
 						, round(avg(case when scr.appearance_stat = 1 then scr.ftsy_score else null end),1) as ftsy_score_avg
 						, sum(case when scr.appearance_stat = 1 then 1 else 0 end) as appearances
-						, sum(scr.goals_made_stat + scr.penalties_made_stat) as goals
-						, sum(scr.assists_made_stat) as assists
+						, sum(scr.goals_total_stat) as goals
+						, sum(scr.assists_stat) as assists
 						, sum(scr.shots_total_stat) as shots
-						, sum(scr.passes_key_stat) as passes_key
+						, sum(scr.key_passes_stat) as passes_key
 						, sum(scr.passes_complete_stat) as passes
 						, round((sum(scr.passes_complete_stat)/sum(scr.passes_total_stat))*100,0) as passes_perc
 						, sum(scr.crosses_complete_stat) as crosses
 						, round((sum(scr.crosses_complete_stat)/sum(scr.crosses_total_stat))*100,0) as crosses_perc
-						, sum(scr.dribble_success_stat) as dribbles
-						, round((sum(scr.dribble_success_stat)/sum(scr.dribble_attempts_stat))*100,0) as dribbles_perc
+						, sum(scr.dribbles_success_stat) as dribbles
+						, round((sum(scr.dribbles_success_stat)/sum(scr.dribble_attempts_stat))*100,0) as dribbles_perc
 						, sum(scr.duels_won_stat) as duels
 						, round((sum(scr.duels_won_stat)/sum(scr.duels_won_stat+scr.duels_lost_stat))*100,0) as duels_perc
 						, sum(scr.blocks_stat) as blocks
@@ -419,13 +419,13 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
 							, concat(concat(fix.localteam_score, ':'), fix.visitorteam_score) as ft_score
 							, case when scr.appearance_stat = 1 then scr.ftsy_score else null end as ftsy_score
 							, case when scr.appearance_stat = 1 then concat(CONVERT(scr.minutes_played_stat,CHAR), ' Min.') else null end as minutes_played
-							, case when scr.appearance_stat = 1 then  scr.goals_made_stat + scr.penalties_made_stat else null end as goals
-							, case when scr.appearance_stat = 1 then scr.assists_made_stat else null end as assists
+							, case when scr.appearance_stat = 1 then scr.goals_total_stat else null end as goals
+							, case when scr.appearance_stat = 1 then scr.assists_stat else null end as assists
 							, case when scr.appearance_stat = 1 then scr.shots_total_stat else null end as shots
-							, case when scr.appearance_stat = 1 then scr.passes_key_stat else null end as passes_key
+							, case when scr.appearance_stat = 1 then scr.key_passes_stat else null end as passes_key
 							, case when scr.appearance_stat = 1 then concat(concat(concat(scr.passes_complete_stat, ' ('), scr.passes_total_stat),')') else null end as passes
 							, case when scr.appearance_stat = 1 then concat(concat(concat(scr.crosses_complete_stat, ' ('), scr.crosses_total_stat),')') else null end as crosses_stat
-							, case when scr.appearance_stat = 1 then concat(concat(concat(scr.dribble_success_stat, ' ('), scr.dribble_attempts_stat),')') else null end as dribbles
+							, case when scr.appearance_stat = 1 then concat(concat(concat(scr.dribbles_success_stat, ' ('), scr.dribble_attempts_stat),')') else null end as dribbles
 							, case when scr.appearance_stat = 1 then concat(concat(concat(scr.duels_won_stat, ' ('), scr.duels_total_stat),')') else null end as duels
 							, case when scr.appearance_stat = 1 then scr.blocks_stat else null end as blocks
 							, case when scr.appearance_stat = 1 then scr.clearances_stat else null end as clearances
