@@ -4,7 +4,6 @@ if(typeof(EventSource) !== "undefined") {
 
 	pick_event.onmessage = function(event) {
 		var jdata_picked_players = JSON.parse(event.data);
-		//console.log(jdata_picked_players);	  	
 
 		if (jdata_picked_players[0] == 'running'){
 
