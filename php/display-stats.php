@@ -504,7 +504,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 
 } elseif ($stat_category == 'TOP-PERFORMANCES') {
 
-	$stats_to_iterate=array('ftsy_score', 'goals_made_stat+penalties_made_stat','assists_made_stat', 'goals_made_stat+penalties_made_stat+assists_made_stat', 'shots_total_stat', 'passes_key_stat', 'passes_complete_stat', 'crosses_total_stat', 'crosses_complete_stat', 'duels_total_stat', 'duels_won_stat', 'dribble_success_stat', 'blocks_stat', 'clearances_stat','interceptions_stat','tackles_stat','saves_stat', 'passes_incomplete_stat', 'duels_lost_stat', 'dispossessed_stat', 'dribbled_past_stat');
+	$stats_to_iterate=array('ftsy_score', 'goals_total_stat','assists_stat', 'goals_total_stat+assists_stat', 'shots_total_stat', 'key_passes_stat', 'passes_complete_stat', 'crosses_total_stat', 'crosses_complete_stat', 'duels_total_stat', 'duels_won_stat', 'dribbles_success_stat', 'blocks_stat', 'clearances_stat','interceptions_stat','tackles_stat','saves_stat', 'passes_incomplete_stat', 'duels_lost_stat', 'dispossessed_stat', 'dribbled_past_stat');
 
 	$headline_array=array('Fantasy-Punkte in einem Spiel','Tore in einem Spiel','Assists in einem Spiel', 'Scorer-Punkte in einem Spiel', 'Torschüsse in einem Spiel', 'Schlüsselpässe in einem Spiel', 'Angekommene Pässe in einem Spiel', 'Flankenversuche in einem Spiel', 'Angekommene Flanken in einem Spiel', 'Duelle in einem Spiel', 'Gewonnene Duelle in einem Spiel', 'Erfolgreiche Dribblings in einem Spiel', 'Geblockte Schüsse in einem Spiel', 'Geklärte Bälle in einem Spiel', 'Abgefangene Bälle in einem Spiel', 'Tacklings in einem Spiel','Gehaltene Schüsse in einem Spiel', 'Fehlpässe in einem Spiel','Verlorene Duelle in einem Spiel', 'Ballverluste in einem Spiel', 'Ausgedribbelt worden in einem Spiel');
 
