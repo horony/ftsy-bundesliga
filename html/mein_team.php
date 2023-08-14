@@ -14,7 +14,7 @@
 	<!-- Custom scripts -->
 	<script>
 		$clicked_spieltag = 'Aktueller Spieltag';
-		window.active_view = 'Table';
+		window.active_view = 'Graph';
 	</script>
 
 	<script type="text/javascript" src="../js/ftsy-team-change-round.js"></script> 
@@ -57,7 +57,7 @@
 									, usr.akt_aufstellung
 									, usr.waiver_position
 									, tab.rang
-									, tab.team_name
+									, usr_2.teamname as team_name
 									, tab.punkte
 									, tab.avg_for
 									, tab.serie
@@ -71,6 +71,10 @@
 									, sch.match_type as match_type
 
 						FROM 	xa7580_db1.users_gamedata usr
+
+						INNER JOIN xa7580_db1.users usr_2
+							ON  usr_2.id = usr.user_id
+									AND usr_2.active_account_flg = 1
 
 						LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab 
 							ON 	usr.user_id = tab.player_id
