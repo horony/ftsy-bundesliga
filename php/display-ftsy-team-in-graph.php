@@ -36,6 +36,7 @@ if ($clicked_spieltag == 'Aktueller Spieltag') {
 	/* SQL CURRENT ROUND */
 	/*********************/
 
+
 $kader = mysqli_query($con,"		
 	SELECT 	base.id #
 					, base.display_name #
@@ -106,12 +107,12 @@ $kader = mysqli_query($con,"
 
 	LEFT JOIN sm_fixtures fix 
 		ON 	( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id )
-			AND fix.round_name = '".$akt_spieltag."'
-			AND fix.season_id = '".$akt_season_id."'
+			AND fix.round_name = (SELECT round_name FROM parameter)
+			AND fix.season_id = (SELECT season_id FROM parameter)
 	        
 	LEFT JOIN ftsy_scoring_akt_v ftsy
 		ON	ftsy.player_id = base.id
-	    	AND ftsy.round_name = '".$akt_spieltag."'
+	    	AND fix.fixture_id = ftsy.fixture_id
 
 	LEFT JOIN sm_teams team_home
 		ON fix.localteam_id = team_home.id
@@ -123,7 +124,7 @@ $kader = mysqli_query($con,"
 		ON snap.id = base.id
 
 	LEFT JOIN ftsy_points_allowed allowed
-		ON 	allowed.opp_team_id = case when base.current_team_id = fix.localteam_id then team_away.id else team_home.id end
+		ON 	allowed.opp_team_id = ( case when base.current_team_id = fix.localteam_id then team_away.id else team_home.id end )
 			AND allowed.position_short = base.position_short
 
 	LEFT JOIN ftsy_scoring_projection_v proj
@@ -131,6 +132,7 @@ $kader = mysqli_query($con,"
 
 	WHERE 	".$ftsy_owner_column." = '".$user_id."'
 ");
+
 
 } elseif ($clicked_spieltag == 'Saison') {
 
@@ -142,6 +144,7 @@ $kader = mysqli_query($con,"
 	/* SQL CLICKED ROUND */
 	/*********************/
 
+	
 	$kader = mysqli_query($con,"	
 		SELECT 	hst.player_id as id
 						, hst.display_name #
@@ -165,15 +168,15 @@ $kader = mysqli_query($con,"
 						AND hst.season_id = '".$akt_season_id."'
 						AND hst.round_name = '".$clicked_spieltag."'
 		");
-
+	
 }
 
 /**********************/
 /* MODAL PLAYER SUB   */
 /**********************/
 
+
 echo "<div id='myModal' class='modal'>";
-	/* Modal Inhalt */
   echo 	"<div class='modal_wrapper'>";
 		echo 	"<div class='modal_header'>
 			<div class='modal_headline'>
@@ -190,6 +193,7 @@ echo "<div id='myModal' class='modal'>";
 		echo "</div>"; 
 	echo 	"</div>";
 echo "</div>"; 
+
 
 /***************************/
 /* DISPLAY SQUAD FORMATION */
