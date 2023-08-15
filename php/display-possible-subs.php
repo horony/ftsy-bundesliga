@@ -19,6 +19,7 @@ $move_to_bench_player_status = mysqli_query($con, "SELECT ".$ftsy_status_column.
 $akt_aufstellung = mysqli_query($con, "SELECT akt_aufstellung from xa7580_db1.users_gamedata where username = '".$user."' ") -> fetch_object() -> akt_aufstellung;	
 $cnt_aufstellung = mysqli_query($con, "SELECT count(*) as cnt from xa7580_db1.ftsy_player_ownership where ".$ftsy_status_column." != 'NONE' and ".$ftsy_owner_column." = '".$user_id."' ") -> fetch_object() -> cnt;	
 
+
 if ($cnt_aufstellung < 11) {
 
 	/************************/
@@ -50,7 +51,7 @@ if ($cnt_aufstellung < 11) {
 						AND ".$ftsy_owner_column." = '".$user_id."' 
 		") -> fetch_object() -> cnt;
 
-	$akt_aufstellung_haben_mf = mysqli_query($con, ""
+	$akt_aufstellung_haben_mf = mysqli_query($con, "
 		SELECT COUNT(*) as cnt 
 		FROM xa7580_db1.ftsy_player_ownership own 
 		INNER JOIN xa7580_db1.sm_playerbase base
@@ -60,7 +61,7 @@ if ($cnt_aufstellung < 11) {
 						AND ".$ftsy_owner_column." = '".$user_id."' 
 		") -> fetch_object() -> cnt;
 
-	$akt_aufstellung_haben_st = mysqli_query($con, ""
+	$akt_aufstellung_haben_st = mysqli_query($con, "
 		SELECT COUNT(*) as cnt 
 		FROM xa7580_db1.ftsy_player_ownership own 
 		INNER JOIN xa7580_db1.sm_playerbase base
@@ -69,6 +70,7 @@ if ($cnt_aufstellung < 11) {
 						AND ".$ftsy_status_column." != 'NONE' 
 						AND ".$ftsy_owner_column." = '".$user_id."' 
 		") -> fetch_object() -> cnt;
+
 
 	if ($move_to_bench_player_status == 'NONE') {
 
@@ -146,6 +148,7 @@ if ($cnt_aufstellung < 11) {
 			$tore = $row['tore_raw']+$row['elfmeter_raw'];
 
 			echo "<tr class=''>";
+
 			
 			echo "<td><div class='player_in player_in_click' onclick='executeChangePlayer(this)' data-id='" . $row['id'] . "'>&#10557;</div></td>";
 
@@ -159,7 +162,7 @@ if ($cnt_aufstellung < 11) {
 							echo mb_convert_encoding($row['display_name'], 'UTF-8');
 						echo "</div>";
 						echo "<div class='player_card_detail'>";
-							echo  $row['position_short'] . " - " . utf8_encode($row['verein_short']) . "<img title='" . utf8_encode($row['fitness']) . " " . utf8_encode($row['verletzung']) . "' height='13px' width='auto' src='/images/fitness/" . $row['fitness_img'] . "'>";			
+							echo  $row['position_short'] . " - " . utf8_encode($row['verein_short']) . "<img title='" . utf8_encode($row['fitness']) . " " . utf8_encode($row['verletzung']) . "' height='13px' width='auto' src='../img/icons/" . $row['fitness_img'] . "'>";			
 						echo "</div>";									
 					echo "</div>";			
 				echo "</div>";
@@ -173,12 +176,14 @@ if ($cnt_aufstellung < 11) {
 
 	}
 
+
 } else {
 
 	/**********************/
 	/* COMPLETE FORMATION */
 	/**********************/
 
+	
 	if ($move_to_bench_player_status == 'NONE'){
 
 		$kader = mysqli_query($con,"	
@@ -369,7 +374,7 @@ if ($cnt_aufstellung < 11) {
 							echo mb_convert_encoding($row['display_name'], 'UTF-8');
 						echo "</div>";
 						echo "<div class='player_card_detail'>";
-							echo  $row['position_short'] . " - " . mb_convert_encoding($row['team_code'], 'UTF-8') . "<img title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='13px' width='auto' src='/images/fitness/" . $row['fitness_img'] . "'>";			
+							echo  $row['position_short'] . " - " . mb_convert_encoding($row['team_code'], 'UTF-8') . "<img title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='13px' width='auto' src='../img/icons/" . $row['fitness_img'] . "'>";			
 						echo "</div>";									
 					echo "</div>";			
 				echo "</div>";
@@ -474,7 +479,7 @@ if ($cnt_aufstellung < 11) {
 						echo mb_convert_encoding($row['display_name'], 'UTF-8');
 					echo "</div>";
 					echo "<div class='player_card_detail'>";
-						echo  $row['position_short'] . " - " . mb_convert_encoding($row['team_code'], 'UTF-8') . "<img title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='13px' width='auto' src='/images/fitness/" . $row['fitness_img'] . "'>";			
+						echo  $row['position_short'] . " - " . mb_convert_encoding($row['team_code'], 'UTF-8') . "<img title='" . mb_convert_encoding($row['fitness'], 'UTF-8') . " " . mb_convert_encoding($row['injury_reason'], 'UTF-8') . "' height='13px' width='auto' src='../img/icons/" . $row['fitness_img'] . "'>";			
 					echo "</div>";									
 				echo "</div>";			
 			echo "</div>";
@@ -487,6 +492,9 @@ if ($cnt_aufstellung < 11) {
 	$previousCategory = $thisCategory;
 	echo "</table>";
 	echo "</div>";
+
 }
+
+
 
 ?>
