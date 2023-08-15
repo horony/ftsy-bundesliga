@@ -64,7 +64,7 @@ function showGraphic(str) {
     }
   };
   
-  xhttp.open("GET", "../php/display-ftsy-team-in-graph.php?q="+str+"&show_team="+show_team+"&tag="+$clicked_spieltag, true);
+  xhttp.open("GET", "../php/display-ftsy-team-in-graph.php?show_team="+show_team+"&tag="+$clicked_spieltag, true);
   xhttp.withCredentials = true;
   xhttp.send(null);
   window.active_view = 'Graph';
