@@ -107,7 +107,7 @@ $kader = mysqli_query($con,"
 
 	LEFT JOIN sm_fixtures fix 
 		ON 	( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id )
-			AND fix.round_name = (SELECT round_name FROM parameter)
+			AND fix.round_name = (SELECT spieltag FROM parameter)
 			AND fix.season_id = (SELECT season_id FROM parameter)
 	        
 	LEFT JOIN ftsy_scoring_akt_v ftsy
