@@ -62,7 +62,7 @@
 									, tab.avg_for
 									, tab.serie
 									, concat(tab.Siege, '-', tab.Unentschieden, '-', tab.Niederlagen) as bilanz
-									, case when sch.ftsy_home_id = tab.player_id then sch.ftsy_away_name else sch.ftsy_home_name end as gegner_team
+									, case when sch.ftsy_home_id = usr.user_id then sch.ftsy_away_name else sch.ftsy_home_name end as gegner_team
 									, opp.rang as gegner_rang
 									, opp.serie as gegner_serie
 									, opp.avg_for as gegner_avg_for
@@ -83,8 +83,8 @@
 
 						LEFT JOIN xa7580_db1.ftsy_schedule sch
 							ON 	sch.buli_round_name = '".$akt_spieltag."'
-									and ( sch.ftsy_home_id = tab.player_id or sch.ftsy_away_id = tab.player_id )
-									and sch.season_id = (SELECT season_id FROM xa7580_db1.sm_seasons WHERE is_current_season = 1)
+									and ( sch.ftsy_home_id = usr.user_id or sch.ftsy_away_id = usr.user_id )
+									and sch.season_id = (SELECT season_id FROM parameter)
 
 						LEFT JOIN xa7580_db1.ftsy_tabelle_2020 opp 
 							ON ( case when sch.ftsy_home_id = tab.player_id then sch.ftsy_away_id else sch.ftsy_home_id end ) = opp.player_id
