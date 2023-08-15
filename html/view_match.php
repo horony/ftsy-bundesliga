@@ -293,31 +293,34 @@ require("../php/auth.php");
 											     		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
 											     		else null
 											     		end as appearance_stat
-											, ftsy.goals_total_stat
+											
+											, ftsy.goals_minus_pen_stat
+
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.pen_scored_stat, ' ('), ftsy.pen_scored_stat + ftsy.pen_missed_stat), ')')
 											     		else null 
-											     		end as penalties_stat     
+											     		end as penalties_stat_x   
 											, ftsy.pen_scored_stat + ftsy.pen_missed_stat as penalties_total
 											, ftsy.assists_stat
 											, ftsy.shots_total_stat
+											, ftsy.hit_woodwork_stat
 											, ftsy.passes_complete_stat + ftsy.passes_incomplete_stat as passes_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.passes_complete_stat,' ('),ftsy.passes_complete_stat+ftsy.passes_incomplete_stat),')') 
 															else null 
-															end as passes_stat
+															end as passes_stat_x
 											, ftsy.crosses_complete_stat + ftsy.crosses_incomplete_stat as crosses_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.crosses_complete_stat,' ('),ftsy.crosses_complete_stat+ftsy.crosses_incomplete_stat),')') 
 															else null 
-															end as crosses_stat				
+															end as crosses_stat_x		
 											, ftsy.key_passes_stat
 											, ftsy.big_chances_created_stat
 											, ftsy.duels_won_stat + ftsy.duels_lost_stat as duels_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.duels_won_stat,' ('),ftsy.duels_won_stat+ftsy.duels_lost_stat),')') 
 															else null 
-													    end as duels_stat
+													    end as duels_stat_x
 											, ftsy.dribbles_success_stat + ftsy.dribbles_failed_stat as dribble_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.dribbles_success_stat,' ('),ftsy.dribbles_success_stat+ftsy.dribbles_failed_stat),')') 
 															else null 
-													    end as dribble_stat
+													    end as dribble_stat_x
 											, ftsy.tackles_stat
 											, ftsy.interceptions_stat
 											, ftsy.blocks_stat
@@ -334,10 +337,19 @@ require("../php/auth.php");
 											, ftsy.dribbled_past_stat
 											, ftsy.pen_won_stat
 											, ftsy.big_chances_missed_stat
+											, case 	when ftsy.appearance_stat = 1 and ftsy.big_chances_missed_ftsy < 0 then ftsy.big_chances_missed_stat 
+															else null 
+															end as big_chances_missed_stat_x
 											, ftsy.error_lead_to_goal_stat
 											, ftsy.punches_stat
 											, ftsy.goals_conceded_stat
+											, case 	when ftsy.appearance_stat = 1 and (ftsy.goals_conceded_ftsy < 0 or ftsy.goalkeeper_goals_conceded_ftsy < 0) then ftsy.goals_conceded_stat 
+															else null 
+															end as goals_conceded_stat_x
 											, ftsy.clean_sheet_stat
+											, case 	when ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy < 0 then ftsy.clean_sheet_stat 
+															else null 
+															end as clean_sheet_stat_x
 							        , proj.ftsy_score_projected 
 
 							FROM xa7580_db1.sm_playerbase_basic_v base 
@@ -442,32 +454,37 @@ require("../php/auth.php");
 										, case 	when ftsy.minutes_played_stat is null and ftsy.appearance_stat = 1 then '1 Min.' 
 										     		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
 										     		else null
-										     		end as appearance_stat
-										, ftsy.goals_total_stat
+										     		end as appearance_stat_x
+										, ftsy.goals_minus_pen_stat
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.pen_scored_stat, ' ('), ftsy.pen_scored_stat + ftsy.pen_missed_stat), ')')
 										     		else null 
-										     		end as penalties_stat     
+										     		end as penalties_stat_x  
 										, ftsy.pen_scored_stat + ftsy.pen_missed_stat as penalties_total
 										, ftsy.assists_stat
+
 										, ftsy.shots_total_stat
+										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.shots_on_goal_stat,' ('),ftsy.shots_total_stat),')') 
+														else null 
+														end as shots_stat_x
+										, ftsy.hit_woodwork_stat
 										, ftsy.passes_complete_stat + ftsy.passes_incomplete_stat as passes_total
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.passes_complete_stat,' ('),ftsy.passes_complete_stat+ftsy.passes_incomplete_stat),')') 
 														else null 
-														end as passes_stat
+														end as passes_stat_x
 										, ftsy.crosses_complete_stat + ftsy.crosses_incomplete_stat as crosses_total
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.crosses_complete_stat,' ('),ftsy.crosses_complete_stat+ftsy.crosses_incomplete_stat),')') 
 														else null 
-														end as crosses_stat				
+														end as crosses_stat_x		
 										, ftsy.key_passes_stat
 										, ftsy.big_chances_created_stat
 										, ftsy.duels_won_stat + ftsy.duels_lost_stat as duels_total
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.duels_won_stat,' ('),ftsy.duels_won_stat+ftsy.duels_lost_stat),')') 
 														else null 
-												    end as duels_stat
+												    end as duels_stat_x
 										, ftsy.dribbles_success_stat + ftsy.dribbles_failed_stat as dribble_total
 										, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.dribbles_success_stat,' ('),ftsy.dribbles_success_stat+ftsy.dribbles_failed_stat),')') 
 														else null 
-												    end as dribble_stat
+												    end as dribble_stat_x
 										, ftsy.tackles_stat
 										, ftsy.interceptions_stat
 										, ftsy.blocks_stat
@@ -484,10 +501,19 @@ require("../php/auth.php");
 										, ftsy.dribbled_past_stat
 										, ftsy.pen_won_stat
 										, ftsy.big_chances_missed_stat
+										, case 	when ftsy.appearance_stat = 1 and ftsy.big_chances_missed_ftsy < 0 then ftsy.big_chances_missed_stat 
+														else null 
+														end as big_chances_missed_stat_x
 										, ftsy.error_lead_to_goal_stat
 										, ftsy.punches_stat
 										, ftsy.goals_conceded_stat
+										, case 	when ftsy.appearance_stat = 1 and (ftsy.goals_conceded_ftsy < 0 or ftsy.goalkeeper_goals_conceded_ftsy < 0) then ftsy.goals_conceded_stat 
+														else null 
+														end as goals_conceded_stat_x
 										, ftsy.clean_sheet_stat
+										, case 	when ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy < 0 then ftsy.clean_sheet_stat 
+														else null 
+														end as clean_sheet_stat_x
 
 						FROM xa7580_db1.sm_playerbase base 
 
@@ -555,33 +581,59 @@ require("../php/auth.php");
 						// Detailed stats
 
 						echo "<tr class= 'player_detail'><td colspan='4'>";
-							if ($row['appearance_stat'] != NULL) {
-									echo( ($row['appearance_stat'] != NULL)? 'Gespielte Minuten: ' . $row['appearance_stat'] . ' | ' : NULL);	
-									echo( ($row['goals_made_stat'] != NULL AND $row['goals_made_stat'] != 0)? 'Tore: ' . $row['goals_made_stat'] . ' | ' : NULL);	
-									echo( ($row['penalties_total'] != NULL AND $row['penalties_total'] != 0)? '11er: ' . $row['penalties_stat'] . ' | ' : NULL);
-									echo( ($row['assists_made_stat'] != NULL AND $row['assists_made_stat'] != 0)? 'Vorlagen: ' . $row['assists_made_stat'] . ' | ' : NULL);
+							if ($row['appearance_stat_x'] != NULL) {
+
+									/* Appearance */
+									echo( ($row['appearance_stat_x'] != NULL)? 'Gespielte Minuten: ' . $row['appearance_stat_x'] . ' | ' : NULL);	
+									
+									/* Scoring */
+									echo( ($row['goals_minus_pen_stat'] != NULL AND $row['goals_minus_pen_stat'] != 0)? 'Tore: ' . $row['goals_minus_pen_stat'] . ' | ' : NULL);	
+									echo( ($row['penalties_total'] != NULL AND $row['penalties_total'] != 0)? '11er: ' . $row['penalties_stat_x'] . ' | ' : NULL);
+									echo( ($row['assists_stat'] != NULL AND $row['assists_stat'] != 0)? 'Vorlagen: ' . $row['assists_stat'] . ' | ' : NULL);
 									echo( ($row['pen_won_stat'] != NULL AND $row['pen_won_stat'] != 0)? '11er herausgeholt: ' . $row['pen_won_stat'] . ' | ' : NULL);	
-									echo( ($row['shots_total_stat'] != NULL AND $row['shots_total_stat'] != 0)? 'Torschüsse: ' . $row['shots_total_stat'] . ' | ' : NULL);
-									echo( ($row['passes_key_stat'] != NULL AND $row['passes_key_stat'] != 0)? 'Key-Pässe: ' . $row['passes_key_stat'] . ' | ' : NULL);	
-									echo( ($row['passes_total'] != NULL AND $row['passes_total'] != 0)? 'Pässe: ' . $row['passes_stat'] . ' | ' : NULL);	
-									echo( ($row['crosses_total'] != NULL AND $row['crosses_total'] != 0)? 'Flanken: ' . $row['crosses_stat'] . ' | ' : NULL);	
-									echo( ($row['duels_total'] != NULL AND $row['duels_total'] != 0)? 'Duelle: ' . $row['duels_stat'] . ' | ' : NULL);	
-									echo( ($row['dribble_total'] != NULL AND $row['dribble_total'] != 0)? 'Dribblings: ' . $row['dribble_stat'] . ' | ' : NULL);	
+
+									/* Gegentore */
+									echo( ($row['goals_conceded_stat_x'] != NULL AND $row['goals_conceded_stat_x'] != 0)? 'Gegentore: ' . $row['goals_conceded_stat_x'] . ' | ' : NULL);	
+									echo( ($row['clean_sheet_stat_x'] != NULL AND $row['clean_sheet_stat_x'] != 0)? 'Weiße Weste: ' . $row['clean_sheet_stat_x'] . ' | ' : NULL);	
+
+									/* Shots */
+									echo( ($row['shots_total_stat'] != NULL AND $row['shots_total_stat'] != 0)? 'Torschüsse: ' . $row['shots_stat_x'] . ' | ' : NULL);
+									echo( ($row['hit_woodwork_stat'] != NULL AND $row['hit_woodwork_stat'] != 0)? 'Pfosten: ' . $row['hit_woodwork_stat'] . ' | ' : NULL);
+									echo( ($row['big_chances_missed_stat_x'] != NULL AND $row['big_chances_missed_stat_x'] != 0)? 'Großchancen vergeben: ' . $row['big_chances_missed_stat_x'] . ' | ' : NULL);
+
+									/* Passing */
+									echo( ($row['big_chances_created_stat'] != NULL AND $row['big_chances_created_stat'] != 0)? 'Großchancen kreiert: ' . $row['big_chances_created_stat'] . ' | ' : NULL);
+									echo( ($row['key_passes_stat'] != NULL AND $row['key_passes_stat'] != 0)? 'Key-Pässe: ' . $row['key_passes_stat'] . ' | ' : NULL);	
+									echo( ($row['passes_total'] != NULL AND $row['passes_total'] != 0)? 'Pässe: ' . $row['passes_stat_x'] . ' | ' : NULL);	
+									echo( ($row['crosses_total'] != NULL AND $row['crosses_total'] != 0)? 'Flanken: ' . $row['crosses_stat_x'] . ' | ' : NULL);	
+
+									/* Duels */
+									echo( ($row['duels_total'] != NULL AND $row['duels_total'] != 0)? 'Duelle: ' . $row['duels_stat_x'] . ' | ' : NULL);	
+									echo( ($row['dribble_total'] != NULL AND $row['dribble_total'] != 0)? 'Dribblings: ' . $row['dribble_stat_x'] . ' | ' : NULL);	
 									echo( ($row['tackles_stat'] != NULL AND $row['tackles_stat'] != 0)? 'Tacklings: ' . $row['tackles_stat'] . ' | ' : NULL);	
+
+									/* Defensive stats */
 									echo( ($row['interceptions_stat'] != NULL AND $row['interceptions_stat'] != 0)? 'Abgefangene Bälle: ' . $row['interceptions_stat'] . ' | ' : NULL);
 									echo( ($row['blocks_stat'] != NULL AND $row['blocks_stat'] != 0)? 'Geblockte Schüsse: ' . $row['blocks_stat'] . ' | ' : NULL);	
 									echo( ($row['clearances_stat'] != NULL AND $row['clearances_stat'] != 0)? 'Befreiungsschläge: ' . $row['clearances_stat'] . ' | ' : NULL);	
+									echo( ($row['clearances_offline_stat'] != NULL AND $row['clearances_offline_stat'] != 0)? 'Befreiungsschläge: ' . $row['clearances_offline_stat'] . ' | ' : NULL);	
+									
+									/* Goalkeeping */
 									echo( ($row['outside_box_saves_stat'] != NULL AND $row['outside_box_saves_stat'] != 0)? 'Paraden Fernschüsse: ' . $row['outside_box_saves_stat'] . ' | ' : NULL);	
 									echo( ($row['inside_box_saves_stat'] != NULL AND $row['inside_box_saves_stat'] != 0)? 'Paraden innerhalb 16er: ' . $row['inside_box_saves_stat'] . ' | ' : NULL);	
 									echo( ($row['pen_saved_stat'] != NULL AND $row['pen_saved_stat'] != 0)? '11er gehalten: ' . $row['pen_saved_stat'] . ' | ' : NULL);	
-								
+									echo( ($row['punches_stat'] != NULL AND $row['punches_stat'] != 0)? 'Bälle gefaustet: ' . $row['punches_stat'] . ' | ' : NULL);	
+									
+									/* Errors */
 									echo( ($row['pen_committed_stat'] != NULL AND $row['pen_committed_stat'] != 0)? '11er verursacht: ' . $row['pen_committed_stat'] . ' | ' : NULL);	
 									echo( ($row['owngoals_stat'] != NULL AND $row['owngoals_stat'] != 0)? 'Eigentore: ' . $row['owngoals_stat'] . ' | ' : NULL);	
 									echo( ($row['dispossessed_stat'] != NULL AND $row['dispossessed_stat'] != 0)? 'Ballverluste: ' . $row['dispossessed_stat'] . ' | ' : NULL);	
 									echo( ($row['dribbled_past_stat'] != NULL AND $row['dribbled_past_stat'] != 0)? 'Ausgedribbelt: ' . $row['dribbled_past_stat'] . ' | ' : NULL);	
-										
+									echo( ($row['error_lead_to_goal_stat'] != NULL AND $row['error_lead_to_goal_stat'] != 0)? 'Patzer: ' . $row['error_lead_to_goal_stat'] . ' | ' : NULL);	
+									
+									/* Cards */
 									echo( ($row['redcards_stat'] != NULL AND $row['redcards_stat'] != 0)? 'Rot: ' . $row['redcards_stat'] . ' | ' : NULL);	
-									echo( ($row['yellowredcards_stat'] != NULL AND $row['yellowredcards_stat'] != 0)? 'Gelb-Rot: ' . $row['yellowredcards_stat'] . ' | ' : NULL);	
+									echo( ($row['redyellowcards_stat'] != NULL AND $row['redyellowcards_stat'] != 0)? 'Gelb-Rot: ' . $row['redyellowcards_stat'] . ' | ' : NULL);	
 									
 							} else {
 										echo 'Kein Einsatz.';
@@ -640,30 +692,60 @@ require("../php/auth.php");
 
 						echo "<tr class= 'player_detail'><td colspan='4'>";
 							if ($row['appearance_stat'] != NULL) {
-								echo( ($row['appearance_stat'] != NULL)? 'Gespielte Minuten: ' . $row['appearance_stat'] . ' | ' : NULL);	
-								echo( ($row['goals_made_stat'] != NULL AND $row['goals_made_stat'] != 0)? 'Tore: ' . $row['goals_made_stat'] . ' | ' : NULL);	
-								echo( ($row['penalties_total'] != NULL AND $row['penalties_total'] != 0)? '11er: ' . $row['penalties_stat'] . ' | ' : NULL);
-								echo( ($row['assists_made_stat'] != NULL AND $row['assists_made_stat'] != 0)? 'Vorlagen: ' . $row['assists_made_stat'] . ' | ' : NULL);
+
+								/* Appearance */
+								echo( ($row['appearance_stat_x'] != NULL)? 'Gespielte Minuten: ' . $row['appearance_stat_x'] . ' | ' : NULL);	
+								
+								/* Scoring */
+								echo( ($row['goals_minus_pen_stat'] != NULL AND $row['goals_minus_pen_stat'] != 0)? 'Tore: ' . $row['goals_minus_pen_stat'] . ' | ' : NULL);	
+								echo( ($row['penalties_total'] != NULL AND $row['penalties_total'] != 0)? '11er: ' . $row['penalties_stat_x'] . ' | ' : NULL);
+								echo( ($row['assists_stat'] != NULL AND $row['assists_stat'] != 0)? 'Vorlagen: ' . $row['assists_stat'] . ' | ' : NULL);
 								echo( ($row['pen_won_stat'] != NULL AND $row['pen_won_stat'] != 0)? '11er herausgeholt: ' . $row['pen_won_stat'] . ' | ' : NULL);	
-								echo( ($row['shots_total_stat'] != NULL AND $row['shots_total_stat'] != 0)? 'Torschüsse: ' . $row['shots_total_stat'] . ' | ' : NULL);
-								echo( ($row['passes_key_stat'] != NULL AND $row['passes_key_stat'] != 0)? 'Key-Pässe: ' . $row['passes_key_stat'] . ' | ' : NULL);	
-								echo( ($row['passes_total'] != NULL AND $row['passes_total'] != 0)? 'Pässe: ' . $row['passes_stat'] . ' | ' : NULL);	
-								echo( ($row['crosses_total'] != NULL AND $row['crosses_total'] != 0)? 'Flanken: ' . $row['crosses_stat'] . ' | ' : NULL);	
-								echo( ($row['duels_total'] != NULL AND $row['duels_total'] != 0)? 'Duelle: ' . $row['duels_stat'] . ' | ' : NULL);	
-								echo( ($row['dribble_total'] != NULL AND $row['dribble_total'] != 0)? 'Dribblings: ' . $row['dribble_stat'] . ' | ' : NULL);	
+
+								/* Gegentore */
+								echo( ($row['goals_conceded_stat_x'] != NULL AND $row['goals_conceded_stat_x'] != 0)? 'Gegentore: ' . $row['goals_conceded_stat_x'] . ' | ' : NULL);	
+								echo( ($row['clean_sheet_stat_x'] != NULL AND $row['clean_sheet_stat_x'] != 0)? 'Weiße Weste: ' . $row['clean_sheet_stat_x'] . ' | ' : NULL);	
+
+								/* Shots */
+								echo( ($row['shots_total_stat'] != NULL AND $row['shots_total_stat'] != 0)? 'Torschüsse: ' . $row['shots_stat_x'] . ' | ' : NULL);
+								echo( ($row['hit_woodwork_stat'] != NULL AND $row['hit_woodwork_stat'] != 0)? 'Pfosten: ' . $row['hit_woodwork_stat'] . ' | ' : NULL);
+								echo( ($row['big_chances_missed_stat_x'] != NULL AND $row['big_chances_missed_stat_x'] != 0)? 'Großchancen vergeben: ' . $row['big_chances_missed_stat_x'] . ' | ' : NULL);
+
+								/* Passing */
+								echo( ($row['big_chances_created_stat'] != NULL AND $row['big_chances_created_stat'] != 0)? 'Großchancen kreiert: ' . $row['big_chances_created_stat'] . ' | ' : NULL);
+								echo( ($row['key_passes_stat'] != NULL AND $row['key_passes_stat'] != 0)? 'Key-Pässe: ' . $row['key_passes_stat'] . ' | ' : NULL);	
+								echo( ($row['passes_total'] != NULL AND $row['passes_total'] != 0)? 'Pässe: ' . $row['passes_stat_x'] . ' | ' : NULL);	
+								echo( ($row['crosses_total'] != NULL AND $row['crosses_total'] != 0)? 'Flanken: ' . $row['crosses_stat_x'] . ' | ' : NULL);	
+
+								/* Duels */
+								echo( ($row['duels_total'] != NULL AND $row['duels_total'] != 0)? 'Duelle: ' . $row['duels_stat_x'] . ' | ' : NULL);	
+								echo( ($row['dribble_total'] != NULL AND $row['dribble_total'] != 0)? 'Dribblings: ' . $row['dribble_stat_x'] . ' | ' : NULL);	
 								echo( ($row['tackles_stat'] != NULL AND $row['tackles_stat'] != 0)? 'Tacklings: ' . $row['tackles_stat'] . ' | ' : NULL);	
-								echo( ($row['interceptions_stat'] != NULL AND $row['interceptions_stat'] != 0)? 'Abgefangene Bälle: ' . $row['interceptions_stat'] . ' | ' : NULL);	
+
+								/* Defensive stats */
+								echo( ($row['interceptions_stat'] != NULL AND $row['interceptions_stat'] != 0)? 'Abgefangene Bälle: ' . $row['interceptions_stat'] . ' | ' : NULL);
 								echo( ($row['blocks_stat'] != NULL AND $row['blocks_stat'] != 0)? 'Geblockte Schüsse: ' . $row['blocks_stat'] . ' | ' : NULL);	
 								echo( ($row['clearances_stat'] != NULL AND $row['clearances_stat'] != 0)? 'Befreiungsschläge: ' . $row['clearances_stat'] . ' | ' : NULL);	
+								echo( ($row['clearances_offline_stat'] != NULL AND $row['clearances_offline_stat'] != 0)? 'Befreiungsschläge: ' . $row['clearances_offline_stat'] . ' | ' : NULL);	
+								
+								/* Goalkeeping */
 								echo( ($row['outside_box_saves_stat'] != NULL AND $row['outside_box_saves_stat'] != 0)? 'Paraden Fernschüsse: ' . $row['outside_box_saves_stat'] . ' | ' : NULL);	
 								echo( ($row['inside_box_saves_stat'] != NULL AND $row['inside_box_saves_stat'] != 0)? 'Paraden innerhalb 16er: ' . $row['inside_box_saves_stat'] . ' | ' : NULL);	
 								echo( ($row['pen_saved_stat'] != NULL AND $row['pen_saved_stat'] != 0)? '11er gehalten: ' . $row['pen_saved_stat'] . ' | ' : NULL);	
+								echo( ($row['punches_stat'] != NULL AND $row['punches_stat'] != 0)? 'Bälle gefaustet: ' . $row['punches_stat'] . ' | ' : NULL);	
+								
+								/* Errors */
 								echo( ($row['pen_committed_stat'] != NULL AND $row['pen_committed_stat'] != 0)? '11er verursacht: ' . $row['pen_committed_stat'] . ' | ' : NULL);	
 								echo( ($row['owngoals_stat'] != NULL AND $row['owngoals_stat'] != 0)? 'Eigentore: ' . $row['owngoals_stat'] . ' | ' : NULL);	
 								echo( ($row['dispossessed_stat'] != NULL AND $row['dispossessed_stat'] != 0)? 'Ballverluste: ' . $row['dispossessed_stat'] . ' | ' : NULL);	
 								echo( ($row['dribbled_past_stat'] != NULL AND $row['dribbled_past_stat'] != 0)? 'Ausgedribbelt: ' . $row['dribbled_past_stat'] . ' | ' : NULL);	
+								echo( ($row['error_lead_to_goal_stat'] != NULL AND $row['error_lead_to_goal_stat'] != 0)? 'Patzer: ' . $row['error_lead_to_goal_stat'] . ' | ' : NULL);	
+									
+								/* Cards */
 								echo( ($row['redcards_stat'] != NULL AND $row['redcards_stat'] != 0)? 'Rot: ' . $row['redcards_stat'] . ' | ' : NULL);	
-								echo( ($row['yellowredcards_stat'] != NULL AND $row['yellowredcards_stat'] != 0)? 'Gelb-Rot: ' . $row['yellowredcards_stat'] . ' | ' : NULL);	
+								echo( ($row['redyellowcards_stat'] != NULL AND $row['redyellowcards_stat'] != 0)? 'Gelb-Rot: ' . $row['redyellowcards_stat'] . ' | ' : NULL);	
+
+								/* Projection */
 								echo( 'Projection: ' . $row['ftsy_score_projected'] . ' Punkte');	
 									
 							} else {
