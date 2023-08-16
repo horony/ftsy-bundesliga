@@ -79,6 +79,7 @@ if ($Aufzunehmender_Spieler_ID == 0 OR $Abzugebender_Spieler_ID == 0){
 				echo "Der Spieler den du abgeben willst ist für diesen Spieltag festgespielt!";
 
 			} else {
+
 				// Add player
 				mysqli_query($con ,"
 					UPDATE 	xa7580_db1.ftsy_player_ownership 
@@ -111,14 +112,15 @@ if ($Aufzunehmender_Spieler_ID == 0 OR $Abzugebender_Spieler_ID == 0){
 					DELETE 
 					FROM 	xa7580_db1.trade 
 					WHERE 	( rec_trade_id = '$Abzugebender_Spieler_ID' or ini_trade_id = '$Aufzunehmender_Spieler_ID' )
-							AND ( initiator = '".$user_id."' or recepient = '".$user_id."' )
+							AND ( initiator = '".$user_id."' or recipient = '".$user_id."' )
 					");
+					
 
 				// Write news
 				$teamname = $_SESSION['user_teamname'];
 				$Aufzunehmender_Spieler_Name = mysqli_query($con ,"SELECT display_name FROM xa7580_db1.sm_playerbase_basic_v WHERE id = '$Aufzunehmender_Spieler_ID'") -> fetch_object() -> display_name;
 				$Abzugebender_Spieler_Name = mysqli_query($con ,"SELECT display_name FROM xa7580_db1.sm_playerbase_basic_v WHERE id = '$Abzugebender_Spieler_ID'") -> fetch_object() -> display_name;
-				$Aufzunehmender_Spieler_Verein = mysqli_query($con ,"SELECT name FROM xa7580_db1.sm_playerbase_basic_v WHERE id = '$Aufzunehmender_Spieler_ID'") -> fetch_object() -> name;
+				$Aufzunehmender_Spieler_Verein = mysqli_query($con ,"SELECT name FROM xa7580_db1.sm_playerbase_basic_v WHERE id = '$Aufzunehmender_Spieler_ID'") -> fetch_object() -> name;			
 				$Abzugebender_Spieler_Verein = mysqli_query($con ,"SELECT name FROM xa7580_db1.sm_playerbase_basic_v WHERE id = '$Abzugebender_Spieler_ID'") -> fetch_object() -> name;					
 
 $headline = <<<EOT
@@ -129,7 +131,10 @@ $story=<<<EOT
 $teamname hat <b>$Aufzunehmender_Spieler_Name</b> ($Aufzunehmender_Spieler_Verein) unter Vertrag genommen und <b>$Abzugebender_Spieler_Name</b> ($Abzugebender_Spieler_Verein) aus seinen Diensten entlassen.
 EOT;
 
-				mysqli_query($con, "INSERT INTO xa7580_db1.news(name, headline, story, timestamp, add_id, drop_id, add_besitzer, drop_besitzer, type) VALUES('System', '".$headline."', '".$story."', NOW(), '".$Aufzunehmender_Spieler_ID."', '".$Abzugebender_Spieler_ID."', 'Free Agent', '".$Abzugebender_Spieler_Besitzer_ID."', 'free_agent')");
+				mysqli_query($con, "
+					INSERT INTO xa7580_db1.news(name, headline, story, timestamp, add_id, drop_id, add_besitzer, drop_besitzer, type) 
+					VALUES('System', '".$headline."', '".$story."', NOW(), '".$Aufzunehmender_Spieler_ID."', '".$Abzugebender_Spieler_ID."', 'Free Agent', '".$Abzugebender_Spieler_Besitzer_ID."', 'free_agent')
+						");
 				
 				echo "Free Agent erfolgreich aufgenommen!";
 			}
@@ -139,7 +144,8 @@ EOT;
 		/****************/
 
 		} elseif ($Aufzunehmender_Spieler_Besitzer == 'USR') {
-					
+		
+		
 			$Aufzunehmender_Spieler_Name = mysqli_query($con ,"
 				SELECT 	display_name 
 				FROM 	xa7580_db1.sm_playerbase_basic_v 
@@ -165,7 +171,8 @@ EOT;
 								");
 
 			echo "Trade-Anfrage erfolgreich aufgenommen!";
-				
+		
+
 		/****************/
 		/*    WAIVER    */
 		/****************/
