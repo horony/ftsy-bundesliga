@@ -22,18 +22,4 @@ mysqli_query($con, "
 	WHERE 	owr.1_ftsy_owner_type = 'FA' 
 					AND fix.kickoff_ts <= '".$current_date."'
 ");
-
-// Change players with kickoff in the past from FA to WVR for ftsy league 2
-mysqli_query($con, "
-	UPDATE xa7580_db1.ftsy_player_ownership owr
-	INNER JOIN xa7580_db1.sm_playerbase base
-		ON base.id = owr.player_id
-	LEFT JOIN xa7580_db1.sm_fixtures fix
-		ON 	(base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id)
-				AND	fix.round_name = '".$akt_spieltag."'
-				AND	fix.season_id = '".$akt_season_id."'
-	SET owr.2_ftsy_owner_type = 'WVR'
-	WHERE 	owr.2_ftsy_owner_type = 'FA' 
-					AND fix.kickoff_ts <= '".$current_date."'
-");
 ?>
