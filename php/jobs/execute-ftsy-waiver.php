@@ -138,12 +138,18 @@ EOT;
 
     // Calculate new draft order
     mysqli_query($con, "UPDATE  xa7580_db1.users_gamedata game
-                        SET waiver_position = 
-                            (SELECT new_ranking FROM (
-                                SELECT username, waiver_safe_flg, waiver_position, @curRank := @curRank + 1 AS new_ranking
-                                FROM xa7580_db1.users_gamedata, (SELECT @curRank := 0) r
-                                ORDER BY waiver_safe_flg DESC, waiver_position ASC) tmp 
-                            WHERE tmp.username = game.username)
+                        SET waiver_position = (
+                          SELECT new_ranking FROM (
+                            SELECT users_gamedata.username, waiver_safe_flg, waiver_position, @curRank := @curRank + 1 AS new_ranking
+                            FROM xa7580_db1.users_gamedata
+                            INNER JOIN xa7580_db1.users
+                              ON  users.id = users_gamedata.user_id
+                                  AND users.active_account_flg = 1
+                            , (SELECT @curRank := 0) r
+                            ORDER BY waiver_safe_flg DESC, waiver_position ASC;
+                            ) tmp 
+                          WHERE tmp.username = game.username
+                          )
                         ");
 }
 ?>
