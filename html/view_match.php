@@ -302,6 +302,9 @@ require("../php/auth.php");
 											, ftsy.pen_scored_stat + ftsy.pen_missed_stat as penalties_total
 											, ftsy.assists_stat
 											, ftsy.shots_total_stat
+											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.shots_on_goal_stat,' ('),ftsy.shots_total_stat),')') 
+														else null 
+														end as shots_stat_x
 											, ftsy.hit_woodwork_stat
 											, ftsy.passes_complete_stat + ftsy.passes_incomplete_stat as passes_total
 											, case 	when ftsy.appearance_stat = 1 then concat(concat(concat(ftsy.passes_complete_stat,' ('),ftsy.passes_complete_stat+ftsy.passes_incomplete_stat),')') 
