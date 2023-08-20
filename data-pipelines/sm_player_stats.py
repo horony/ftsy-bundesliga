@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jun  2 23:29:35 2020
-@author: lennart
+@author: lennartteams
 
 Script runs every 2 minutes to get player statistics (e.g. number of passes of Lewandowski) on current round.
 Script has the option to be ran on command line and update a specific round.
@@ -10,28 +10,32 @@ Script has the option to be ran on command line and update a specific round.
 """
 
 # load packages
-import sys
-sys.path.insert(1, './secrets/')
-import requests
-import json
+
+#import json
+import numpy as np
 import pandas as pd 
 from datetime import datetime
-import time
+#import time
 import pytz
 from sqlalchemy import create_engine
+import requests
 
-# define needed functions
-def isNone(s,d):
-    if s is None:
-        return d
-    else:
-        return s
+# load custom functions and connections
+
+import sys
+sys.path.insert(1, '../secrets/')
+from sm_api_connection import sportmonks_token
+
+sys.path.insert(2, '../py/')
+from logging_function import log, log_headline
+from dataprep_functions import isNone
 
 ###############################
 #   METAINFOS FROM MYSQL DB   #
 ###############################
 
-print('\n>>> GET META-DATA FROM MYSQL DB<<<\n')
+log_headline('(1/5) GET FANTASY META-DATA FROM MYSQL DB')
+log('Connecting to MySQL database')
 
 # Connect to MySQL-database
 from mysql_db_connection import db_user, db_pass, db_port, db_name
@@ -42,569 +46,625 @@ with engine.connect() as con:
     sql_first_row = sql_select.fetchone()
     aktueller_fantasy_spieltag =  sql_first_row['spieltag']
     
-    sql_select = con.execute('SELECT season_id FROM sm_seasons WHERE is_current_season = 1')
+    sql_select = con.execute('SELECT season_id, season_name FROM parameter')
     sql_first_row = sql_select.fetchone()
-    aktuelle_buli_season =  sql_first_row['season_id']
-        
-print("Current round in fantasy-game:", aktueller_fantasy_spieltag)
-print("Current season-id in fantasy-game:", aktuelle_buli_season)
+    aktuelle_buli_season = sql_first_row['season_id']
+    season_name = sql_first_row['season_name']
+    
+#aktueller_fantasy_spieltag = 1
+#aktuelle_buli_season = 17361
+#season_name = '2020/2021'
+
+log("Current round-name in fantasy-game: " + str(aktueller_fantasy_spieltag))
+log("Current season-id in fantasy-game: " + str(aktuelle_buli_season))
+log("Current season-name in fantasy-game: " + str(season_name))
         
 ##################
 #   GET ROUNDS   #
 ##################
 
-from sm_api_connection import sportmonks_token
-print("API Query for current rounds")
-response = requests.get("https://soccer.sportmonks.com/api/v2.0/seasons/"+str(aktuelle_buli_season)+"?api_token="+sportmonks_token+"&tz=Europe/Amsterdam&include=fixtures.round")
-print("API response code: " + str(response.status_code))
+log_headline("(2/5) GET ALL ROUNDS WITH FIXTURES FROM API")
 
-data = response.json()
-current_round_id = data['data']['current_round_id']
-season_name = data['data']['name']
+log("Sending query to rounds endpoint")
 
-fixture_extract = data['data']['fixtures']['data']
+response_round = requests.get(
+    "https://api.sportmonks.com/v3/football/rounds/seasons/"
+    + str(aktuelle_buli_season)
+    + "?api_token="+sportmonks_token
+    + "&include=fixtures"
+    )
+
+log("API response code: " + str(response_round.status_code))
+log("Processing round and fixture data")
+
+response_round = response_round.json()
+data_round = response_round['data']
+
+fixture_data = []
+cnt_processed_rounds = 1
+
+# iterate through rounds
+for spieltag in data_round:
+            
+    # if positive: Loop through fixtures of the round
+    log('Processing round ' + str(cnt_processed_rounds) + '/' + str(len(data_round)) + ' - round-name: ' + str(spieltag['name']))
+
+    for matchup in spieltag['fixtures']:
+        fixture_list = []
+        
+        # identifiers for season and round 
+        fixture_list.append(int(matchup['season_id']))
+        fixture_list.append(int(matchup['round_id']))
+        
+        fixture_list.append(int(spieltag['name']))
+       
+        fixture_list.append(matchup['id'])
+        fixture_list.append(isNone(datetime.fromtimestamp(matchup['starting_at_timestamp'],pytz.timezone("Europe/Berlin")).date(),None))
+        fixture_list.append(isNone(datetime.fromtimestamp(matchup['starting_at_timestamp'],pytz.timezone("Europe/Berlin")).strftime('%Y-%m-%d %H:%M:%S'),None))
+        
+        # add data to list
+        fixture_data.append(fixture_list)
+            
+    cnt_processed_rounds = cnt_processed_rounds + 1
+ 
+# safe results to DataFrame
+df_fixtures = pd.DataFrame(columns=['season_id','round_id','round_name','fixture_id','start_dt','start_ts'], data=fixture_data)
+log('Found ' + str(df_fixtures.shape[0]) + ' fixtures')
+
+###########################################
+#   A) Script excuted from command line   #
+###########################################
 
 fixture_ids_all = []
 
-############################################
-#   1.) Script excuted from command line   #
-############################################
+log_headline('(3/5) SELECTING FIXTURES TO UPDATE WITH PLAYER STATS')    
 
-print("Script executed interacitvly: " + str(sys.stdin.isatty()))
+log('Script is executed from command line: ' + str(sys.stdin.isatty()))
 
 if sys.stdin.isatty() is True:
+    
     # Show user input menu
     print("Welcher Spieltag soll geupdated werden?\n")
     print("Optionen (Input = Beschreibung):\n")
-    print("all = alle Spieltage | all_till_today = alle Spieltage < aktueller Fantasy Spieltag | number e.g. 1 or 29 = exakter Spieltag")
+    print("number e.g. 1 or 29 = exakter Spieltag | all | all_till_today")
     input_choice = input()
-    
+
     # Option 1: Update all rounds
     if input_choice == 'all':
         print("Update alle Spieltage!")
-        for i in fixture_extract:
-           fixture_ids_all.append(str(i['id']))    
-    
+        df_fixtures_selected = df_fixtures
+        fixture_extract = df_fixtures_selected['fixture_id'].tolist()
+        
     # Option 2: Update all rounds up till today
     elif input_choice == 'all_till_today':
-        print("Update alle bislang abgeschlossenen Fantasy-Spieltage!")
-        
-        from mysql_db_connection import db_user, db_pass, db_port, db_name
-        engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
-
-        with engine.connect() as con:
-            sql_select = con.execute('SELECT spieltag FROM parameter')    
-            sql_first_row = sql_select.fetchone()
-            aktueller_spieltag =  sql_first_row['spieltag']
-            print("Alle Spieltag kleiner als ", aktueller_spieltag)
-
-        for i in fixture_extract:
-            if i['round']['data']['name'] < aktueller_spieltag:
-                fixture_ids_all.append(str(i['id']))        
-
-    #Option 3: Specific round name 
+        print("Update alle Spieltage bis inkl. " + str(aktueller_fantasy_spieltag) + "!")
+        df_fixtures_selected = df_fixtures[df_fixtures['round_name'] <= int(aktueller_fantasy_spieltag)] 
+        print(df_fixtures_selected)
+        fixture_extract = df_fixtures_selected['fixture_id'].tolist()    
+     
+    # Option 3: Specific round name 
     elif int(input_choice) in list(range(1, 34)):
         print("Update Spieltag " + str(input_choice) + "!")
-        for i in fixture_extract:
-            if i['round']['data']['name'] == int(input_choice):
-                fixture_ids_all.append(str(i['id']))  
-
+        df_fixtures_selected = df_fixtures[df_fixtures['round_name'] == int(input_choice)] 
+        print(df_fixtures_selected)
+        fixture_extract = df_fixtures_selected['fixture_id'].tolist()
+    
     else:
         sys.exit("Keine gültige Eingabe!")
         
     # Display how many fixtures will be updated
-    print("Fixtures gefunden: " + str(len(fixture_ids_all)))
+    log('Selected ' + str(len(df_fixtures_selected)) + ' fixtures')
 
-######################################
-#   2.) Script excuted in cron job   #
-######################################
+####################################
+#   B) Script excuted in cronjob   #
+####################################
 
-elif sys.stdin.isatty() is False:
+if sys.stdin.isatty() is False:
     
-    from mysql_db_connection import db_user, db_pass, db_port, db_name
-    engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False) 
-    print("Python Now(): ", datetime.now(pytz.timezone('Europe/Amsterdam')).date(), " Type: ", type(datetime.now(pytz.timezone('Europe/Amsterdam')).date()))
+    log('Filtering df_fixtures for round_name = ' + str(aktueller_fantasy_spieltag))
+    df_fixtures_selected = df_fixtures[df_fixtures['round_name'] == int(aktueller_fantasy_spieltag)] 
+    log('Selected ' + str(len(df_fixtures_selected)) + ' fixtures')
+        
+    fixture_extract = df_fixtures_selected['fixture_id'].tolist()
 
-    with engine.connect() as con:
-        sql_select = con.execute('SELECT spieltag FROM parameter')    
-        sql_first_row = sql_select.fetchone()
-        aktueller_fantasy_spieltag =  sql_first_row['spieltag']
-        print("Current fantasy round-name: ", aktueller_fantasy_spieltag)
-    
-    for i in fixture_extract:
-        if i['round']['data']['name'] == aktueller_fantasy_spieltag and datetime.strptime(i['time']['starting_at']['date_time'], '%Y-%m-%d %H:%M:%S') <= datetime.now():
-            fixture_ids_all.append(str(i['id']))
-    
-    print("Fixtures found: " + str(len(fixture_ids_all)))
+fixture_ids_all = fixture_extract
 
 # Split the fixtures defined previously in batches of 9
 fixture_ids_collection = []
+
+log('Creating batches from selected fixtures')
 
 while len(fixture_ids_all) > 0:
     fixture_ids_collection.append(fixture_ids_all[0:9])    
     del fixture_ids_all[0:9]
 
-print("Created Batches: " + str(len(fixture_ids_collection)))
+log("Created " + str(len(fixture_ids_collection)) + " batch")
 
 if len(fixture_ids_collection) == 0:
-  quit()
+    log("ERROR - 0 batches created")
+    quit()
 
 #################################
 #   GET PLAYER STATS FROM API   #
 #################################
 
-print('\n>>> PLAYER STATS <<<\n')
+log_headline('(4/X5 GET PLAYER STATS FROM API')    
 
 player_list = []
+stat_list = []
 fixture_list = []
 
 for spieltag in fixture_ids_collection:
     
     # Get fixtures from batch
-    spieltag_number = fixture_ids_collection.index(spieltag)
-    fixture_ids_str = ( ','.join(fixture_ids_collection[spieltag_number]))
-    
-    if sys.stdin.isatty() is False:
-        response_player_stats = requests.get("https://soccer.sportmonks.com/api/v2.0/livescores/now?api_token="+sportsmonks_token+"&include=lineup.player,bench.player,sidelined.player,round,stats")
-    elif sys.stdin.isatty() is True:
-        response_player_stats = requests.get("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+fixture_ids_str+"?api_token="+sportsmonks_token+"&include=lineup.player,bench.player,sidelined.player,round,stats")
+    fixture_ids_str =   ','.join(str(x) for x in spieltag)
+       
+    log("Sending query to fixtures endpoint")
 
-    print("API Call Multi Fixtures 2: " + str(response_player_stats.status_code))
-    data_player_stats = response_player_stats.json()
-    player_stats_batch = data_player_stats['data']
+    response = requests.get(
+        "https://api.sportmonks.com/v3/football/fixtures/multi/"
+        + fixture_ids_str
+        + "?api_token="+sportmonks_token
+        + "&include=scores;round;lineups.details.type;state"
+        )
+
+    log("API response code: " + str(response.status_code))
+    log("Processing fixture data")
+
+    data = response.json()['data']   
+       
+    # extract meta information from fixture
+    for match in data:
     
-    # Extract meta information from fixture
-    for match in player_stats_batch:
-    
-        # Players can be in the lineup, benched or not active
-        fixture_lineup = match['lineup']['data']
-        fixture_bench = match['bench']['data']    
-        fixture_active = fixture_lineup + fixture_bench
-        
+        # players can be in the lineup (prev also in benched or not active)
+        fixture_lineup = match['lineups']
+        fixture_active = fixture_lineup
+
         # meta
-        round_id = match['round']['data']['id']    
-        round_name = match['round']['data']['name']    
-        stage_id = match['round']['data']['stage_id']
+        round_id = int(match['round_id'])    
+        round_name = int(match['round']['name'])    
         
-        localteam_id = match['localteam_id']
-        visitorteam_id = match['visitorteam_id']
-        localteam_score = match['scores']['localteam_score']
-        visitorteam_score = match['scores']['visitorteam_score']
+        for score in match['scores']:
+            if score['type_id'] == 1525 and score['score']['participant'] == 'home':
+                localteam_id = int(score['participant_id'])
+                localteam_score = int(score['score']['goals'])
+            if score['type_id'] == 1525 and score['score']['participant'] == 'away':
+                visitorteam_id = int(score['participant_id'])
+                visitorteam_score = int(score['score']['goals'])
         
-        fixture_status = match['time']['status']
-        
-        fixture_kickoff_dt = datetime.strptime(match['time']['starting_at']['date'], '%Y-%m-%d').date()
-        fixture_kickoff_ts = datetime.strptime(match['time']['starting_at']['date_time'], '%Y-%m-%d %H:%M:%S')
-    
-        # Parsing active players (lineup or bench)
+        fixture_status = match['state']['short_name']
+        fixture_kickoff_ts = datetime.fromtimestamp(match['starting_at_timestamp'])
+        fixture_kickoff_dt = fixture_kickoff_ts.date()
+
+        # parsing players
         for player in fixture_active:
+            
             player_data = []  
-            column_names = []
-                
-            # Fixture data             
-            player_data.append(season_name)
-            column_names.append('season_name')
-            player_data.append(round_name)
-            column_names.append('round_name')
-            player_data.append(fixture_kickoff_ts)
-            column_names.append('fixture_kickoff_ts')
-            player_data.append(fixture_status)
-            column_names.append('fixture_status')
-            player_data.append(player['fixture_id'])
-            column_names.append('fixture_id')          
             
-            # Player data
+            # player_id
             player_data.append(player['player_id'])
-            column_names.append('player_id')
-            player_data.append(player['player_name'])
-            column_names.append('player_name')
             
+            # player_name
+            player_data.append(player['player_name'])
+            
+            # dates
+            player_data.append(player['fixture_id'])
+            player_data.append(fixture_kickoff_ts)
+            player_data.append(fixture_kickoff_dt) 
+                      
+            # season, round and fixture data     
+            player_data.append(aktuelle_buli_season)
+            player_data.append(season_name)
+            player_data.append(round_id)
+            player_data.append(round_name)
+            
+            player_data.append(fixture_status)
+            
+            # team_ids and team_names
             player_data.append(localteam_id)
             player_data.append(visitorteam_id)
-            column_names.append('localteam_id')
-            column_names.append('visitorteam_id')   
-            
             player_data.append(player['team_id'])
-            column_names.append('own_team_id')
+            
             if player['team_id'] == visitorteam_id:
                 player_data.append(localteam_id)
                 player_data.append('away')
             else:
                 player_data.append(visitorteam_id)
-                player_data.append('home')
-            column_names.append('opp_team_id')
-            column_names.append('match_type')
-            player_data.append(player['number'])
-            column_names.append('number')         
-            player_data.append(1)
-            column_names.append('player_active_flg')
-            if  player['stats']['other']['minutes_played'] == 0 or player['stats']['other']['minutes_played'] is None:
-                player_data.append(0)
-            else:
-                player_data.append(1)
-            column_names.append('appearance')      
-            player_data.append(player['type'])
-            column_names.append('player_status')
-            player_data.append(player['formation_position'])
-            column_names.append('player_formation_position')
-            player_data.append(player['position'])
-            column_names.append('player_position_en')
-            if player['position'] == 'G':
-                player_data.append('TW')
-                player_data.append('Torwart')
-            elif player['position'] == 'D':
-                player_data.append('AW')
-                player_data.append('Abwehr')
-            elif player['position'] == 'M':
-                player_data.append('MF')
-                player_data.append('Mittelfeld')
-            elif player['position'] == 'A':
-                player_data.append('ST')
-                player_data.append('Sturm')
-            else:
-                player_data.extend([None] * 2)
-            column_names.append('player_position_de_short')
-            column_names.append('player_position_de_long')
-            player_data.append(player['captain'])
-            column_names.append('captain')
-            player_data.append(None)
-            column_names.append('sidelined_reason')
-            
-            # Team goals
-            if player['team_id'] == localteam_id:
-                player_data.append(localteam_score)
-                team_goals_conceded = visitorteam_score
-            else:
-                player_data.append(visitorteam_score)
+                player_data.append('home')       
+                
+            # fixture type: Define if home game of away game
+            if player['team_id'] == visitorteam_id:
+                team_goals_scored = visitorteam_score
                 team_goals_conceded = localteam_score
-            column_names.append('team_goals_scored')
-            
-            if player['team_id'] == localteam_id:
-                player_data.append(visitorteam_score)
             else:
-                player_data.append(localteam_score)    
-            column_names.append('team_goals_conceded') 
-            
-            
-            if (player['stats']['other']['minutes_played'] is None):
-                player_data.append(None)
-            elif (player['stats']['other']['minutes_played'] >= 0):
-                if team_goals_conceded == 0:
-                    player_data.append(1)
-                else:
-                    player_data.append(0)
-            else:
-                player_data.append(None)
-            column_names.append('clean_sheet')
-    
-            player_data.append(player['stats']['goals']['scored'])
-            
-            player_data.append(isNone(player['stats']['goals']['scored'],0)-isNone(player['stats']['other']['pen_scored'],0))
-            player_data.append(player['stats']['goals']['assists'])
-            player_data.append(player['stats']['goals']['conceded'])
-            player_data.append(player['stats']['goals']['owngoals'])
-            column_names += ['goals_total','goals_minus_pen', 'assists', 'goals_conceded', 'owngoals'
+                team_goals_scored = localteam_score
+                team_goals_conceded = visitorteam_score
                 
-            player_data.append(player['stats']['cards']['yellowcards'])
-            player_data.append(player['stats']['cards']['redcards'])
-            player_data.append(player['stats']['cards']['yellowredcards'])
-            column_names += ['yellowcards', 'redcards', 'yellowredcards'] 
-                
-            player_data.append(player['stats']['dribbles']['attempts'])
-            player_data.append(player['stats']['dribbles']['success'])
-            if player['stats']['dribbles']['attempts'] is None or player['stats']['dribbles']['success'] is None:
-                player_dribbles_failed = None
-            else:
-                player_dribbles_failed = player['stats']['dribbles']['attempts']-player['stats']['dribbles']['success']
-            player_data.append(player_dribbles_failed)
-            player_data.append(player['stats']['dribbles']['dribbled_past'])
-            column_names += ['dribble_attempts','dribbles_success', 'dribbles_failed', 'dribbled_past']
-        
-            player_data.append(player['stats']['duels']['total'])
-            player_data.append(player['stats']['duels']['won'])
-            if player['stats']['duels']['total'] is None or player['stats']['duels']['won'] is None:
-                player_duels_lost = None
-            else:
-                player_duels_lost = player['stats']['duels']['total'] - player['stats']['duels']['won']            
-            player_data.append(player_duels_lost)
-            column_names += ['duels_total', 'duels_won', 'duels_lost'] 
-                
-            player_data.append(player['stats']['fouls']['drawn'])
-            player_data.append(player['stats']['fouls']['committed'])
-            column_names += ['fouls_drawn', 'fouls_committed'] 
-                
-            player_data.append(player['stats']['shots']['shots_total'])
-            player_data.append(player['stats']['shots']['shots_on_goal'])
-            player_data.append(isNone(player['stats']['shots']['shots_on_goal'],0)-isNone(player['stats']['goals']['scored'],0))
-            if player['stats']['shots']['shots_total'] is None or player['stats']['shots']['shots_on_goal'] is None:
-                player_shots_missed = None
-            else:
-                player_shots_missed = player['stats']['shots']['shots_total'] - player['stats']['shots']['shots_on_goal']         
-            player_data.append(player_shots_missed)
-            column_names += ['shots_total','shots_on_goal','shots_on_goal_saved','shots_missed']
-                
-            player_data.append(player['stats']['passing']['total_crosses'])
-            player_data.append(player['stats']['passing']['crosses_accuracy'])
-            
-            if player['stats']['passing']['total_crosses'] is None or player['stats']['passing']['crosses_accuracy'] is None:
-                player_crosses_incomplete = None
-                player_data.append(player_crosses_incomplete)
-            else:
-                player_crosses_incomplete = player['stats']['passing']['total_crosses'] - player['stats']['passing']['crosses_accuracy']
-                player_data.append(player_crosses_incomplete)   
-                
-            column_names += ['crosses_total', 'crosses_complete', 'crosses_incomplete']
-            
-            player_data.append(player['stats']['passing']['accurate_passes'])
-            player_data.append(player['stats']['passing']['passes'])
-            
-            if player['stats']['passing']['accurate_passes'] is None or player['stats']['passing']['passes'] is None:
-                player_passes_incomplete = None
-                player_data.append(player_passes_incomplete)
-            else:
-                player_passes_incomplete = player['stats']['passing']['passes']-player['stats']['passing']['accurate_passes']
-                player_data.append(player_passes_incomplete)
-                
-            player_data.append(player['stats']['passing']['passes_accuracy'])
-            player_data.append(player['stats']['passing']['key_passes'])
-            
-            column_names += ['passes_complete', 'passes_total', 'passes_incomplete', 'passes_accuracy', 'key_passes']
-            
-            
-            player_data.append(player['stats']['other']['blocks'])
-            player_data.append(player['stats']['other']['clearances'])
-            player_data.append(player['stats']['other']['dispossesed'])
-            player_data.append(player['stats']['other']['hit_woodwork'])
-            player_data.append(player['stats']['other']['inside_box_saves'])
-            player_data.append(player['stats']['other']['interceptions'])
-            player_data.append(player['stats']['other']['minutes_played'])
-            player_data.append(player['stats']['other']['offsides'])
-            player_data.append(player['stats']['other']['pen_committed'])
-            player_data.append(player['stats']['other']['pen_missed'])
-            player_data.append(player['stats']['other']['pen_saved'])
-            player_data.append(player['stats']['other']['pen_scored'])
-            player_data.append(player['stats']['other']['pen_won'])
-            player_data.append(player['stats']['other']['saves'])
-            player_data.append(player['stats']['other']['tackles'])
-            player_data.append(isNone(player['stats']['other']['saves'],0)-isNone(player['stats']['other']['inside_box_saves'],0))
+            player_data.append(team_goals_scored)
+            player_data.append(team_goals_conceded)  
 
+            # jersey number
+            player_data.append(player['jersey_number'])
             
-            column_names += ['blocks', 'clearances', 'dispossessed', 'hit_woodwork', 'inside_box_saves', 'interceptions',
-                                 'minutes_played', 'offsides', 'pen_committed', 'pen_missed', 'pen_saved', 'pen_scored', 
-                                 'pen_won', 'saves', 'tackles', 'outside_box_saves'] 
+            # player_active_flg: Lineup or bench
+            if player['type_id'] == 11 or player['type_id'] == 12:
+                player_data.append(1)
+            else:
+                player_data.append(0)
             
-            # Meta            
-            player_data.append(int(league_id))
-            column_names.append('league_id')            
-            player_data.append(season_id)
-            column_names.append('season_id')
-            player_data.append(int(round_id))
-            column_names.append('round_id')  
-            player_data.append(fixture_kickoff_dt)
-            column_names.append('fixture_kickoff_dt')            
-            player_data.append(stage_id)
-            column_names.append('stage_id')    
-            player_data.append(datetime.now(pytz.timezone('Europe/Amsterdam')))
-            column_names.append('load_ts')
-
-            # Append
+            # parse stats details
+            for stat in player['details']:
+                stats_data = []
+                
+                stats_data.append(int(player['player_id']))
+                stats_data.append(int(player['fixture_id']))
+                stats_data.append(round_name)
+                stats_data.append(player['player_name'])
+                stats_data.append(int(stat['type_id']))
+                stats_data.append(stat['type']['code'])
+                stats_data.append(isNone(int(stat['data']['value']),0))
+                
+                stat_list.append(stats_data)
+            
             player_list.append(player_data)
-    
-    
-        # Sidelined Players 
-        fixture_sidelined = match['sidelined']['data']    
-        
-        for player in fixture_sidelined:
-            double_player = 'N'
-            player_data = []  
-
-            for sublist in player_list:
-                if sublist[5] == player['player_id'] and sublist[4] == player['fixture_id']:
-                    double_player = 'Y'
-
-            if double_player == 'N':            
-                # Match data            
-                player_data.append(season_name)
-                player_data.append(round_name)
-                player_data.append(fixture_kickoff_ts)
-                player_data.append(fixture_status)
-                player_data.append(player['fixture_id'])   
             
-                # Player data
-                player_data.append(player['player_id'])
-                player_data.append(player['player_name'])
-            
-                player_data.append(localteam_id)
-                player_data.append(visitorteam_id)
-                player_data.append(player['team_id'])
+df_player_stats = pd.DataFrame(
+    data=player_list
+    , columns =  [
+        'player_id'
+        , 'player_name'
+        , 'fixture_id'
+        , 'fixture_kickoff_ts'
+        , 'fixture_kickoff_dt'
+        , 'season_id'
+        , 'season_name'
+        , 'round_id'
+        , 'round_name'
+        , 'fixture_status'
+        , 'localteam_id'
+        , 'visitorteam_id'
+        , 'own_team_id'
+        , 'opp_team_id'
+        , 'fixture_type'
+        , 'team_goals_scored'
+        , 'team_goals_conceded'
+        , 'number'
+        , 'active_flg'
+        ]
+    )
 
-                if player['team_id'] == visitorteam_id:
-                    player_data.append(localteam_id)
-                    player_data.append('away')
-                else:
-                    player_data.append(visitorteam_id)
-                    player_data.append('home')
+df_stats = pd.DataFrame(
+    data=stat_list
+    ,  columns=['player_id','fixture_id','round_name','player_name','stat_type_id','stat_code','stat_value']
+    )
+log('Pivot stat data')
 
-                player_data.append(None) # number
-                player_data.append(0) # active_flg
-                player_data.append(0) # appearnce
-                player_data.append('sidelined')
-                player_data.append(None) # formation_position
-                player_data.append(player['position'])
+df_stats = df_stats.pivot_table(
+    index=["player_id", "fixture_id", "round_name","player_name"]
+    , columns='stat_code'
+    , values='stat_value'
+    , aggfunc='first'
+    ).reset_index()
 
-                if player['position'] == 'G':
-                    player_data.append('TW')
-                    player_data.append('Torwart')
-                elif player['position'] == 'D':
-                    player_data.append('AW')
-                    player_data.append('Abwehr')
-                elif player['position'] == 'M':
-                    player_data.append('MF')
-                    player_data.append('Mittelfeld')
-                elif player['position'] == 'A':
-                    player_data.append('ST')
-                    player_data.append('Sturm')
-                else:
-                    player_data.extend([None] * 2)
-                player_data.append(None) # captain
-                player_data.append(player['reason']) # Reason
-            
-                if player['team_id'] == localteam_id:
-                    player_data.append(localteam_score)
-                    team_goals_conceded = localteam_score
-                else:
-                    player_data.append(visitorteam_score)
-                    team_goals_conceded = visitorteam_score
-                
-                if player['team_id'] == localteam_id:
-                    player_data.append(visitorteam_score)
-                else:
-                    player_data.append(localteam_score)    
-            
-                player_data.extend([None] * 46)
-            
-                # Meta            
-                player_data.append(int(league_id))
-                player_data.append(season_id)
-                player_data.append(int(round_id))
-                player_data.append(fixture_kickoff_dt)
-                player_data.append(stage_id)
-                player_data.append(datetime.now(pytz.timezone('Europe/Amsterdam')))
-                            
-                player_list.append(player_data)
-                
-print('Player data list n-1:', len(player_data))
-print('Column names:', len(column_names))
+def calc_ftsy_stat(calc_df,target_column,calc_column_a,calc_column_b,math_operation):
+    if calc_column_b in calc_df.columns and calc_column_b in calc_df.columns:
+        if calc_df[calc_column_a] is None and calc_df[calc_column_b] is None:
+            calc_df[target_column] = None
+        else:
+            if math_operation == 'diff':
+                calc_df[target_column] = isNone(calc_df[calc_column_a],0) - isNone(calc_df[calc_column_b],0)
+            else:
+                calc_df[target_column] = None
+    else:
+        calc_df[target_column] = None
+     
+    return calc_df[target_column]
 
-df_player_stats = pd.DataFrame(columns=column_names, data=player_list)
-df_player_stats['season_id'] = df_player_stats['season_id'].astype(str).astype(int)
-df_player_stats = df_player_stats.drop_duplicates(subset=['player_id'], keep=False)
+df_stats = df_stats.rename(columns={
+    'accurate-crosses': 'crosses_complete'
+    , 'accurate-passes': 'passes_complete'
+    , 'accurate-passes-percentage': 'passes_accuracy'
+    , 'big-chances-created': 'big_chances_created' #new
+    , 'big-chances-missed': 'big_chances_missed' #new
+    , 'blocked-shots': 'blocks' 
+    , 'clearance-offline': 'clearance_offline' #new
+    , 'dribble-attempts': 'dribble_attempts'
+    , 'dribbled-past': 'dribbled_past'
+    , 'duels-lost': 'duels_lost'
+    , 'duels-won': 'duels_won'
+    , 'error-lead-to-goal': 'error_lead_to_goal' #new
+    , 'fouls': 'fouls_committed'
+    , 'fouls-drawn': 'fouls_drawn'
+    , 'goalkeeper-goals-conceded': 'goalkeeper_goals_conceded' #new 
+    , 'goals': 'goals_total'
+    , 'goals-conceded': 'goals_conceded'
+    , 'hit-woodwork':  'hit_woodwork'
+    , 'key-passes': 'key_passes'
+    , 'minutes-played': 'minutes_played'
+    , 'own-goals': 'owngoals'
+    , 'passes': 'passes_total'
+    , 'penalties-committed': 'pen_committed'
+    , 'penalties-missed': 'pen_missed'
+    , 'penalties-saved':  'pen_saved'
+    , 'penalties-scored': 'pen_scored'
+    , 'penalties-won': 'pen_won'
+    , 'saves-insidebox': 'inside_box_saves'
+    , 'shots-blocked': 'shots_blocked'
+    , 'shots-off-target': 'shots_missed'
+    , 'shots-on-target': 'shots_on_goal'
+    , 'shots-total': 'shots_total'
+    , 'successful-dribbles': 'dribbles_success'
+    , 'through-balls': 'through_balls'
+    , 'through-balls-won': 'through_balls_won'
+    , 'total-crosses': 'crosses_total'
+    , 'total-duels': 'duels_total'
+    , 'yellowred-cards': 'redyellowcards'
+    })
+
+if 'pen_scored' not in df_stats.columns:
+        df_stats['pen_scored'] = 0
+
+df_stats = df_stats.fillna(0)
+
+df_stats['goals_minus_pen'] = isNone(df_stats['goals_total'],0) - isNone(df_stats['pen_scored'],0)
+# calc_ftsy_stat(df_stats,'goals_minus_pen','goals_total','pen_scored','diff') 
+df_stats['dribbles_failed'] = calc_ftsy_stat(df_stats,'dribbles_failed','dribble_attempts','dribbles_success','diff') 
+df_stats['passes_incomplete'] = calc_ftsy_stat(df_stats,'passes_incomplete','passes_total','passes_complete','diff') 
+df_stats['crosses_incomplete'] = calc_ftsy_stat(df_stats,'crosses_incomplete','crosses_total','crosses_complete','diff') 
+df_stats['outside_box_saves'] = calc_ftsy_stat(df_stats,'outside_box_saves','saves','inside_box_saves','diff') 
+
+cols_to_check = [
+    'appearance'
+    , 'clean_sheet'
+    , 'goals_total'
+    , 'goals_minus_pen'
+    , 'assists'
+    , 'goals_conceded'
+    , 'owngoals'
+    , 'yellowcards'
+    , 'redcards'
+    , 'yellowredcards'
+    , 'dribble_attempts'
+    , 'dribbles_success'
+    , 'dribbles_failed'
+    , 'dribbled_past'
+    , 'duels_total'
+    , 'duels_won'
+    , 'duels_lost'
+    , 'fouls_drawn'
+    , 'fouls_committed'
+    , 'shots_total'
+    , 'shots_on_goal'
+    , 'shots_missed'
+    , 'crosses_total'
+    , 'crosses_complete'
+    , 'crosses_incomplete'
+    , 'passes_complete'
+    , 'passes_total'
+    , 'passes_incomplete'
+    , 'passes_accuracy'
+    , 'key_passes'
+    , 'blocks'
+    , 'clearances'
+    , 'dispossessed'
+    , 'hit_woodwork'
+    , 'inside_box_saves'
+    , 'interceptions'
+    , 'minutes_played'
+    , 'offsides'
+    , 'pen_committed'
+    , 'pen_missed'
+    , 'pen_saved'
+    , 'pen_scored'
+    , 'pen_won'
+    , 'redyellowcards'
+    , 'saves'
+    , 'tackles'
+    , 'outside_box_saves'
+    # new columns
+    , 'big_chances_created'
+    , 'big_chances_missed'
+    , 'clearance_offline'
+    , 'error_lead_to_goal'
+    , 'goalkeeper_goals_conceded'
+    , 'shots_blocked'
+    , 'punches'
+    ]
+
+df_stats = df_stats.assign(**{col : 0 for col in np.setdiff1d(cols_to_check,df_stats.columns.values)})
+
+df_stats.loc[df_stats['minutes_played'] > 0,'appearance'] = 1
+
+df_stats.loc[(df_stats['minutes_played'] >= 10) & (df_stats['goals_conceded']==0),'clean_sheet'] = 1
+
+df_stats.loc[(df_stats['redcards'] > 1),'redcards'] = 1
+
+df_stats.loc[(df_stats['redyellowcards'] > 1),'redyellowcards'] = 1
+df_stats.loc[(df_stats['redyellowcards'] == 1),'redcards'] = 0
+
+df_stats = df_stats[[
+    'player_id'
+    , 'fixture_id'
+    # playing time
+    , 'appearance'
+    , 'minutes_played'
+    # scoring
+    , 'goals_total'
+    , 'goals_minus_pen'
+    , 'assists'
+    # passing
+    , 'big_chances_created'
+    , 'key_passes'
+    , 'passes_total'
+    , 'passes_complete'
+    , 'passes_incomplete'
+    , 'passes_accuracy'    
+    , 'crosses_total'
+    , 'crosses_complete'
+    , 'crosses_incomplete'  
+    # shots
+    , 'shots_total'  
+    , 'shots_on_goal'
+    , 'shots_missed'
+    , 'shots_blocked'
+    , 'big_chances_missed' 
+    , 'hit_woodwork' 
+    # penalties
+    , 'pen_committed'
+    , 'pen_missed'
+    , 'pen_saved'
+    , 'pen_scored'
+    , 'pen_won'
+    # duels
+    , 'duels_total'
+    , 'duels_won'
+    , 'duels_lost'    
+    , 'dribble_attempts'
+    , 'dribbles_success'
+    , 'dribbles_failed'
+    # defense
+    , 'clean_sheet'
+    , 'goals_conceded'
+    , 'goalkeeper_goals_conceded'
+    , 'interceptions'
+    , 'blocks'
+    , 'clearances'
+    , 'clearance_offline'
+    , 'tackles'
+    # errors
+    , 'error_lead_to_goal'
+    , 'owngoals'
+    , 'dispossessed'        
+    , 'dribbled_past'   
+    # goalkeeper
+    , 'saves'
+    , 'inside_box_saves'
+    , 'outside_box_saves'
+    , 'punches'
+    # cards
+    , 'yellowcards'
+    , 'redcards'
+    , 'redyellowcards'   
+
+    ]]
+
+df_player_stats = pd.merge(df_player_stats, df_stats, how="outer", on=['fixture_id','player_id'])
 
 ##########################
 #   WRITE INTO DATABASE  #
 ##########################
 
-print('\n>>> WRITE INTO DATABASE <<<\n')
+log_headline('(5/5) WRITE INTO DATABASE')
+log('Connecting to MySQL database')    
 
 # Connect to MySQL-database
 from mysql_db_connection import db_user, db_pass, db_port, db_name
 engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
 
-print('Season ID: ',season_id,type(season_id))
-print(df_player_stats.info(verbose=True))
-print(df_player_stats.head(3))
+log('Starting update process for sm_player_stats ')
 
-# create table if nt exists
-try:
-    df_player_stats.to_sql(name='sm_player_stats', con=engine, index=False, if_exists='fail')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `sm_player_stats` ADD PRIMARY KEY (`player_id`,`fixture_id`,`round_id`,`league_id`,`season_id`);')
-    message = 'Table sm_player_stats created'
+log('Dropping tmp table tmp_sm_player_stats if still exists')
+with engine.connect() as con:
+    con.execute('DROP TABLE IF EXISTS tmp_sm_player_stats;')    
 
-# update table with temp table
-except:
-    df_player_stats.to_sql(name='tmp_sm_player_stats', con=engine, index=False, if_exists='replace')
-    with engine.connect() as con:
-        con.execute('ALTER TABLE `tmp_sm_player_stats` ADD PRIMARY KEY (`player_id`,`fixture_id`,`round_id`,`league_id`,`season_id`);')   
-        
-        con.execute('''
-                    INSERT INTO sm_player_stats 
-                    SELECT * FROM tmp_sm_player_stats t2 
-                        ON DUPLICATE KEY UPDATE 
-                            fixture_kickoff_ts = t2.fixture_kickoff_ts
-                            , fixture_status=t2.fixture_status
-                            , player_name=t2.player_name
-                            , localteam_id=t2.localteam_id
-                            , visitorteam_id=t2.visitorteam_id
-                            , opp_team_id=t2.opp_team_id
-                            , match_type=t2.match_type
-                            , number=t2.number
-                            , player_active_flg=t2.player_active_flg
-                            , appearance=t2.appearance
-                            , player_status=t2.player_status
-                            , player_formation_position=t2.player_formation_position
-                            , player_position_en=t2.player_position_en
-                            , player_position_de_short=t2.player_position_de_short
-                            , player_position_de_long=t2.player_position_de_long
-                            , captain=t2.captain
-                            , sidelined_reason=t2.sidelined_reason
-                            , team_goals_scored=t2.team_goals_scored
-                            , team_goals_conceded=t2.team_goals_conceded
-                            , clean_sheet=t2.clean_sheet
-                            , goals_total=t2.goals_total
-                            , goals_minus_pen=t2.goals_minus_pen
-                            , assists=t2.assists
-                            , goals_conceded=t2.goals_conceded
-                            , owngoals=t2.owngoals
-                            , yellowcards=t2.yellowcards
-                            , redcards=t2.redcards
-                            , yellowredcards=t2.yellowredcards
-                            , dribble_attempts=t2.dribble_attempts
-                            , dribbles_success=t2.dribbles_success
-                            , dribbles_failed=t2.dribbles_failed
-                            , dribbled_past=t2.dribbled_past
-                            , duels_total=t2.duels_total
-                            , duels_won=t2.duels_won
-                            , duels_lost=t2.duels_lost
-                            , fouls_drawn=t2.fouls_drawn
-                            , fouls_committed=t2.fouls_committed
-                            , shots_total=t2.shots_total
-                            , shots_on_goal=t2.shots_on_goal
-                            , shots_on_goal_saved = t2.shots_on_goal_saved
-                            , shots_missed=t2.shots_missed
-                            , crosses_total=t2.crosses_total
-                            , crosses_complete=t2.crosses_complete
-                            , crosses_incomplete=t2.crosses_incomplete
-                            , passes_total=t2.passes_total
-                            , passes_accuracy=t2.passes_accuracy
-                            , passes_complete=t2.passes_complete
-                            , passes_incomplete=t2.passes_incomplete
-                            , key_passes=t2.key_passes
-                            , blocks=t2.blocks
-                            , clearances=t2.clearances
-                            , dispossessed=t2.dispossessed
-                            , hit_woodwork=t2.hit_woodwork
-                            , inside_box_saves=t2.inside_box_saves
-                            , outside_box_saves=t2.outside_box_saves
-                            , interceptions=t2.interceptions
-                            , minutes_played=t2.minutes_played
-                            , offsides=t2.offsides
-                            , pen_committed=t2.pen_committed
-                            , pen_missed=t2.pen_missed
-                            , pen_saved=t2.pen_saved
-                            , pen_scored=t2.pen_scored
-                            , pen_won=t2.pen_won
-                            , saves=t2.saves
-                            , tackles=t2.tackles
-                            , fixture_kickoff_dt=t2.fixture_kickoff_dt
-                            , load_ts=t2.load_ts
-                    ;''')    
-        
-        con.execute('DROP TABLE tmp_sm_player_stats;')    
+log('Creating tmp table tmp_sm_player_stats')
+df_player_stats.to_sql(name='tmp_sm_player_stats', con=engine, index=False)
 
-    message = "Table sm_player_stats updated"
 
-finally:
-    con.close()
-  
-print(message)
+with engine.connect() as con:
+    
+    # set collation and primary key for tmp table
+    log('Setting primary key for tmp_sm_player_stats to id')
+    con.execute('ALTER TABLE `tmp_sm_player_stats` ADD PRIMARY KEY (`fixture_id`,`player_id`);')
+    log('Setting collation for tmp_sm_player_stats to utf8mb4_unicode_520_ci')
+    con.execute('ALTER TABLE `tmp_sm_player_stats` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;')    
+
+    # updating prod table through tmp table
+    log('Executing INSERT + UPDATE on sm_player_stats')    
+    con.execute('''
+                INSERT INTO sm_player_stats 
+                SELECT  t2.*
+                        , sysdate() as insert_ts
+                        , null as update_ts
+                        
+                FROM tmp_sm_player_stats t2 
+                
+                ON DUPLICATE KEY UPDATE 
+                    fixture_id = t2.fixture_id
+                    , fixture_kickoff_ts = t2.fixture_kickoff_ts
+                    , fixture_kickoff_dt = t2.fixture_kickoff_dt
+                    , season_id = t2.season_id
+                    , season_name = t2.season_name
+                    , round_id = t2.round_id
+                    , round_name = t2.round_name
+                    , fixture_status = t2.fixture_status
+                    , localteam_id = t2.localteam_id
+                    , visitorteam_id = t2.visitorteam_id
+                    , own_team_id = t2.own_team_id
+                    , opp_team_id = t2.opp_team_id
+                    , team_goals_scored = t2.team_goals_scored
+                    , team_goals_conceded = t2.team_goals_conceded
+                    , fixture_type = t2.fixture_type
+                    , number = t2.number
+                    , active_flg = t2.active_flg
+                    , appearance = t2.appearance
+                    , minutes_played = t2.minutes_played
+                    , goals_total = t2.goals_total
+                    , goals_minus_pen = t2.goals_minus_pen
+                    , assists = t2.assists
+                    , big_chances_created = t2.big_chances_created
+                    , key_passes = t2.key_passes
+                    , passes_total = t2.passes_total
+                    , passes_complete = t2.passes_complete
+                    , passes_incomplete = t2.passes_incomplete
+                    , passes_accuracy = t2.passes_accuracy
+                    , crosses_total = t2.crosses_total
+                    , crosses_complete = t2.crosses_complete
+                    , crosses_incomplete = t2.crosses_incomplete
+                    , shots_total = t2.shots_total
+                    , shots_on_goal = t2.shots_on_goal
+                    , shots_missed = t2.shots_missed
+                    , shots_blocked = t2.shots_blocked
+                    , big_chances_missed = t2.big_chances_missed
+                    , hit_woodwork = t2.hit_woodwork
+                    , pen_committed = t2.pen_committed
+                    , pen_missed = t2.pen_missed
+                    , pen_saved = t2.pen_saved
+                    , pen_scored = t2.pen_scored
+                    , pen_won = t2.pen_won
+                    , duels_total = t2.duels_total
+                    , duels_won = t2.duels_won
+                    , duels_lost = t2.duels_lost 
+                    , dribble_attempts = t2.dribble_attempts
+                    , dribbles_success = t2.dribbles_success
+                    , dribbles_failed = t2.dribbles_failed
+                    , clean_sheet = t2.clean_sheet
+                    , goals_conceded = t2.goals_conceded
+                    , goalkeeper_goals_conceded = t2.goalkeeper_goals_conceded
+                    , interceptions = t2.interceptions
+                    , blocks = t2.blocks
+                    , clearances = t2.clearances
+                    , clearance_offline = t2.clearance_offline
+                    , tackles = t2.tackles
+                    , error_lead_to_goal = t2.error_lead_to_goal
+                    , owngoals = t2.owngoals
+                    , dispossessed = t2.dispossessed
+                    , dribbled_past = t2.dribbled_past
+                    , saves = t2.saves
+                    , inside_box_saves = t2.inside_box_saves
+                    , outside_box_saves = t2.outside_box_saves
+                    , punches = t2.punches
+                    , yellowcards = t2.yellowcards
+                    , redcards = t2.redcards
+                    , redyellowcards = t2.redyellowcards
+                    , update_ts = sysdate()
+                ;
+                ''')
+                
+    # drop tmp table as not needed anymore
+    log('Dropping tmp table tmp_sm_player_stats')
+    con.execute('DROP TABLE tmp_sm_player_stats;')    
+
+log('Finished update process for sm_player_stats')
+
+con.close()
