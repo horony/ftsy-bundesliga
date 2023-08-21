@@ -2,8 +2,8 @@ INSERT INTO ftsy_scoring_hist
 
 SELECT 	fix.season_id
 				, fix.season_name
-				, fix.round_name
 				, fix.round_id
+				, fix.round_name				
 				, fix.fixture_id
         , fix.kickoff_dt
         , fix.kickoff_ts
