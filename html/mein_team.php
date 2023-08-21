@@ -78,8 +78,8 @@
 
 						LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab 
 							ON 	usr.user_id = tab.player_id
-									AND tab.spieltag = (SELECT max(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = (SELECT season_id FROM xa7580_db1.sm_seasons WHERE is_current_season = 1))
-									AND tab.season_id = (SELECT season_id FROM xa7580_db1.sm_seasons WHERE is_current_season = 1)
+									AND tab.spieltag = (SELECT max(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = (SELECT season_id FROM xa7580_db1.parameter))
+									AND tab.season_id = (SELECT season_id FROM xa7580_db1.parameter)
 
 						LEFT JOIN xa7580_db1.ftsy_schedule sch
 							ON 	sch.buli_round_name = '".$akt_spieltag."'
@@ -88,8 +88,8 @@
 
 						LEFT JOIN xa7580_db1.ftsy_tabelle_2020 opp 
 							ON ( case when sch.ftsy_home_id = tab.player_id then sch.ftsy_away_id else sch.ftsy_home_id end ) = opp.player_id
-									and opp.spieltag = (SELECT max(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = (SELECT season_id FROM xa7580_db1.sm_seasons WHERE is_current_season = 1))
-									and opp.season_id = (SELECT season_id FROM xa7580_db1.sm_seasons WHERE is_current_season = 1)
+									and opp.spieltag = (SELECT max(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = (SELECT season_id FROM xa7580_db1.parameter))
+									and opp.season_id = (SELECT season_id FROM xa7580_db1.parameter)
 
 						WHERE usr.username = '".$show_team."' 
 					");
