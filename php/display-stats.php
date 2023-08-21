@@ -429,9 +429,91 @@ if ($stat_category == 'FANTASY-TEAMS'){
 
 	// Define stats that should be summed up
 
-	$stats_to_iterate=array('ftsy_score_sum','ftsy_score_avg','ftsy_score_avg_last_5', 'ftsy_score_avg_last_3', 'goals_made_stat_sum','penalties_made_stat_sum','assists_made_stat_sum', 'dribble_success_stat_sum', 'duels_won_stat_sum', 'shots_total_stat_sum', 'crosses_complete_stat_sum', 'passes_complete_stat_sum', 'passes_key_stat_sum', 'blocks_stat_sum', 'clearances_stat_sum','interceptions_stat_sum', 'dispossessed_stat_sum', 'minutes_played_stat_sum', 'owngoals_stat_sum', 'redcards_stat_sum', 'yellowredcards_stat_sum', 'dribbled_past_stat_sum', 'fouls_drawn_stat_sum', 'fouls_committed_stat_sum', 'passes_incomplete_stat_sum', 'tackles_stat_sum','saves_stat_sum','pen_committed_stat_sum','pen_missed_stat_sum','pen_saved_stat_sum','pen_won_stat_sum');
+	$stats_to_iterate=array(
+		
+		// ftsy-score
+		'ftsy_score_sum'
+		,'ftsy_score_avg'
+		,'ftsy_score_avg_last_5'
+		, 'ftsy_score_avg_last_3'
+		, 'ftsy_score_last'
 
-	$headline_array=array('Punkte Saison','Schnitt Saison','Schnitt Last 5','Schnitt Last 3','Tore aus dem Spiel','Elfmeter-Tore','Assists', 'Erfolgreiche Dribblings', 'Gewonnene Duelle', 'Torschüsse', 'Angekommene Flanken', 'Angekommene Pässe', 'Schlüsselpässe', 'Geblockte Schüsse', 'Geklärte Bälle','Abgefangene Bälle', 'Ballverluste', 'Gespielte Minuten', 'Eigentore', 'Rote Karten', 'Gelb-Rote Karten', 'Ausgedribbelt worden', 'Gefoult worden', 'Fouls begangen', 'Fehlpässe', 'Tacklings','Gehaltene Schüsse','Elfmeter verursacht','Elfmeter verschossen','Elfmeter gehalten','Elfmeter rausgeholt');
+		// goals and shots
+		, 'goals_total_stat_sum'
+		, 'pen_scored_stat_sum'
+		, 'shots_total_stat_sum'
+		, 'hit_woodwork_stat_sum'
+
+		// assists and passing
+		, 'assists_stat_sum'
+		, 'big_chances_created_stat_sum'
+		, 'pen_won_stat_sum'
+		, 'key_passes_stat_sum'
+		, 'passes_complete_stat_sum'
+		, 'passes_accuracy_stat_avg'
+		, 'crosses_complete_stat_sum'
+
+		// duels
+		, 'duels_won_stat_sum'
+		, 'dribbles_success_stat_sum'
+		, 'tackles_stat_sum'
+		, 'blocks_stat_sum'
+		, 'clearances_stat_sum'
+		, 'clearances_offline_stat_sum'
+		, 'interceptions_stat_sum'
+
+		// errors
+		, 'error_lead_to_goal_stat_sum'
+		, 'owngoals_stat_sum'
+		, 'pen_committed_stat_sum'
+		, 'redcards_stat_sum'
+		, 'redyellowcards_stat_sum'
+		, 'duels_lost_stat_sum'
+		, 'dispossessed_stat_sum'
+		, 'dribbled_past_stat_sum'
+		, 'pen_missed_stat_sum'
+		, 'big_chances_missed_stat_sum'
+		, 'passes_incomplete_stat_sum'
+
+		// goalkeeping
+		, 'saves_stat_sum' 
+		, 'inside_box_saves_stat_sum'
+		, 'outside_box_saves_stat_sum'
+		, 'pen_saved_stat_sum'
+		, 'punches_stat_sum'
+
+		// misc
+		, 'goals_conceded_stat_sum'
+		, 'clean_sheet_stat_sum'
+		, 'appearance_stat_sum'
+		, 'minutes_played_stat_sum'
+	);
+
+	$headline_array=array(
+		// ftsy-score
+		'Punkte Saison','Schnitt Saison','Schnitt Last 5','Schnitt Last 3', 'Letztes Spiel'
+
+		// goals and shooting
+		, 'Tore Gesamt','Elfmeter-Tore', 'Torschüsse', 'Pfosten'
+
+		// assists and passing
+		, 'Assists', 'Großchancen kreiert', 'Elfmeter rausgeholt', 'Key-Pässe', 'Angekommene Pässe', 'Passgenauigkeit', 'Angekommene Flanken'
+
+		# duels
+		, 'Gewonnene Duelle', 'Erfolgreiche Dribblings', 'Tacklings', 'Schüsse geblockt', 'Bälle geklärt', 'Bälle auf der Linie geklärt','Abgefangene Bälle'
+
+		// errors
+		, 'Gegentore verursacht', 'Eigentore', 'Elfmeter verursacht', 'Rote Karten', 'Gelb-Rote Karten', 'Duelle verloren', 'Ballverluste', 'Ausgedribbelt worden', 'Elfmeter verschossen', 'Großchancen vergeben', 'Fehlpässe'
+
+		// goalkeeping
+		, 'Gehaltene Schüsse', 'Gehaltene Schüsse (im 16er)', 'Gehaltene Fernschüsse', 'Elfmeter gehalten', 'Weggefaustete Bälle'
+
+		// misc
+		, 'Gegentore'
+		, 'Weiße Westen'
+		, 'Einsätze'
+		, 'Gespielte Minuten'
+	);
 
 	// iterate and construct SQL
 
