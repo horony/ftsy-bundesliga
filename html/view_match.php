@@ -292,7 +292,7 @@ require("../php/auth.php");
 											, case 	when ftsy.minutes_played_stat is null and ftsy.appearance_stat = 1 then '1 Min.' 
 											     		when ftsy.minutes_played_stat is not null and ftsy.appearance_stat = 1 then concat(ftsy.minutes_played_stat, ' Min.')
 											     		else null
-											     		end as appearance_stat
+											     		end as appearance_stat_x
 											
 											, ftsy.goals_minus_pen_stat
 
