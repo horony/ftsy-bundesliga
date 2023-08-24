@@ -112,19 +112,20 @@ if ($stat_category == 'FANTASY-TEAMS'){
 	");
 
 	// Get SQL body snippet
+	
 	$sql_body = file_get_contents('../sql/snippets/stats-ftsy-team-formation.sql');
 
 	$starter = mysqli_query($con,"
 		SELECT 	'Verschiedene Spieler aufgestellt (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, count(distinct hist.player_id) as kennzahl_1  /*sum(hist.goals_made_stat + hist.penalties_made_stat) as kennzahl_1*/
+						, count(distinct hist.player_id) as kennzahl_1 
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
 		" . " " . $sql_body
 	);
-
+	
 	$nicht_gespielt = mysqli_query($con,"	
 		SELECT 	'Nicht eingesetzte Spieler aufgestellt (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
@@ -140,7 +141,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Spielminuten aufgestellter Spieler (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.minutes_played_stat) as kennzahl_1
+						, sum(coalesce(hist.minutes_played_stat,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -151,7 +152,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Toren (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.goals_made_ftsy + hist.penalties_made_ftsy) as kennzahl_1
+						, sum(coalesce(hist.goals_minus_pen_ftsy,0) + coalesce(hist.pen_scored_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -162,18 +163,19 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Assists (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.assists_made_ftsy) as kennzahl_1
+						, sum(coalesce(hist.assists_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
 		" . " " . $sql_body
 	);
+	
 
 	$redcard = mysqli_query($con,"
 		SELECT 	'Fantasy-Punkte aus Platzverweisen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.redcards_ftsy + hist.yellowredcards_ftsy) as kennzahl_1
+						, sum(coalesce(hist.redcards_ftsy,0) + coalesce(hist.redyellowards_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -184,7 +186,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Dribbling-Versuchen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.dribble_success_ftsy + hist.dribble_fail_ftsy) as kennzahl_1
+						, sum(coalesce(hist.dribbles_success_ftsy,0) + coalesce(hist.dribbles_failed_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -195,7 +197,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Duellen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.duels_won_ftsy + hist.duels_lost_ftsy) as kennzahl_1
+						, sum(coalesce(hist.duels_won_ftsy,0) + coalesce(hist.duels_lost_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -206,7 +208,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Torschüssen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.shots_total_ftsy + hist.shots_on_goal_ftsy + hist.shots_missed_ftsy + hist.shots_on_goal_saved_ftsy) as kennzahl_1
+						, sum(coalesce(hist.shots_total_ftsy,0) + coalesce(hist.shots_on_goal_ftsy,0) + coalesce(hist.shots_missed_ftsy,0) + coalesce(hist.shots_blocked_ftsy,0) + coalesce(hist.hit_woodwork_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -217,7 +219,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Flanken (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.crosses_total_ftsy + hist.crosses_complete_ftsy + hist.crosses_incomplete_ftsy) as kennzahl_1
+						, sum(coalesce(hist.crosses_total_ftsy,0) + coalesce(hist.crosses_complete_ftsy,0) + coalesce(hist.crosses_incomplete_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -228,18 +230,30 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Pässen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.passes_total_ftsy + hist.passes_complete_ftsy + hist.passes_incomplete_ftsy) as kennzahl_1
+						, sum(coalesce(hist.passes_total_ftsy,0) + coalesce(hist.passes_complete_ftsy,0) + coalesce(hist.passes_incomplete_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
 		" . " " . $sql_body
 	);
 
+	$big_chances = mysqli_query($con,"	SELECT 	
+		'Fantasy-Punkte aus kreierten Großchancen (Liga)' as headline
+		, hist.1_ftsy_owner_id as besitzer
+		, user.teamname
+		, sum(coalesce(hist.big_chances_created_ftsy,0)) as kennzahl_1
+		, 0 as kennzahl_2
+		, 0 as kennzahl_3
+		, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
+		" . " " . $sql_body
+	);	
+
+
 	$key_paesse = mysqli_query($con,"	SELECT 	
 		'Fantasy-Punkte aus Schlüsselpässen (Liga)' as headline
 		, hist.1_ftsy_owner_id as besitzer
 		, user.teamname
-		, sum(hist.passes_key_ftsy) as kennzahl_1
+		, sum(coalesce(hist.key_passes_ftsy,0)) as kennzahl_1
 		, 0 as kennzahl_2
 		, 0 as kennzahl_3
 		, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -247,10 +261,10 @@ if ($stat_category == 'FANTASY-TEAMS'){
 	);
 
 	$blocks = mysqli_query($con,"
-		SELECT 	'Fantasy-Punkte aus geblockten Schüssen (Liga)' as headline
+		SELECT 	'Fantasy-Punkte aus Blocks (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.blocks_ftsy) as kennzahl_1
+						, sum(coalesce(hist.blocks_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -261,7 +275,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus geklärten Bällen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.clearances_ftsy) as kennzahl_1
+						, sum(coalesce(hist.clearances_ftsy,0) + coalesce(hist.clearances_offline_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -272,7 +286,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Ballverlusten (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.dispossessed_ftsy) as kennzahl_1
+						, sum(coalesce(hist.dispossessed_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -283,7 +297,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus abgefangenen Bällen (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.interceptions_ftsy) as kennzahl_1
+						, sum(coalesce(hist.interceptions_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -294,7 +308,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Tacklings (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.tackles_ftsy) as kennzahl_1
+						, sum(coalesce(hist.tackles_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
@@ -305,37 +319,38 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		SELECT 	'Fantasy-Punkte aus Torwarspiel (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
-						, sum(hist.inside_box_saves_ftsy + hist.outside_box_saves_ftsy + hist.saves_ftsy + hist.pen_saved_ftsy) as kennzahl_1
+						, sum(coalesce(hist.inside_box_saves_ftsy,0) + coalesce(hist.outside_box_saves_ftsy,0) + coalesce(hist.saves_ftsy,0) + coalesce(hist.pen_saved_ftsy,0) + coalesce(hist.punches_ftsy,0)) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
 		" . " " . $sql_body
 	);
+
 
 	$abschluesse = mysqli_query($con,"	
 		SELECT 	'Fantasy-Punkte aus Abschlüssen gesamt (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
 						, sum(
-							hist.goals_made_ftsy + hist.penalties_made_ftsy
-							+ hist.shots_total_ftsy + hist.shots_missed_ftsy + hist.shots_on_goal_ftsy + hist.shots_on_goal_saved_ftsy
-							+ hist.pen_missed_ftsy
+							coalesce(hist.goals_minus_pen_ftsy,0) + coalesce(hist.pen_scored_ftsy,0)
+							+ coalesce(hist.shots_total_ftsy,0) + coalesce(hist.shots_missed_ftsy,0) + coalesce(hist.shots_on_goal_ftsy,0) + coalesce(hist.shots_blocked_ftsy,0)
+							+ coalesce(hist.pen_missed_ftsy,0) + coalesce(hist.hit_woodwork_ftsy,0) + coalesce(hist.big_chances_missed_ftsy,0)
 							) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
 						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
 		" . " " . $sql_body
 	);
-
+	
 	$passspiel = mysqli_query($con,"	
 		SELECT 	'Fantasy-Punkte aus Passpiel gesamt (Liga)' as headline
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
 						, sum(
-							hist.assists_made_ftsy
-							+ hist.crosses_total_ftsy + hist.crosses_complete_ftsy + hist.crosses_incomplete_ftsy
-							+ hist.passes_total_ftsy + hist.passes_complete_ftsy + hist.passes_incomplete_ftsy
-							+ hist.passes_key_ftsy
+							coalesce(hist.assists_ftsy,0)
+							+ coalesce(hist.crosses_total_ftsy,0) + coalesce(hist.crosses_complete_ftsy,0) + coalesce(hist.crosses_incomplete_ftsy,0)
+							+ coalesce(hist.passes_total_ftsy,0) + coalesce(hist.passes_complete_ftsy,0) + coalesce(hist.passes_incomplete_ftsy,0)
+							+ coalesce(hist.key_passes_ftsy,0) + coalesce(hist.big_chances_created_ftsy,0)
 							) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
@@ -348,16 +363,18 @@ if ($stat_category == 'FANTASY-TEAMS'){
 						, hist.1_ftsy_owner_id as besitzer
 						, user.teamname
 						, sum(
-							hist.dribble_attempts_ftsy + hist.dribble_success_ftsy + hist.dribble_fail_ftsy 
-							+ hist.dribbled_past_ftsy
-							+ hist.duels_total_ftsy + hist.duels_won_ftsy + hist.duels_lost_ftsy
-							+ hist.blocks_ftsy
-							+ hist.clearances_ftsy
-							+ hist.dispossessed_ftsy
-							+ hist.interceptions_ftsy
-							+ hist.tackles_ftsy
-							+ hist.pen_committed_ftsy
-							+ hist.pen_won_ftsy
+							coalesce(hist.dribble_attempts_ftsy,0) + coalesce(hist.dribbles_success_ftsy,0) + coalesce(hist.dribbles_failed_ftsy,0)
+							+ coalesce(hist.dribbled_past_ftsy,0)
+							+ coalesce(hist.duels_total_ftsy,0) + coalesce(hist.duels_won_ftsy,0) + coalesce(hist.duels_lost_ftsy,0)
+							+ coalesce(hist.blocks_ftsy,0)
+							+ coalesce(hist.clearances_ftsy,0) + coalesce(hist.clearances_offline_ftsy,0)
+							+ coalesce(hist.dispossessed_ftsy,0)
+							+ coalesce(hist.interceptions_ftsy,0)
+							+ coalesce(hist.tackles_ftsy,0)
+							+ coalesce(hist.pen_committed_ftsy,0)
+							+ coalesce(hist.pen_won_ftsy,0)
+							+ coalesce(hist.punches_ftsy,0)
+							+ coalesce(hist.error_lead_to_goal_ftsy,0)
 							) as kennzahl_1
 						, 0 as kennzahl_2
 						, 0 as kennzahl_3
@@ -365,8 +382,24 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		" . " " . $sql_body
 	);
 
+	$gegentore = mysqli_query($con,"	
+		SELECT 	'Fantasy-Punkte aus Gegentoren (Liga)' as headline
+						, hist.1_ftsy_owner_id as besitzer
+						, user.teamname
+						, sum(
+							coalesce(hist.goals_conceded_ftsy,0)
+							+ coalesce(hist.goalkeeper_goals_conceded_ftsy,0)
+							+ coalesce(hist.clean_sheet_ftsy,0)
+							) as kennzahl_1
+						, 0 as kennzahl_2
+						, 0 as kennzahl_3
+						, case when hist.1_ftsy_owner_id = '".$user_id."' then 1 else 0 end as highlight_flg
+		" . " " . $sql_body
+	);
+	
+
 	// Collect all queries in an array
-	$stat_array = array($topscores, $tabelle, $meister, $pokal, $starter, $nicht_gespielt, $minutes, $tore, $vorlagen, $abschluesse, $passspiel, $zweikampf, $torwart, $duelle, $schuesse, $paesse, $key_paesse, $flanken, $dribbling, $ints, $tackles, $blocks, $clear, $dis, $redcard);
+	$stat_array = array($topscores, $tabelle, $meister, $pokal, $starter, $nicht_gespielt, $minutes, $tore, $vorlagen, $abschluesse, $passspiel, $zweikampf, $torwart, $gegentore, $duelle, $schuesse, $paesse, $big_chances, $key_paesse, $flanken, $dribbling, $ints, $tackles, $blocks, $clear, $dis, $redcard);
 
 } elseif ($stat_category == 'BUNDESLIGA-TEAMS') {
 	
