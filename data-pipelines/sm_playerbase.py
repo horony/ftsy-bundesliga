@@ -14,6 +14,7 @@ import pandas as pd
 
 from sqlalchemy import create_engine
 import requests
+import numpy as np
  
 import sys
 sys.path.insert(1, '../secrets/')
@@ -32,22 +33,25 @@ log_headline('(1/4) GET META-DATA FROM MYSQL DB')
 log('Connecting to MySQL database')
 
 # connect to MySQL-database
+
 from mysql_db_connection import db_user, db_pass, db_port, db_name
 engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
+
 
 with engine.connect() as con:
     log("Selecting current season_id from table parameter")
     sql_select = con.execute('SELECT season_id FROM parameter')
     sql_first_row = sql_select.fetchone()
     aktuelle_buli_season =  sql_first_row['season_id']
-  
-"""
+
+con.close()
+
+"""  
 # uncomment for testing
-aktuelle_buli_season = 19744
+aktuelle_buli_season = 21795
 """
 
 log("Current season-id in fantasy-game: " + str(aktuelle_buli_season))
-con.close()
 
 ########################################################
 #   GET TEAMS AND SIDELINED DATA FROM TEAMS ENDPOINT   #
@@ -100,6 +104,7 @@ for team in data_teams:
             
             list_current_sidelined.append(player_sidelined['player_id'])
             list_current_sidelined.append(player_sidelined['player']['display_name'])
+            list_current_sidelined.append(player_sidelined['type']['id'])            
             list_current_sidelined.append(player_sidelined['type']['name'])
             list_current_sidelined.append(player_sidelined['start_date'])
             list_current_sidelined.append(player_sidelined['end_date'])
@@ -107,13 +112,13 @@ for team in data_teams:
                
             list_sidelined.append(list_current_sidelined)      
 
-log('Extractigng teamd-ids')              
+log('Extracting teamd-ids')              
 df_teams = pd.DataFrame(columns=['team_id','name'], data=list_teams)    
 aktuelle_buli_teams = df_teams['team_id'].tolist()
 log("Current team-ids are: " + str(aktuelle_buli_teams))
 
 log('Building DataFrame from parsed sidelined data')              
-df_sidelined = pd.DataFrame(columns=['player_id','display_name','injury_reason','start_date','end_date','completed'], data=list_sidelined)
+df_sidelined = pd.DataFrame(columns=['player_id','display_name','sidelined_type_id','injury_reason','start_date','end_date','completed'], data=list_sidelined)
 df_sidelined = df_sidelined.drop_duplicates(subset=['player_id'], keep='first')
 log('Created DataFrame containing ' + str(df_sidelined.shape[0]) + ' unique sidelined players')
 
@@ -211,18 +216,16 @@ for team_id in aktuelle_buli_teams:
             list_current_player.append(None)
             list_current_player.append(None)           
         
-        """
-        Sidelined needs to be reworked with next SportMonks release
-        """
-        # if player['player_id'] in df_sidelined['player_id'].values:
-        
         list_current_player.append(None) # captain
-        list_current_player.append(None) # injured
-            
-        # currently injured or suspended
-        list_current_player.append(None) #sus
-        list_current_player.append(None) #inj
-        list_current_player.append(False)
+
+        """
+        Sidelined is calced on full DataFrames after parsing, just placeholders here
+        """ 
+        
+        list_current_player.append(None) # placeholder
+        list_current_player.append(None) # placeholder
+        list_current_player.append(None) # placeholder
+        list_current_player.append(False) # placeholder
         
         # player image
         list_current_player.append(isNone(player['player']['image_path'],None))
@@ -300,12 +303,34 @@ log('Building DataFrame from parsed player data')
 column_names_players = ['id','rostered','fullname','common_name','display_name'
                       ,'firstname','lastname','current_team_id','current_team_name'
                       ,'number','position_id','position_short', 'position_long','position_detail_id','position_detail_name'
-                      , 'captain','injured', 'is_suspended', 'injury_reason'
-                      , 'is_sidelined', 'image_path','height','weight'
-                      , 'country_id','birthcountry','birth_dt','birthplace'
+                      ,'captain','injured', 'is_suspended', 'injury_reason', 'is_sidelined'
+                      ,'image_path','height','weight'
+                      ,'country_id','birthcountry','birth_dt','birthplace'
                       ]
 df_players = pd.DataFrame(columns=column_names_players, data=list_players)
 log('Created DataFrame containing ' + str(df_players.shape[0]) + ' players')
+
+# joining sidelined-data to player-data to update sidelined information
+log('Updating player DataFrame with sidelined DataFrame')              
+
+# filter df_sidelined to valid rows and columns
+df_sidelined = df_sidelined.loc[~df_sidelined.completed]
+df_sidelined = df_sidelined[['player_id','sidelined_type_id','injury_reason']]
+
+# execute join
+df_players = pd.merge(df_players, df_sidelined, left_on='id', right_on='player_id', how='left')
+
+# define suspensions (e.g. red card)
+df_players['is_suspended'] = np.where((df_players['sidelined_type_id'] == 561) | (df_players['sidelined_type_id'] == 1692), 1, None)
+
+# define injuries
+df_players['injury_reason_x'] = df_players['injury_reason_y']
+df_players = df_players.rename(columns={'injury_reason_x': 'injury_reason'})
+df_players['injured'] = np.where(((df_players['sidelined_type_id'] > 0) & (df_players['sidelined_type_id'] != 561) & (df_players['sidelined_type_id'] != 1692)), 1, None)
+
+# drop not needed columns
+df_players = df_players.drop(columns=['player_id','sidelined_type_id','injury_reason_y'], axis=1)
+log('Updated player DataFrame with sidelined information of ' + str(df_sidelined.shape[0]) + ' players')
 
 # store transfers results to DataFrame
 log('Building DataFrame from parsed transfer data')              
