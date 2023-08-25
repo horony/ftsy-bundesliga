@@ -619,9 +619,139 @@ if ($stat_category == 'FANTASY-TEAMS'){
 
 } elseif ($stat_category == 'TOP-PERFORMANCES') {
 
+	// Forever
+	
+	$top_forever = 	mysqli_query($con,"		
+
+			SELECT 	'All-Time Fantasy-Punkte' as headline
+							, display_name as name 
+							, year(min(kickoff_dt)) as min_jahr
+			        , year(max(kickoff_dt)) as max_jahr
+							, sum(ftsy_score) as kennzahl_1
+			        , count(ftsy_score) as kennzahl_2
+			        , sum(case when 1_ftsy_owner_id = '".$user_id."' then 1 else 0 end) as highlight_flg
+			        
+			FROM `ftsy_scoring_hist`
+			WHERE position_short $equal_sign ('".$get_player_position."')
+			GROUP BY display_name
+			ORDER BY sum(ftsy_score) DESC		
+			LIMIT 15;
+		");	
+
+	echo "<div class='stat_wrapper'>";
+		echo "<div class='stat_body'>";	
+			echo "<div class='stat_head'>";
+				$params = mysqli_fetch_array($top_forever);
+				$headline = mb_convert_encoding($params['headline'], 'UTF-8');
+				$kennzahl_2_flg = $params['kennzahl_2'];
+				echo $headline;
+				mysqli_data_seek($top_forever, 0);
+			echo "</div>";
+		
+			echo "<div class='stat_table'>";
+
+				while($row = mysqli_fetch_array($top_forever)) {
+
+					if ($row['highlight_flg'] > 0) {
+						echo "<div class='stat_tr my_team'>";
+					} elseif ($row['vereinslos_flg'] == 1) {
+						echo "<div class='stat_tr no_team' title='Spieler ist aktuell Free Agent bzw. im Waiver.' style='cursor: help;'>";
+					} else {
+						echo "<div class='stat_tr'>";
+					}
+
+							echo "<div class='stat_td'>";
+								echo mb_convert_encoding($row['name'], 'UTF-8');
+							echo "</div>";
+							echo "<div class='stat_td'>";
+								echo utf8_encode($row['kennzahl_1']);
+							echo "</div>";
+
+							if ($kennzahl_2_flg != '0') {
+							echo "<div class='stat_td detail_info'>";
+								echo utf8_encode($row['kennzahl_2'] . ' Spiele von ' . $row['min_jahr'] . ' bis ' . $row['max_jahr']);
+							echo "</div>";
+							}
+						echo "</div>";
+				}
+			echo "</div>";
+		echo "</div>";
+	echo "</div>";
+
+
+	$stat_array = array($top_forver);	
+	
+	// Season
+
+	$top_season = 	mysqli_query($con,"		
+
+			SELECT 	'Saison-Rekorde Fantasy-Punkte' as headline
+							, display_name as name 
+							, season_name
+							, sum(ftsy_score) as kennzahl_1
+			        , sum(case when 1_ftsy_owner_id = '".$user_id."' then 1 else 0 end) as highlight_flg
+			        , group_concat(1_ftsy_owner_id) as kennzahl_2
+			        
+			FROM `ftsy_scoring_hist`
+			WHERE position_short $equal_sign ('".$get_player_position."')
+			GROUP BY display_name, season_name
+			ORDER BY sum(ftsy_score) DESC		
+			LIMIT 15;
+		");	
+
+	echo "<div class='stat_wrapper'>";
+		echo "<div class='stat_body'>";	
+			echo "<div class='stat_head'>";
+				$params = mysqli_fetch_array($top_season);
+				$headline = mb_convert_encoding($params['headline'], 'UTF-8');
+				$kennzahl_2_flg = $params['kennzahl_2'];
+				$kennzahl_3_flg = $params['kennzahl_3'];
+				echo $headline;
+				mysqli_data_seek($top_season, 0);
+			echo "</div>";
+		
+			echo "<div class='stat_table'>";
+
+				while($row = mysqli_fetch_array($top_season)) {
+
+					if ($row['highlight_flg'] > 0) {
+						echo "<div class='stat_tr my_team'>";
+					} else {
+						echo "<div class='stat_tr'>";
+					}
+
+							echo "<div class='stat_td'>";
+								echo mb_convert_encoding($row['name'], 'UTF-8');
+							echo "</div>";
+							echo "<div class='stat_td'>";
+								echo utf8_encode($row['kennzahl_1']);
+							echo "</div>";
+
+							if ($kennzahl_2_flg != '0') {
+							echo "<div class='stat_td detail_info'>";
+								echo utf8_encode('Saison ' . $row['season_name']);
+							echo "</div>";
+							}
+
+							if ($kennzahl_3_flg != '0') {
+							echo "<div class='stat_td detail_info'>";
+								echo utf8_encode($row['kennzahl_3']);
+							echo "</div>";
+							}
+						
+						echo "</div>";
+				}
+			echo "</div>";
+		echo "</div>";
+	echo "</div>";
+
+	$stat_array = array_merge($stat_array,array($top_season));
+
+	// Per Game
+
 	$stats_to_iterate=array('ftsy_score', 'goals_total_stat','assists_stat', 'goals_total_stat+assists_stat', 'shots_total_stat', 'key_passes_stat', 'passes_complete_stat', 'crosses_total_stat', 'crosses_complete_stat', 'duels_total_stat', 'duels_won_stat', 'dribbles_success_stat', 'blocks_stat', 'clearances_stat','interceptions_stat','tackles_stat','saves_stat', 'passes_incomplete_stat', 'duels_lost_stat', 'dispossessed_stat', 'dribbled_past_stat');
 
-	$headline_array=array('Fantasy-Punkte in einem Spiel','Tore in einem Spiel','Assists in einem Spiel', 'Scorer-Punkte in einem Spiel', 'Torschüsse in einem Spiel', 'Schlüsselpässe in einem Spiel', 'Angekommene Pässe in einem Spiel', 'Flankenversuche in einem Spiel', 'Angekommene Flanken in einem Spiel', 'Duelle in einem Spiel', 'Gewonnene Duelle in einem Spiel', 'Erfolgreiche Dribblings in einem Spiel', 'Geblockte Schüsse in einem Spiel', 'Geklärte Bälle in einem Spiel', 'Abgefangene Bälle in einem Spiel', 'Tacklings in einem Spiel','Gehaltene Schüsse in einem Spiel', 'Fehlpässe in einem Spiel','Verlorene Duelle in einem Spiel', 'Ballverluste in einem Spiel', 'Ausgedribbelt worden in einem Spiel');
+	$headline_array=array('Spiel-Rekorde Fantasy-Punkte','Tore in einem Spiel','Assists in einem Spiel', 'Scorer-Punkte in einem Spiel', 'Torschüsse in einem Spiel', 'Schlüsselpässe in einem Spiel', 'Angekommene Pässe in einem Spiel', 'Flankenversuche in einem Spiel', 'Angekommene Flanken in einem Spiel', 'Duelle in einem Spiel', 'Gewonnene Duelle in einem Spiel', 'Erfolgreiche Dribblings in einem Spiel', 'Geblockte Schüsse in einem Spiel', 'Geklärte Bälle in einem Spiel', 'Abgefangene Bälle in einem Spiel', 'Tacklings in einem Spiel','Gehaltene Schüsse in einem Spiel', 'Fehlpässe in einem Spiel','Verlorene Duelle in einem Spiel', 'Ballverluste in einem Spiel', 'Ausgedribbelt worden in einem Spiel');
 
 	foreach ($stats_to_iterate as $index => $element) {
 
@@ -694,8 +824,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 
 	}
 
-	$stat_array = array($top_fantasy);
-
+	$stat_array = array_merge($stat_array,array($top_fantasy));
 }
 
 /********************/
