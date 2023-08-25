@@ -350,7 +350,7 @@ require("../php/auth.php");
 															else null 
 															end as goals_conceded_stat_x
 											, ftsy.clean_sheet_stat
-											, case 	when ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy < 0 then ftsy.clean_sheet_stat 
+											, case 	when ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy > 0 then ftsy.clean_sheet_stat 
 															else null 
 															end as clean_sheet_stat_x
 							        , proj.ftsy_score_projected 
@@ -514,7 +514,7 @@ require("../php/auth.php");
 														else null 
 														end as goals_conceded_stat_x
 										, ftsy.clean_sheet_stat
-										, case 	when ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy < 0 then ftsy.clean_sheet_stat 
+										, case 	when ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy > 0 then ftsy.clean_sheet_stat 
 														else null 
 														end as clean_sheet_stat_x
 
@@ -694,7 +694,7 @@ require("../php/auth.php");
 						// Detailed player stats
 
 						echo "<tr class= 'player_detail'><td colspan='4'>";
-							if ($row['appearance_stat'] != NULL) {
+							if ($row['appearance_stat_x'] != NULL) {
 
 								/* Appearance */
 								echo( ($row['appearance_stat_x'] != NULL)? 'Gespielte Minuten: ' . $row['appearance_stat_x'] . ' | ' : NULL);	
