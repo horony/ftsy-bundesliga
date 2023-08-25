@@ -51,9 +51,9 @@ with engine.connect() as con:
     aktuelle_buli_season = sql_first_row['season_id']
     season_name = sql_first_row['season_name']
     
-#aktueller_fantasy_spieltag = 1
+#aktueller_fantasy_spieltag = 2
 #aktuelle_buli_season = 17361
-#season_name = '2020/2021'
+#season_name = '2023/2024'
 
 log("Current round-name in fantasy-game: " + str(aktueller_fantasy_spieltag))
 log("Current season-id in fantasy-game: " + str(aktuelle_buli_season))
@@ -403,6 +403,9 @@ df_stats = df_stats.rename(columns={
 
 if 'pen_scored' not in df_stats.columns:
         df_stats['pen_scored'] = 0
+        
+if 'goals_total' not in df_stats.columns:
+        df_stats['goals_total'] = 0
 
 df_stats = df_stats.fillna(0)
 
