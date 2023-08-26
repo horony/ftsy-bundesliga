@@ -224,6 +224,11 @@ for spieltag in fixture_ids_collection:
         round_id = int(match['round_id'])    
         round_name = int(match['round']['name'])    
         
+        localteam_id = None
+        localteam_score = None
+        visitorteam_id = None
+        visitorteam_score = None
+        
         for score in match['scores']:
             if score['type_id'] == 1525 and score['score']['participant'] == 'home':
                 localteam_id = int(score['participant_id'])
