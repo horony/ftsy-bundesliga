@@ -21,10 +21,10 @@ INSERT INTO xa7580_db1.ftsy_tabelle_2020 (
 	, updown
 	)
 
-SELECT 	'$akt_season_id' as season_id
+SELECT 	par.season_id as season_id
 				, 1 as league_id
-				, '$aktueller_spieltag' as spieltag
-				, '$akt_round_id' as round_id
+				, par.spieltag as spieltag
+				, rnd.id as round_id
 				, @curStanding := @curStanding + 1 AS new_standing
 				, complete_table.user_id
 				, complete_table.user_teamname
@@ -404,6 +404,13 @@ FROM (
 	ORDER BY points DESC, h2h_tiebraker DESC, score_for DESC, score_against DESC 
 
 ) complete_table, (SELECT @curStanding:= 0) standing
+
+INNER JOIN parameter par  
+	ON 	1 = 1
+
+INNER JOIN sm_rounds rnd 
+	ON 	par.season_id = rnd.season_id
+			AND par.spieltag = rnd.name
 
 ORDER BY 	complete_table.points DESC
 					, complete_table.h2h_tiebraker DESC

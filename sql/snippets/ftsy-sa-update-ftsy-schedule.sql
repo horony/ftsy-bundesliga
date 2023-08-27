@@ -31,5 +31,5 @@ LEFT JOIN (
 SET 	sch.ftsy_home_score = CASE WHEN anz1 = 11 THEN COALESCE(akt_score_1.fantasy_score1,0) ELSE -20 END
 			, sch.ftsy_away_score = CASE WHEN anz2 = 11 THEN COALESCE(akt_score_2.fantasy_score2,0) ELSE -20 END
 
-WHERE 	sch.buli_round_name = '".$aktueller_spieltag."' 
-				AND season_id = '".$akt_season_id."'
+WHERE 	sch.buli_round_name = (SELECT spieltag FROM parameter)
+				AND season_id = (SELECT season_id FROM parameter)
