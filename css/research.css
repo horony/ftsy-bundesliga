@@ -251,11 +251,11 @@ body {
   padding-right: 10px !important;
 }
 
-#player_image{
-  height: 100%;
-  padding: 5px;
+#player_image {
+  width: 100%;
+  object-fit: contain;
+  overflow: auto;
 }
-
 
 .sub_headline{
   font-size: 14px;
