@@ -1,4 +1,5 @@
 <?php
+
 /************************************************/
 /* SCRIPT TO SWITCH SPIELTAG / ROUND						*/
 /*																							*/
@@ -18,11 +19,15 @@ include("../secrets/mysql_db_connection.php");
 
 // Preparations: Get meta-data
 
+echo "0/8 - Fetching meta data from MySQL DB" . "<br>";
+
+// Current spieltag name
 $aktueller_spieltag = mysqli_query($con, "
 	SELECT 	spieltag 
 	FROM 		xa7580_db1.parameter
 	") -> fetch_object() -> spieltag;
 
+// Current spieltag type (cup or league)
 $aktueller_spieltag_type = mysqli_query($con, "
 	SELECT 	match_type 
 	FROM 		xa7580_db1.ftsy_schedule 
@@ -31,11 +36,13 @@ $aktueller_spieltag_type = mysqli_query($con, "
 	LIMIT 1
 	") -> fetch_object() -> match_type;
 
+// Current season_id
 $akt_season_id = mysqli_query($con, "
 	SELECT 	season_id 
 	FROM 		xa7580_db1.parameter
 	") -> fetch_object() -> season_id;
 
+// Current round_id
 $akt_round_id = mysqli_query($con, "
 	SELECT 	id 
 	FROM 		xa7580_db1.sm_rounds 
@@ -43,12 +50,14 @@ $akt_round_id = mysqli_query($con, "
 					AND season_id = '$akt_season_id'
 	") -> fetch_object() -> id;
 
-
 /***********************************************/
 /* [1] Historize scoring_akt into scoring_hist */
 /***********************************************/
 
-// Delete from ftsy_scoring_hist, to prevent double entries
+echo "1/8 - Historize scoring_akt into scoring_hist" . "<br>";
+
+// Delete from ftsy_scoring_hist, to prevent doubled entries
+
 mysqli_query($con, "
 	DELETE FROM xa7580_db1.ftsy_scoring_hist 
 	WHERE ( round_name = '".$aktueller_spieltag."' AND season_id = '".$akt_season_id."' ) OR round_name IS NULL 
@@ -56,13 +65,15 @@ mysqli_query($con, "
 
 // Insert from ftsy_scoring_akt into ftsy_scoring_hist
 $insert_akt_into_hist_sql = file_get_contents('../sql/snippets/ftsy-sa-insert-akt-into-hist.sql');
-mysqli_query($con,	$insert_akt_into_hist_sql)
+mysqli_query($con,	$insert_akt_into_hist_sql);
 
 sleep(10);
 
 /****************************/
 /* [2] Update ftsy snapshot */
 /****************************/
+
+echo "2/8 - Update player snapshot" . "<br>";
 
 // Delete old snapshot and create new snapshot with the updated data from ftsy_scoring_hist
 include 'create-ftsy-snapshot.php';
@@ -72,6 +83,8 @@ sleep(10);
 /****************************/
 /* [3] Update ftsy schedule */
 /****************************/
+
+echo "3/8 - Update ftsy schedule" . "<br>";
 
 // Option to exclude rounds
 if ($aktueller_spieltag != 99) {
@@ -86,6 +99,8 @@ sleep(10);
 /*****************************/
 /* [4] Update ftsy standings */
 /*****************************/
+
+echo "4/8 - Update ftsy standings" . "<br>";
 
 // League
 if ($aktueller_spieltag_type == 'league'){
@@ -106,11 +121,11 @@ if ($aktueller_spieltag_type == 'league'){
 		$update_league_standings_sql = file_get_contents('../sql/snippets/ftsy-sa-update-ftsy-league-standings.sql');
 		mysqli_query($con, $update_league_standings_sql);
 
-		// Update Ranking -- Currently a workaround
+		// Update Ranking
 		$update_league_ranking_sql = file_get_contents('../sql/snippets/ftsy-sa-update-ftsy-league-ranking.sql');		
 		mysqli_query($con, $update_league_ranking_sql);
 		
-		// Update Up-Down-Markers based on updated data
+		// Update up-down-markers based on updated data
 		$update_league_movement_sql = file_get_contents('../sql/snippets/ftsy-sa-update-ftsy-league-standings-movement.sql');
 		mysqli_query($con, $update_league_movement_sql);
 	
@@ -119,6 +134,8 @@ if ($aktueller_spieltag_type == 'league'){
 	/*****************************/
 	/* [5] Update waiver ranking */
 	/*****************************/
+
+	echo "5/8 - Update waiver ranking" . "<br>";
 
 	// Update waiver ranking
 	$update_waiver_sql = file_get_contents('../sql/snippets/ftsy-sa-update-waiver-ranking.sql');
@@ -131,6 +148,8 @@ if ($aktueller_spieltag_type == 'league'){
 /* [6] Update parameters */
 /*************************/
 
+echo "6/8 - Update game parameters" . "<br>";
+
 // Define new round name
 mysqli_query($con, "UPDATE xa7580_db1.parameter SET spieltag = '".$aktueller_spieltag."' + 1");
 
@@ -142,9 +161,11 @@ mysqli_query($con, $update_waiver_dates_sql);
 /* [7] Update points allowed */
 /*****************************/
 
+echo "7/8 - Update points allowed table" . "<br>";
+
 // Drop and recreate the ftsy_points_allowd table
 
-mysqli_query($con,"DROP TABLE xa7580_db1.ftsy_points_allowed ");
+mysqli_query($con,"DROP TABLE xa7580_db1.ftsy_points_allowed");
 
 $create_points_allowed_sql = file_get_contents('../sql/snippets/ftsy-sa-create-points-allowed.sql');
 mysqli_query($con, $create_points_allowed_sql		);
@@ -153,9 +174,12 @@ mysqli_query($con, $create_points_allowed_sql		);
 /* [8] Write news to page */
 /**************************/
 
+echo "8/8 - Write news" . "<br>";
+
 $story = <<<EOT
 Spieltag $aktueller_spieltag abgeschlossen!
 EOT;
 $headline = 'Spieltag abgeschlossen';
 mysqli_query($con, "INSERT INTO xa7580_db1.news(name, headline, story, `timestamp`, add_id, drop_id, add_besitzer, drop_besitzer, type) VALUES('System', '".utf8_decode($headline)."', '".utf8_decode($story)."', NOW(), '', '','','','spieltag_abschluss' )");
+
 ?>
