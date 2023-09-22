@@ -1,0 +1,22 @@
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+name: 🚀 Deploy on push
+jobs:
+  web-deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v3
+
+    - name: Push files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: xa7.serverdomain.org
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_password }}
+        server-dir: dev2/
