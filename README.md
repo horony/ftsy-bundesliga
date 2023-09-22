@@ -32,3 +32,4 @@ In addition to the external data-pipelines two types of **internal data-pipeline
 **Architecture sketch:**
 
 ![](/documentation/ftsy-buli-architecture-sketch.png)
+[![🚀 Deploy on push](https://github.com/horony/ftsy-bundesliga/actions/workflows/main.yml/badge.svg)](https://github.com/horony/ftsy-bundesliga/actions/workflows/main.yml)
