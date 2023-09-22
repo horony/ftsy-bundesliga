@@ -4,10 +4,10 @@ on:
     branches:
       - main
 
-name: Deploy website on push
+name: 🚀 Deploy on push
 jobs:
   web-deploy:
-    name: Deploy
+    name: 🚀 Deploy
     runs-on: ubuntu-latest
     steps:
     - name: Get latest code
@@ -19,4 +19,4 @@ jobs:
         server: xa7.serverdomain.org
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
-        server-dir: home/www/dev/
+        server-dir: dev2/
