@@ -16,15 +16,18 @@
 </head>
 
 <body onload="show_cup_round('Gesamt')">
-<header><h1>FANTASY BUNDESLIGA</h1></header>
-	
+
+	<!-- Header image -->
+	<header>
+		<?php require "header.php"; ?>
+	</header>
+
 	<!-- Navigation -->
 	<div id = "hilfscontainer">
 		<?php include("navigation.php"); ?>
 	</div>
 
 	<!-- Content -->
-
 	<div id = "wrapper">
 		<div id="content_wrapper">
 

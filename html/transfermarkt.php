@@ -26,9 +26,13 @@ require("../php/auth.php");
 <body onload="hideUSR()">
 <div id = "hilfscontainer">
 
-	<!-- Headline and navigation -->
-	<header><h1>FANTASY BUNDESLIGA</h1></header>
-		<?php include("navigation.php"); ?>
+	<!-- Header image -->
+	<header>
+	  <?php require "header.php"; ?>
+	</header> 
+
+	<!-- Navigation --> 
+	<?php include("navigation.php"); ?>
 	
 	<!-- Content -->
 	<main>

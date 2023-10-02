@@ -16,7 +16,10 @@
   
 <body>
 
-<header><h1>FANTASY BUNDESLIGA</h1></header>
+<!-- Header image -->
+	<header>
+		<?php require "header.php"; ?>
+	</header>
 
 <!-- Navigation -->
 	<div id = "hilfscontainer">
