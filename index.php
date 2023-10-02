@@ -22,7 +22,11 @@
 
 <body onload="showFantasy(); changeColorScores1(); showFantasyTabelle(); changeColorTabelle1()">
 
-<header><h1>FANTASY BUNDESLIGA</h1></header>
+<!-- Header image -->
+
+<header>
+	<?php require "html/header.php"; ?>
+</header>
 
 <!-- Navigation menu -->
 
