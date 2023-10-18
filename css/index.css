@@ -293,7 +293,7 @@ color: #4caf50;
   display: inline-flex;
   padding: 10px;
   width: 100%;
-  background: url(/images/texturen/dottedBorder.gif) repeat-x bottom left;
+  background: url(../img/textures/dottedBorder.gif) repeat-x bottom left;
   position: relative;
 }
 
