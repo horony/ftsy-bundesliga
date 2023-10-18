@@ -21,3 +21,4 @@ jobs:
         server: xa7.serverdomain.org
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
+        protocol: ftps
