@@ -1,0 +1,28 @@
+on: 
+  workflow_dispatch:
+  schedule:
+  - cron: 0 3 * * TUE
+  push:
+    branches:
+      - main
+
+name: 🧹 Weekly Cleanup
+jobs:
+  web-deploy:
+    name: 🧹 Cleanup + Deploy
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Get latest code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: main
+
+    - name: Push files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: xa7.serverdomain.org
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_password }}
+        protocol: ftps
