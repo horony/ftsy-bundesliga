@@ -16,8 +16,8 @@ jobs:
     - name: Get latest code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
-        ref: main
+        sparse-checkout: .
+
 
     - name: Push files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
