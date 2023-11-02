@@ -299,7 +299,7 @@ df_data_fabu_ovr = pd.merge(
 del df_data_fabu_ovr_tail
 
 # aggregate data to 1 row per player
-df_data_fabu_ovr = df_data_fabu_ovr.groupby(list_groupby_values, dropna=False).agg(
+df_data_fabu_ovr = df_data_fabu_ovr.fillna(-1).groupby(list_groupby_values).agg(
     ftsy_score = ('ftsy_score','sum')
     , ftsy_score_avg = ('ftsy_score','mean')
     , appearance_cnt = ('player_id','count')
@@ -376,7 +376,7 @@ df_data_fabu_szn = pd.merge(
 del df_data_fabu_szn_tail
 
 # aggregate to 1 row per player per season
-df_data_fabu_szn = df_data_fabu_szn.groupby(list_groupby_values, dropna=False).agg(
+df_data_fabu_szn = df_data_fabu_szn.fillna(-1).groupby(list_groupby_values).agg(
     ftsy_score = ('ftsy_score','sum')
     , ftsy_score_avg = ('ftsy_score','mean')
     , appearance_cnt = ('player_id','count')
@@ -582,7 +582,7 @@ df_data_user_ovr = pd.merge(
 del df_data_user_ovr_tail
 
 # aggregate to 1 row per player per season
-df_data_user_ovr = df_data_user_ovr.groupby(list_groupby_values, dropna=False).agg(
+df_data_user_ovr = df_data_user_ovr.fillna(-1).groupby(list_groupby_values).agg(
     ftsy_score = ('ftsy_score','sum')
     , ftsy_score_avg = ('ftsy_score','mean')
     , appearance_cnt = ('player_id','count')
@@ -680,7 +680,7 @@ df_data_user_szn = pd.merge(
 del df_data_user_szn_tail
 
 # aggregate to 1 row per player per season
-df_data_user_szn = df_data_user_szn.groupby(list_groupby_values, dropna=False).agg(
+df_data_user_szn = df_data_user_szn.fillna(-1).groupby(list_groupby_values).agg(
     ftsy_score = ('ftsy_score','sum')
     , ftsy_score_avg = ('ftsy_score','mean')
     , appearance_cnt = ('player_id','count')
@@ -814,7 +814,7 @@ df_data_buli_ovr = pd.merge(
 del df_data_buli_ovr_tail
 
 # aggregate to 1 row per player per team
-df_data_buli_ovr = df_data_buli_ovr.groupby(list_groupby_values, dropna=False).agg(
+df_data_buli_ovr = df_data_buli_ovr.fillna(-1).groupby(list_groupby_values).agg(
     ftsy_score = ('ftsy_score','sum')
     , ftsy_score_avg = ('ftsy_score','mean')
     , appearance_cnt = ('player_id','count')
@@ -909,7 +909,7 @@ df_data_buli_szn = pd.merge(
 del df_data_buli_szn_tail
 
 # aggregate to 1 row per player per season
-df_data_buli_szn = df_data_buli_szn.groupby(list_groupby_values, dropna=False).agg(
+df_data_buli_szn = df_data_buli_szn.fillna(-1).groupby(list_groupby_values).agg(
     ftsy_score = ('ftsy_score','sum')
     , ftsy_score_avg = ('ftsy_score','mean')
     , appearance_cnt = ('player_id','count')
