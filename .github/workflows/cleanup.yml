@@ -2,9 +2,6 @@ on:
   workflow_dispatch:
   schedule:
   - cron: 0 3 * * TUE
-  push:
-    branches:
-      - main
 
 name: 🧹 Weekly Cleanup
 jobs:
