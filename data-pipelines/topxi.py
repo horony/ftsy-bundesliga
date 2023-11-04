@@ -23,6 +23,43 @@ from logging_function import log, log_headline
 
 # define custom functions
 
+def aggregate_values(df_input, list_input_groupby):
+    """
+    Calculates ftsy_score_sum, ftsy_score_avg, appearance_cnt, appearance_mint_dt and appearance_max_dt
+    """
+
+    df = df_input 
+    
+    # calculate aggregations
+    df = df.fillna(-1).groupby(list_groupby_values, as_index=False).agg({
+        'ftsy_score': [('ftsy_score_sum', 'sum'), ('ftsy_score_avg', 'mean'), ('appearance_cnt', 'count')]
+         ,'kickoff_dt': [('appearance_min_dt','min'),('appearance_max_dt','max')]
+         }
+    ).reset_index()
+    
+    # drop index columns
+    df = df.droplevel(axis=1, level=1).reset_index().drop(columns=['level_0','index'])
+    
+    # rename last 5 columns
+    list_columns = df.columns.tolist()
+    list_columns[len(list_columns)-5:len(list_columns)] = ['ftsy_score','ftsy_score_avg','appearance_cnt','appearance_min_dt','appearance_max_dt']
+    df.columns = list_columns
+    
+    # round values
+    df["ftsy_score"] = df["ftsy_score"].round(1) 
+    df["ftsy_score_avg"] = df["ftsy_score_avg"].round(1) 
+    
+    # replace -1 values from groupby
+    df['user_id'] = df['user_id'].replace(-1, None)
+    df['user_name'] = df['user_name'].replace(-1, None)
+    df['user_team_name'] = df['user_team_name'].replace(-1, None)
+    df['user_team_code'] = df['user_team_code'].replace(-1, None)
+    df['user_team_logo_path'] = df['user_team_logo_path'].replace(-1, None)
+
+    return df
+
+    del df, list_columns
+
 def filter_for_candidates(df_input):
     
     """
@@ -280,7 +317,7 @@ list_fabu_column_names = [
 
 log_headline('(2.1/5) CALCULATING FANTASY BUNDESLIGA ALL-TIME')
 df_data_fabu_ovr = df_data 
-
+    
 # per player: Calculate latest team and position for each season
 df_data_fabu_ovr_tail = df_data_fabu_ovr.sort_values(['season_id','round_name']).groupby('player_id').tail(1)
 list_groupby_values = ['player_id','player_name','player_image_path','position_short','buli_team_id','buli_team_name','buli_team_code','buli_team_logo_path','user_id','user_name','user_team_name','user_team_code','user_team_logo_path']
@@ -299,15 +336,8 @@ df_data_fabu_ovr = pd.merge(
 del df_data_fabu_ovr_tail
 
 # aggregate data to 1 row per player
-df_data_fabu_ovr = df_data_fabu_ovr.fillna(-1).groupby(list_groupby_values).agg(
-    ftsy_score = ('ftsy_score','sum')
-    , ftsy_score_avg = ('ftsy_score','mean')
-    , appearance_cnt = ('player_id','count')
-    , appearance_min_dt = ('kickoff_dt','min')
-    , appearance_max_dt = ('kickoff_dt','max')
-    ).reset_index()
+df_data_fabu_ovr = aggregate_values(df_data_fabu_ovr, list_groupby_values)
 
-df_data_fabu_ovr["ftsy_score_avg"] = df_data_fabu_ovr["ftsy_score_avg"].round(1)
 df_data_fabu_ovr["rank"] = df_data_fabu_ovr.groupby(["position_short"])["ftsy_score"].rank(method="first", ascending=False)   
 
 # raw filter rows for possible topxi candidates 
@@ -376,15 +406,8 @@ df_data_fabu_szn = pd.merge(
 del df_data_fabu_szn_tail
 
 # aggregate to 1 row per player per season
-df_data_fabu_szn = df_data_fabu_szn.fillna(-1).groupby(list_groupby_values).agg(
-    ftsy_score = ('ftsy_score','sum')
-    , ftsy_score_avg = ('ftsy_score','mean')
-    , appearance_cnt = ('player_id','count')
-    , appearance_min_dt = ('kickoff_dt','min')
-    , appearance_max_dt = ('kickoff_dt','max')
-    ).reset_index()
+df_data_fabu_szn = aggregate_values(df_data_fabu_szn, list_groupby_values)
 
-df_data_fabu_szn["ftsy_score_avg"] = df_data_fabu_szn["ftsy_score_avg"].round(1) 
 df_data_fabu_szn["rank"] = df_data_fabu_szn.groupby(["season_id","position_short"])["ftsy_score"].rank(method="first", ascending=False)    
 df_data_fabu_szn = filter_for_candidates(df_data_fabu_szn)
 
@@ -582,15 +605,8 @@ df_data_user_ovr = pd.merge(
 del df_data_user_ovr_tail
 
 # aggregate to 1 row per player per season
-df_data_user_ovr = df_data_user_ovr.fillna(-1).groupby(list_groupby_values).agg(
-    ftsy_score = ('ftsy_score','sum')
-    , ftsy_score_avg = ('ftsy_score','mean')
-    , appearance_cnt = ('player_id','count')
-    , appearance_min_dt = ('kickoff_dt','min')
-    , appearance_max_dt = ('kickoff_dt','max')
-    ).reset_index()
+df_data_user_ovr = aggregate_values(df_data_user_ovr, list_groupby_values)
 
-df_data_user_ovr["ftsy_score_avg"] = df_data_user_ovr["ftsy_score_avg"].round(1) 
 df_data_user_ovr["rank"] = df_data_user_ovr.groupby(["user_id","position_short"])["ftsy_score"].rank(method="first", ascending=False)    
 df_data_user_ovr = filter_for_candidates(df_data_user_ovr)
 
@@ -680,15 +696,8 @@ df_data_user_szn = pd.merge(
 del df_data_user_szn_tail
 
 # aggregate to 1 row per player per season
-df_data_user_szn = df_data_user_szn.fillna(-1).groupby(list_groupby_values).agg(
-    ftsy_score = ('ftsy_score','sum')
-    , ftsy_score_avg = ('ftsy_score','mean')
-    , appearance_cnt = ('player_id','count')
-    , appearance_min_dt = ('kickoff_dt','min')
-    , appearance_max_dt = ('kickoff_dt','max')
-    ).reset_index()
+df_data_user_szn = aggregate_values(df_data_user_szn, list_groupby_values)
 
-df_data_user_szn["ftsy_score_avg"] = df_data_user_szn["ftsy_score_avg"].round(1) 
 df_data_user_szn["rank"] = df_data_user_szn.groupby(["user_id","season_id","position_short"])["ftsy_score"].rank(method="first", ascending=False)    
 df_data_user_szn = filter_for_candidates(df_data_user_szn)
 
@@ -814,15 +823,8 @@ df_data_buli_ovr = pd.merge(
 del df_data_buli_ovr_tail
 
 # aggregate to 1 row per player per team
-df_data_buli_ovr = df_data_buli_ovr.fillna(-1).groupby(list_groupby_values).agg(
-    ftsy_score = ('ftsy_score','sum')
-    , ftsy_score_avg = ('ftsy_score','mean')
-    , appearance_cnt = ('player_id','count')
-    , appearance_min_dt = ('kickoff_dt','min')
-    , appearance_max_dt = ('kickoff_dt','max')
-    ).reset_index()
+df_data_buli_ovr = aggregate_values(df_data_buli_ovr, list_groupby_values)
 
-df_data_buli_ovr["ftsy_score_avg"] = df_data_buli_ovr["ftsy_score_avg"].round(1) 
 df_data_buli_ovr["rank"] = df_data_buli_ovr.groupby(["buli_team_id","position_short"])["ftsy_score"].rank(method="first", ascending=False)    
 df_data_buli_ovr = filter_for_candidates(df_data_buli_ovr)
 
@@ -909,13 +911,7 @@ df_data_buli_szn = pd.merge(
 del df_data_buli_szn_tail
 
 # aggregate to 1 row per player per season
-df_data_buli_szn = df_data_buli_szn.fillna(-1).groupby(list_groupby_values).agg(
-    ftsy_score = ('ftsy_score','sum')
-    , ftsy_score_avg = ('ftsy_score','mean')
-    , appearance_cnt = ('player_id','count')
-    , appearance_min_dt = ('kickoff_dt','min')
-    , appearance_max_dt = ('kickoff_dt','max')
-    ).reset_index()
+df_data_buli_szn = aggregate_values(df_data_buli_szn, list_groupby_values)
 
 df_data_buli_szn["ftsy_score_avg"] = df_data_buli_szn["ftsy_score_avg"].round(1) 
 df_data_buli_szn["rank"] = df_data_buli_szn.groupby(["buli_team_id","season_id","position_short"])["ftsy_score"].rank(method="first", ascending=False)    
