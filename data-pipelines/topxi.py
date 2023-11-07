@@ -244,8 +244,8 @@ sql_select_stmt = '''
             , hst.round_name
             , hst.kickoff_dt
             , hst.player_id
-            , hst.display_name as player_name
-            , hst.image_path as player_image_path
+            , pb.display_name as player_name
+            , pb.image_path as player_image_path
             , hst.position_short
             , hst.current_team_id as buli_team_id
             , tm.short_code as buli_team_code
@@ -266,6 +266,9 @@ sql_select_stmt = '''
         
     LEFT JOIN users usr
     	ON  hst.1_ftsy_owner_id = usr.id
+        
+    LEFT JOIN sm_playerbase pb
+        ON  hst.player_id = pb.id
 
     WHERE   hst.ftsy_score IS NOT NULL
             AND hst.position_short IS NOT NULL 
@@ -583,9 +586,8 @@ list_user_column_names = [
 log_headline('(3.1/5) CALCULATING FANTASY TEAM BY USER ALL TIME')
 df_data_user_ovr = df_data 
 
-# filter for players that were in users formation
+# filter for players that were on users roster
 df_data_user_ovr = df_data_user_ovr.loc[((df_data['user_id'] > 0))] 
-df_data_user_ovr = df_data_user_ovr.loc[((df_data['1_ftsy_match_status'] != 'NONE'))] 
 
 # per player and season: Caluclate latest team and position 
 df_data_user_ovr_tail = df_data_user_ovr.sort_values(['season_id','round_name']).groupby(['user_id','player_id']).tail(1)
@@ -674,9 +676,8 @@ log('Success')
 log_headline('(3.2/5) CALCULATING FANTASY TEAM BY USER AND SEASON')
 df_data_user_szn = df_data 
 
-# filter for players that were in users formation
+# filter for players that were on users roster
 df_data_user_szn = df_data_user_szn.loc[((df_data['user_id'] > 0))] 
-df_data_user_szn = df_data_user_szn.loc[((df_data['1_ftsy_match_status'] != 'NONE'))] 
 
 # per user and season: Caluclate latest team and position 
 df_data_user_szn_tail = df_data_user_szn.sort_values(['season_id','round_name']).groupby(['season_id','user_id','player_id']).tail(1)
