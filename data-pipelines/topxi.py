@@ -272,6 +272,7 @@ sql_select_stmt = '''
 
     WHERE   hst.ftsy_score IS NOT NULL
             AND hst.position_short IS NOT NULL 
+            AND hst.season_id > 17361 # season 20/21 has faulty data, see Haaland
             AND (hst.appearance_stat = 1 OR hst.ftsy_score != 0)             
     '''
     
