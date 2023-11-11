@@ -15,9 +15,9 @@ CREATE TABLE topxi_fabu_ovr (
 	, user_id INTEGER
 	, user_name VARCHAR(50)
 	, user_team_name VARCHAR(50)
-	, user_team_code VARCHAR(5)
+	, user_team_code VARCHAR(10)
 	, user_team_logo_path TEXT
-    , ftsy_score DECIMAL(18,1)
+  , ftsy_score DECIMAL(18,1)
 	, ftsy_score_avg DECIMAL(18,1)
 	, appearance_cnt INTEGER
 	, appearance_min_dt DATE
