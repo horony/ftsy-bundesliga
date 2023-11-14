@@ -236,7 +236,8 @@ log('Connecting to MySQL database')
 
 # connect to MySQL-database
 from mysql_db_connection import db_user, db_pass, db_port, db_name
-engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
+#engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@localhost:'+db_port+'/'+db_name, echo=False)  
+engine = create_engine('mysql+mysqlconnector://'+db_user+':'+db_pass+'@fantasy-bundesliga.de:3306/'+db_name, echo=False)  
 
 sql_select_stmt = '''
     SELECT  hst.season_id
@@ -272,7 +273,7 @@ sql_select_stmt = '''
 
     WHERE   hst.ftsy_score IS NOT NULL
             AND hst.position_short IS NOT NULL 
-            AND hst.season_id > 17361 # season 20/21 has faulty data, see Haaland
+            # AND hst.season_id > 17361
             AND (hst.appearance_stat = 1 OR hst.ftsy_score != 0)             
     '''
     
@@ -918,6 +919,8 @@ df_data_buli_szn = aggregate_values(df_data_buli_szn, list_groupby_values)
 df_data_buli_szn["ftsy_score_avg"] = df_data_buli_szn["ftsy_score_avg"].round(1) 
 df_data_buli_szn["rank"] = df_data_buli_szn.groupby(["buli_team_id","season_id","position_short"])["ftsy_score"].rank(method="first", ascending=False)    
 df_data_buli_szn = filter_for_candidates(df_data_buli_szn)
+
+aaa = df_data_buli_szn
 
 # calc formation scores
 list_agg_cols = ['buli_team_id','season_id'] 
