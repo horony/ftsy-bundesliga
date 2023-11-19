@@ -30,6 +30,7 @@ include("https://fantasy-bundesliga.de/php/auth.php");
         <a href="https://fantasy-bundesliga.de/html/pokal.php">Pokal</a>
         <a href="https://fantasy-bundesliga.de/html/draft.php">Draft</a>
         <a href="https://fantasy-bundesliga.de/html/stats.php">Statistiken</a>
+        <a href="https://fantasy-bundesliga.de/html/topxi.php">Elf der Woche</a>
       </div>
     </div>
 
