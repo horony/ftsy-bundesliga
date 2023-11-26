@@ -320,6 +320,7 @@ echo "<div class='striped_background'>";
 								} else {
 									$grade_color = '#dddddd';
 								}
+								
 							}
 							echo "<div class='player_card_score live' style='background-color: ".$grade_color." '>";
 								if ($row['appearance_stat'] == 1){ 
@@ -417,17 +418,17 @@ echo "<div class='bank_wrapper'>";
 
 									$color_score = (float)$row['ftsy_score'];
 
-									if ($color_score == 0) {
-										$grade_color = '#FCD40A';
-									} elseif ($color_score <= -5){
-										$grade_color = '#ec524b';
-									} elseif ($color_score < 0 and $color_score > -5){
-										$grade_color = '#ec524b';
-									} elseif ($color_score > 0 and $color_score <= 5){
-										$grade_color = '#f9813a';
+									if ($color_score <= -5) {
+										$grade_color = '#ff0000';
+									} elseif ($color_score > -5 and $color_score <= 0){
+										$grade_color = '#fb4200';
+									} elseif ($color_score > 0 and $color_score < 5){
+										$grade_color = '#f56100';
 									} elseif ($color_score > 5 and $color_score <= 10){
-										$grade_color = '#D8CC0D';
-									} elseif ($color_score > 10 and $color_score <= 20){
+										$grade_color = '#d4a300';
+									} elseif ($color_score > 10 and $color_score <= 15){
+										$grade_color = '#9ed500';
+									} elseif ($color_score > 15 and $color_score <= 20){
 										$grade_color = '#6FB617';
 									} elseif ($color_score > 20 and $color_score <= 25){
 										$grade_color = '#29A71E';
@@ -438,6 +439,7 @@ echo "<div class='bank_wrapper'>";
 									} else {
 										$grade_color = '#dddddd';
 									}
+									
 								}
 								echo "<div class='player_card_score live' style='background-color: ".$grade_color." '>";
 								if ($row['appearance_stat'] == 1){ 
