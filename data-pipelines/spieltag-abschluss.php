@@ -10,7 +10,8 @@
 /*  [5] Update waiver priorities								*/
 /*  [6] Update parameters												*/
 /*	[7] Update points allowed										*/
-/*	[8] Write News															*/
+/*  [8] Update topxi														*/
+/*	[9] Write News															*/
 /*																							*/
 /************************************************/
 
@@ -19,7 +20,7 @@ include("../secrets/mysql_db_connection.php");
 
 // Preparations: Get meta-data
 
-echo "0/8 - Fetching meta data from MySQL DB" . "<br>";
+echo "0/9 - Fetching meta data from MySQL DB" . "<br>";
 
 // Current spieltag name
 $aktueller_spieltag = mysqli_query($con, "
@@ -54,7 +55,7 @@ $akt_round_id = mysqli_query($con, "
 /* [1] Historize scoring_akt into scoring_hist */
 /***********************************************/
 
-echo "1/8 - Historize scoring_akt into scoring_hist" . "<br>";
+echo "1/9 - Historize scoring_akt into scoring_hist" . "<br>";
 
 // Delete from ftsy_scoring_hist, to prevent doubled entries
 
@@ -73,7 +74,7 @@ sleep(10);
 /* [2] Update ftsy snapshot */
 /****************************/
 
-echo "2/8 - Update player snapshot" . "<br>";
+echo "2/9 - Update player snapshot" . "<br>";
 
 // Delete old snapshot and create new snapshot with the updated data from ftsy_scoring_hist
 include 'create-ftsy-snapshot.php';
@@ -84,7 +85,7 @@ sleep(10);
 /* [3] Update ftsy schedule */
 /****************************/
 
-echo "3/8 - Update ftsy schedule" . "<br>";
+echo "3/9 - Update ftsy schedule" . "<br>";
 
 // Option to exclude rounds
 if ($aktueller_spieltag != 99) {
@@ -100,7 +101,7 @@ sleep(10);
 /* [4] Update ftsy standings */
 /*****************************/
 
-echo "4/8 - Update ftsy standings" . "<br>";
+echo "4/9 - Update ftsy standings" . "<br>";
 
 // League
 if ($aktueller_spieltag_type == 'league'){
@@ -135,7 +136,7 @@ if ($aktueller_spieltag_type == 'league'){
 	/* [5] Update waiver ranking */
 	/*****************************/
 
-	echo "5/8 - Update waiver ranking" . "<br>";
+	echo "5/9 - Update waiver ranking" . "<br>";
 
 	// Update waiver ranking
 	$update_waiver_sql = file_get_contents('../sql/snippets/ftsy-sa-update-waiver-ranking.sql');
@@ -143,12 +144,11 @@ if ($aktueller_spieltag_type == 'league'){
 
 }
 
-
 /*************************/
 /* [6] Update parameters */
 /*************************/
 
-echo "6/8 - Update game parameters" . "<br>";
+echo "6/9 - Update game parameters" . "<br>";
 
 // Define new round name
 mysqli_query($con, "UPDATE xa7580_db1.parameter SET spieltag = '".$aktueller_spieltag."' + 1");
@@ -161,7 +161,7 @@ mysqli_query($con, $update_waiver_dates_sql);
 /* [7] Update points allowed */
 /*****************************/
 
-echo "7/8 - Update points allowed table" . "<br>";
+echo "7/9 - Update points allowed table" . "<br>";
 
 // Drop and recreate the ftsy_points_allowd table
 
@@ -170,11 +170,22 @@ mysqli_query($con,"DROP TABLE xa7580_db1.ftsy_points_allowed");
 $create_points_allowed_sql = file_get_contents('../sql/snippets/ftsy-sa-create-points-allowed.sql');
 mysqli_query($con, $create_points_allowed_sql		);
 
+/********************/
+/* [8] Update topxi */
+/********************/
+
+echo "8/9 - Update topxi" . "<br>";
+
+// Call py-script to drop and recreate the topxi-tables
+
+$shellcommand = escapeshellcmd('/home/www/data-pipelines/topxi.py');
+shell_exec($shellcommand);
+
 /**************************/
-/* [8] Write news to page */
+/* [9] Write news to page */
 /**************************/
 
-echo "8/8 - Write news" . "<br>";
+echo "9/9 - Write news" . "<br>";
 
 $story = <<<EOT
 Spieltag $aktueller_spieltag abgeschlossen!
