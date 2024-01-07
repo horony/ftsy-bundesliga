@@ -243,7 +243,11 @@ for team_id in aktuelle_buli_teams:
             list_current_player.append(None) 
 
         list_current_player.append(isNone(player['player']['date_of_birth'],None)) 
-        list_current_player.append(isNone(player['player']['city'],None)) 
+
+        if player['player']['city'] is not None:
+            list_current_player.append(player['player']['city']['name']) 
+        else:
+            list_current_player.append(None) 
         
         # add data to list
         list_players.append(list_current_player)
