@@ -214,8 +214,8 @@ require("../php/auth.php");
 					FROM xa7580_db1.ftsy_schedule
 					WHERE	ftsy_home_id = '".$team_id."' 
 								AND ftsy_away_id = '".$team_id_opp."' 
-								AND buli_round_name BETWEEN 1 AND ('".$akt_spieltag."'-1)
-								AND match_type = 'league'
+								AND ftsy_home_score != 0
+								AND ftsy_away_score != 0
 
 					UNION ALL 
 
@@ -223,8 +223,8 @@ require("../php/auth.php");
 					FROM xa7580_db1.ftsy_schedule
 					WHERE ftsy_home_id = '".$team_id_opp."' 
 								AND ftsy_away_id = '".$team_id."' 
-								AND buli_round_name BETWEEN 1 AND ('".$akt_spieltag."'-1)
-								AND match_type = 'league'
+								AND ftsy_home_score != 0
+								AND ftsy_away_score != 0
 					) bilanz_table
 					") -> fetch_assoc();
 
