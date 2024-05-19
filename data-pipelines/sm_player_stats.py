@@ -143,7 +143,7 @@ if sys.stdin.isatty() is True:
         fixture_extract = df_fixtures_selected['fixture_id'].tolist()    
      
     # Option 3: Specific round name 
-    elif int(input_choice) in list(range(1, 34)):
+    elif int(input_choice) in list(range(1, 35)):
         print("Update Spieltag " + str(input_choice) + "!")
         df_fixtures_selected = df_fixtures[df_fixtures['round_name'] == int(input_choice)] 
         print(df_fixtures_selected)
