@@ -412,6 +412,15 @@ if 'pen_scored' not in df_stats.columns:
 if 'goals_total' not in df_stats.columns:
         df_stats['goals_total'] = 0
 
+if 'dribbles_failed' not in df_stats.columns:
+        df_stats['dribbles_failed'] = 0
+
+if 'dribble_attempts' not in df_stats.columns:
+        df_stats['dribble_attempts'] = 0
+
+if 'dribbles_success' not in df_stats.columns:
+        df_stats['dribbles_success'] = 0
+ 
 df_stats = df_stats.fillna(0)
 
 df_stats['goals_minus_pen'] = isNone(df_stats['goals_total'],0) - isNone(df_stats['pen_scored'],0)
