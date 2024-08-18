@@ -38,8 +38,7 @@
 		/* EDIT SEASON AND SPIELTAG BELOW !!! */
 		/**************************************/
 
-		WHERE tab.spieltag = 34 
-				  AND tab.season_id = 19744
+		WHERE tab.spieltag = 34 AND tab.season_id = 21795
 
 		ORDER BY tab.rang DESC
    	");
@@ -78,8 +77,8 @@
 	mysqli_query($con, "
 		CREATE TABLE `draft_player_base` AS
 		SELECT	1 as ftsy_league_id
-						, base.id
-						, base.display_name
+			, base.id
+			, base.display_name
 		        , base.common_name
 		        , teams.name as teamname
 		        , teams.short_code as teamname_code
@@ -92,14 +91,14 @@
 		        , base.is_suspended
 		        , base.injured
 		        , base.injury_reason
-						, null as pick 
-						, null as round
-						, null as pick_by
-						, null as autopick_custom_list_flg
-						, null as autopick_ranking_flg
-						, null as pick_ts
-						, null as league_id
-						, 21795 as season_id # HERE NEW SEASON !!! 
+			, null as pick 
+			, null as round
+			, null as pick_by
+			, null as autopick_custom_list_flg
+			, null as autopick_ranking_flg
+			, null as pick_ts
+			, null as league_id
+			, 23744 as season_id # HERE NEW SEASON !!! 
 
 		FROM 	sm_playerbase base
 
