@@ -290,8 +290,8 @@ echo "</div>";
 
 // Display match data from past seasons
 
-$season_ids_for_stats = array(19744, 18444);
-$season_names_for_stats = array('2022/2023','2021/2022');
+$season_ids_for_stats = array(21795, 19744, 18444);
+$season_names_for_stats = array('2023/2024','2022/2023','2021/2022');
 $season_counter = 0;
 $season_counter_max = count($season_ids_for_stats)-1;
 
