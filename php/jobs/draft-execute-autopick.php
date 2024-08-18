@@ -39,7 +39,7 @@ if (	$draft_meta['update_lock'] == 0 and $draft_meta['draft_status'] == 'running
 
 		WHERE 	pb.ftsy_league_id = 1
 						AND pb.pick is NULL
-						AND scr.fixture_id in (select fixture_id from sm_fixtures where season_id = 19744)
+						AND scr.fixture_id in (select fixture_id from sm_fixtures where season_id = 21795)
 
 		GROUP BY 	pb.id, pb.display_name
 		ORDER BY 	SUM(scr.ftsy_score) desc
