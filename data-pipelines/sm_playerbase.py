@@ -340,6 +340,7 @@ log('Updated player DataFrame with sidelined information of ' + str(df_sidelined
 log('Building DataFrame from parsed transfer data')              
 column_names_transfers = ['transfer_id','player_id','player_common_name','transfer_dt','from_team_id','to_team_id','transfer_type','amount']
 df_transfers = pd.DataFrame(columns=column_names_transfers, data=list_transfers)
+df_transfers = df_transfers.dropna(subset=['to_team_id'], inplace=True)
 df_transfers = df_transfers.drop_duplicates(subset=['transfer_id'], keep='first')
 log('Created DataFrame containing ' + str(df_transfers.shape[0]) + ' transfers')
 
