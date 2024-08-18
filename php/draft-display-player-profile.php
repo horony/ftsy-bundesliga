@@ -87,7 +87,7 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
 		echo "<div id='spielerprofil_fantasy'>";
 
 			echo "<div id='spielerprofil_fantasy_head'>";
-				echo "BuLi 22/23";
+				echo "BuLi 23/24";
 			echo "</div>";
 
 			echo "<div id='spielerprofil_fantasy_score'>";
