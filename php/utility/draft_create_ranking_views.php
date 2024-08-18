@@ -3,7 +3,7 @@
 include("../../secrets/mysql_db_connection.php");
 
 $year = '2023';
-$season_id = '19744';
+$season_id = '21795'; 
 
 
 $relevant_stat_array = ['ftsy_score', 'minutes_played_stat', 'goals_total_stat', 'pen_scored_stat', 'assists_stat', 'dribbles_success_stat', 'shots_total_stat'
