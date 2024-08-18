@@ -38,7 +38,7 @@ if(typeof(EventSource) !== "undefined") {
 
 		} else if (jdata.draft_status == 'open') {
 			
-			document.getElementById("on_the_clock").innerHTML = "Draft 23/24";		
+			document.getElementById("on_the_clock").innerHTML = "Draft 24/25";		
 
 		} else {
 			
