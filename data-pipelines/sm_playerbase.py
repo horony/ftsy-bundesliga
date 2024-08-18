@@ -340,6 +340,8 @@ log('Updated player DataFrame with sidelined information of ' + str(df_sidelined
 log('Building DataFrame from parsed transfer data')              
 column_names_transfers = ['transfer_id','player_id','player_common_name','transfer_dt','from_team_id','to_team_id','transfer_type','amount']
 df_transfers = pd.DataFrame(columns=column_names_transfers, data=list_transfers)
+df_transfers['to_team_id'] = df_transfers['to_team_id'].fillna(0)
+df_transfers['from_team_id'] = df_transfers['from_team_id'].fillna(0)
 df_transfers = df_transfers.drop_duplicates(subset=['transfer_id'], keep='first')
 log('Created DataFrame containing ' + str(df_transfers.shape[0]) + ' transfers')
 
@@ -377,8 +379,8 @@ with engine.connect() as con:
                         , t2.player_id
                         , t2.player_common_name
                         , t2.transfer_dt
-                        , COALESCE(t2.from_team_id,0)
-                        , COALESCE(t2.to_team_id,0)
+                        , t2.from_team_id
+                        , t2.to_team_id
                         , t2.transfer_type
                         , t2.amount
                         , sysdate() as insert_ts
