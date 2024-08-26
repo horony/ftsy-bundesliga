@@ -81,7 +81,7 @@ echo "</div>";
 
 // Seasons to iterate
 $season_ids_for_stats = array(23744, 21795, 19744, 18444);
-$season_names_for_stats = array('2024/2025',2023/2024','2022/2023','2021/2022');
+$season_names_for_stats = array('2024/2025','2023/2024','2022/2023','2021/2022');
 $season_counter = 0;
 $season_counter_max = count($season_ids_for_stats)-1;
 
