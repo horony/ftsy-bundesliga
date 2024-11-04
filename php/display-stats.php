@@ -120,7 +120,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 						, count(*) as kennzahl_1 
 						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
 						, 0 as kennzahl_3
-						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+						, case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
 
 		FROM 		ftsy_schedule sch
 
@@ -130,6 +130,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
     				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
 
+    GROUP BY headline, besitzer, teamname, highlight_flg
 		ORDER BY kennzahl_1 desc
 	");
 
@@ -140,7 +141,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 						, count(*) as kennzahl_1 
 						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
 						, 0 as kennzahl_3
-						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+						, case when case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
 
 		FROM 		ftsy_schedule sch
 
@@ -150,6 +151,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
     				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
 
+    GROUP BY headline, besitzer, teamname, highlight_flg
 		ORDER BY kennzahl_1 desc
 	");
 
@@ -160,7 +162,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 						, count(*) as kennzahl_1 
 						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
 						, 0 as kennzahl_3
-						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+						, case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
 
 		FROM 		ftsy_schedule sch
 
@@ -170,6 +172,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
     				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 5)
 
+    GROUP BY headline, besitzer, teamname, highlight_flg
 		ORDER BY kennzahl_1 desc
 	");
 
@@ -180,7 +183,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 						, count(*) as kennzahl_1 
 						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
 						, 0 as kennzahl_3
-						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+						, case when case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
 
 		FROM 		ftsy_schedule sch
 
@@ -190,6 +193,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
     				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 5)
 
+    GROUP BY headline, besitzer, teamname, highlight_flg
 		ORDER BY kennzahl_1 desc
 	");
 
