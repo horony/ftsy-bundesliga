@@ -487,7 +487,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 	
 
 	// Collect all queries in an array
-	$stat_array = array($topscores, $tabelle, $meister, $pokal, $most_blowout_wins, $most_blowout_losses, $most_close_wins, $most_blowout_losses, $starter, $nicht_gespielt, $minutes, $tore, $vorlagen, $abschluesse, $passspiel, $zweikampf, $torwart, $gegentore, $duelle, $schuesse, $paesse, $big_chances, $key_paesse, $flanken, $dribbling, $ints, $tackles, $blocks, $clear, $dis, $redcard);
+	$stat_array = array($topscores, $tabelle, $meister, $pokal, $most_blowout_wins, $most_blowout_losses, $most_close_wins, $most_close_losses, $starter, $nicht_gespielt, $minutes, $tore, $vorlagen, $abschluesse, $passspiel, $zweikampf, $torwart, $gegentore, $duelle, $schuesse, $paesse, $big_chances, $key_paesse, $flanken, $dribbling, $ints, $tackles, $blocks, $clear, $dis, $redcard);
 
 } elseif ($stat_category == 'BUNDESLIGA-TEAMS') {
 	
