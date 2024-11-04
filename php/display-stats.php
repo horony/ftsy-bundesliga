@@ -111,6 +111,88 @@ if ($stat_category == 'FANTASY-TEAMS'){
 		ORDER BY season_id desc
 	");
 
+	// Types of games
+
+	$most_blowout_wins = mysqli_query($con,"
+		SELECT 	'Meiste Blowout-Wins (50+ Punkte)' as headline 
+						, case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+						, case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
+						, count(*) as kennzahl_1 
+						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+						, 0 as kennzahl_3
+						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+
+		FROM 		ftsy_schedule sch
+
+		LEFT JOIN parameter pa 
+    	ON pa.season_id = sch.season_id
+		
+		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
+
+		ORDER BY kennzahl_1 desc
+	");
+
+	$most_blowout_losses = mysqli_query($con,"
+		SELECT 	'Meiste Blowout-Losses (50+ Punkte)' as headline 
+						, case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+						, case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
+						, count(*) as kennzahl_1 
+						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+						, 0 as kennzahl_3
+						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+
+		FROM 		ftsy_schedule sch
+
+		LEFT JOIN parameter pa 
+    	ON pa.season_id = sch.season_id
+		
+		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
+
+		ORDER BY kennzahl_1 desc
+	");
+
+	$most_close_wins = mysqli_query($con,"
+		SELECT 	'Meiste Nailbaiter-Wins (<= 5 Punkte)' as headline 
+						, case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+						, case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
+						, count(*) as kennzahl_1 
+						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+						, 0 as kennzahl_3
+						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+
+		FROM 		ftsy_schedule sch
+
+		LEFT JOIN parameter pa 
+    	ON pa.season_id = sch.season_id
+		
+		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 5)
+
+		ORDER BY kennzahl_1 desc
+	");
+
+	$most_close_losses = mysqli_query($con,"
+		SELECT 	'Meiste Nailbaiter-Losses (<= 5 Punkte)' as headline 
+						, case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+						, case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
+						, count(*) as kennzahl_1 
+						, concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+						, 0 as kennzahl_3
+						, case when sch.besitzer = '".$user_id."' then 1 else 0 end as highlight_flg
+
+		FROM 		ftsy_schedule sch
+
+		LEFT JOIN parameter pa 
+    	ON pa.season_id = sch.season_id
+		
+		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 5)
+
+		ORDER BY kennzahl_1 desc
+	");
+
 	// Get SQL body snippet
 	
 	$sql_body = file_get_contents('../sql/snippets/stats-ftsy-team-formation.sql');
@@ -399,7 +481,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 	
 
 	// Collect all queries in an array
-	$stat_array = array($topscores, $tabelle, $meister, $pokal, $starter, $nicht_gespielt, $minutes, $tore, $vorlagen, $abschluesse, $passspiel, $zweikampf, $torwart, $gegentore, $duelle, $schuesse, $paesse, $big_chances, $key_paesse, $flanken, $dribbling, $ints, $tackles, $blocks, $clear, $dis, $redcard);
+	$stat_array = array($topscores, $tabelle, $meister, $pokal, $most_blowout_wins, $most_blowout_losses, $most_close_wins, $most_blowout_losses, $starter, $nicht_gespielt, $minutes, $tore, $vorlagen, $abschluesse, $passspiel, $zweikampf, $torwart, $gegentore, $duelle, $schuesse, $paesse, $big_chances, $key_paesse, $flanken, $dribbling, $ints, $tackles, $blocks, $clear, $dis, $redcard);
 
 } elseif ($stat_category == 'BUNDESLIGA-TEAMS') {
 	
