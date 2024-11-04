@@ -156,7 +156,7 @@ if ($stat_category == 'FANTASY-TEAMS'){
 	");
 
 	$most_close_wins = mysqli_query($con,"
-		SELECT 	'Meiste Nailbaiter-Wins (<= 5 Punkte)' as headline 
+		SELECT 	'Meiste Nailbaiter-Wins (<= 10 Punkte)' as headline 
 						, case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
 						, case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
 						, count(*) as kennzahl_1 
@@ -170,14 +170,15 @@ if ($stat_category == 'FANTASY-TEAMS'){
     	ON pa.season_id = sch.season_id
 		
 		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
-    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 5)
+						AND sch.ftsy_home_score != 0 AND sch.ftsy_away_score != 0
+    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 10)
 
     GROUP BY headline, besitzer, teamname, highlight_flg
 		ORDER BY kennzahl_1 desc
 	");
 
 	$most_close_losses = mysqli_query($con,"
-		SELECT 	'Meiste Nailbaiter-Losses (<= 5 Punkte)' as headline 
+		SELECT 	'Meiste Nailbaiter-Losses (<= 10 Punkte)' as headline 
 						, case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
 						, case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
 						, count(*) as kennzahl_1 
@@ -191,7 +192,8 @@ if ($stat_category == 'FANTASY-TEAMS'){
     	ON pa.season_id = sch.season_id
 		
 		WHERE 	sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
-    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 5)
+						AND sch.ftsy_home_score != 0 AND sch.ftsy_away_score != 0
+    				AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 10)
 
     GROUP BY headline, besitzer, teamname, highlight_flg
 		ORDER BY kennzahl_1 desc
