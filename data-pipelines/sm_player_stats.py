@@ -605,7 +605,7 @@ with engine.connect() as con:
                         , null as update_ts
                         
                 FROM tmp_sm_player_stats t2 
-                
+                WHERE t2.player_id IS NOT NULL               
                 ON DUPLICATE KEY UPDATE 
                     fixture_id = t2.fixture_id
                     , fixture_kickoff_ts = t2.fixture_kickoff_ts
