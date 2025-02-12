@@ -209,7 +209,7 @@
 							    elseif ($row['news_type'] == 'trade') {
 										// Define team links
 										$link = 'html/view_team.php?click_team=' . strval(utf8_encode($row['teamname']));
-						    		$second_team = mysqli_query($con, "SELECT teamname from xa7580_db1.users where username = '". $row['add_besitzer'] ."'") -> fetch_object() -> teamname;
+						    		$second_team = mysqli_query($con, "SELECT teamname from xa7580_db1.users where id = '". $row['add_besitzer'] ."'") -> fetch_object() -> teamname;
 							    	$link_2 = 'html/view_team.php?click_team=' . strval(utf8_encode($second_team));
 
 										// Define player links
@@ -217,10 +217,10 @@
 							    	$link_player_drop = 'html/research.php?click_player=' . strval($row['drop_id']);
 
 							    	echo "<div class='img_player added_player'>";
-							    		echo "<img class='news_player_img' src='/img/spieler/" . $row['added_img'] . "'>";
+							    		echo "<img class='news_player_img' src='" . $row['added_img'] . "'>";
 							    	echo "</div>";
 							    	echo "<div class='img_player dropped_player'>";
-								    	echo "<img class='news_player_img' src='/img/spieler/" . $row['dropped_img'] . "'>";
+								    	echo "<img class='news_player_img' src='" . $row['dropped_img'] . "'>";
 							    	echo "</div>";
 							    	echo "<div class='news_article_text'>";
 							    		echo "<b>Trade: </b><a href='" . $link . "' class='news_team'>" . mb_convert_encoding($row['teamname'], 'UTF-8') . "</a> gibt <a href='" . $link_player_drop . "' class='news_player' data-id='" . $row['drop_id'] . "'>" . mb_convert_encoding($row['dropped_player'], 'UTF-8') . "</a> (" . mb_convert_encoding($row['dropped_verein'], 'UTF-8') . ") an <a href='" . $link_2 . "' class='news_team'>" . mb_convert_encoding($second_team, 'UTF-8') . "</a> ab und erhält im Gegenzug <a href='" . $link_player_add . "' class='news_player' data-id='" . $row['add_id'] . "'>" . mb_convert_encoding($row['added_player'], 'UTF-8') . "</a> (" . mb_convert_encoding($row['added_verein'], 'UTF-8') . ").";
