@@ -62,107 +62,202 @@ body {
   margin-right: 10px;
 }
 
+
+
+
 #top_wrapper {
   background-color: #333;
   color: white;
   padding: 5px;
   font-size: 14px;
+  display: flex; /* Aligns children (image and info box) horizontally */
+  align-items: center; /* Centers the items vertically */
 }
 
-#top_wrapper hr {
-  color: #999999;
-  border-color: #999999;
-  background-color: #999999;
-  margin-top: 0px;
+.round-image-div {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 15px; /* Adds space between the image and text */
 }
 
-#info_box_basic, #info_box_detail{
+.round-image-div img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s; /* Smooth transition for zoom effect */
+}
+
+/* Apply zoom (scale up) for the specific image with class "zoomed" */
+.round-image-div.zoomed img {
+  transform: scale(1.4); /* Adjust zoom level as needed */
+}
+
+
+#info_box_basic {
   display: flex;
-}
-
-#info_box_basic{
-  justify-content: space-between;
+  flex-direction: row; /* Arrange team name, owner, and trophy case horizontally */
+  align-items: center; /* Vertically center the items */
   padding: 5px;
-
+  margin-right: 15px;  /* Space between the info box and other content */
+  flex-grow: 1; /* Ensures the info box takes the remaining space */
 }
 
-#team_name{
+#team_name {
   font: 200 20px/22px "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-transform: uppercase;
-
+  text-transform: uppercase; /* Keep team name uppercase */
 }
 
-#team_owner{
-
+#team_owner_inline {
+  display: block;
+  font-size: 12px;
+  color: gray;
+  text-transform: none; 
+  margin-top: -5px;
 }
 
-#info_box_detail{
-  justify-content: flex-start;
+#trophy_case {
+  display: flex;
+  flex-direction: row; /* Display the trophies in a row */
+  justify-content: flex-end; /* Align trophy case to the right */
+  align-items: center; /* Vertically align trophies */
+}
+
+.trophy_item {
+  margin-left: 10px; /* Add spacing between trophies */
+}
+
+.trophy_icon {
+  font-size: 25px; /* Increase the size of the trophy icon */
+}
+
+.trophy_title {
+  font-size: 12px;
+  color: white;
+  text-align: center;
+}
+
+.greyed-out {
+  color: #555; /* Grey out the trophy when no titles are found */
+}
+
+#info_box_detail {
+  display: flex;
+  justify-content: flex-start;  /* Align elements to the left */
   margin-top: 7px;
+  align-items: center; /* Vertically align items */
 }
 
-#team_stat_box{
+#team_stat_box {
   display: flex;
   background: black;
+  margin-right: 20px; /* Add space to the right between elements */
 }
 
-.team_stat{
+.team_stat {
   justify-content: flex-start;
   text-align: center;
   padding: 5px;
 }
 
-.team_stat_head{
+.team_stat_head {
   color: gray;
   font-size: 13px;
   margin-bottom: 6px;
-
 }
 
-.team_stat_content{
+.team_stat_content {
   color: white;
   font-size: 14px;
-
+  white-space: nowrap;
 }
 
-#versus{
-text-align: center;
-font-weight: bold;
-font-size: 15px;
-margin-left: 10px;
-margin-right: 10px;
-margin-top: 12px;
+#versus {
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 12px;
 }
 
-#opponent_box{
-    background: black;
-    padding: 5px;
+#opponent_box {
+  background: black;
+  padding: 5px;
 }
 
-#opponent_box a{
-    font-size: 11px;
-    color: gray;
-    text-decoration: none;
+#opponent_box a {
+  font-size: 11px;
+  color: gray;
+  text-decoration: none;
 }
 
-#opponent_box a:hover{
-    font-size: 11px;
-    color: #4caf50;
-    text-decoration: underline;  
-    cursor:pointer;
+#opponent_box a:hover {
+  font-size: 11px;
+  color: #4caf50;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.opponent_team{
+.opponent_team {
   font-size: 13px;
   color: white;
-
 }
 
-.opponent_stats{
+.opponent_stats {
   font-size: 11px;
   color: gray;
   padding-top: 2px;
 }
+
+#trophy_case {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;  /* Reduced gap between items */
+    justify-content: center;
+    margin-top: 0;
+}
+
+.trophy_item {
+    text-align: center;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: -4px;  /* Reduced margin around each trophy */
+	margin-right: -30px;
+}
+
+.trophy_icon {
+    font-size: 30px;
+    margin: 0;
+}
+
+/* Use opacity and grayscale filter to grey out the emoji */
+.greyed-out {
+    opacity: 0.3;  /* Apply transparency to grey out the emoji */
+    filter: grayscale(100%);  /* Apply grayscale filter to grey out the emoji */
+}
+
+
+.trophy_title {
+    margin-top: 5px;
+    font-size: 10px;
+}
+
+.trophy_none {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    font-style: italic;
+    margin-top: 20px;
+}
+
+
+
 
 #button_show_tabelle{
 
@@ -638,6 +733,9 @@ border-radius: 2px;
 }
 
 
+
+
+
 @media screen and (max-width: 900px){
 /** Mobile hide **/
     #versus, #opponent_box {
@@ -667,3 +765,9 @@ border-radius: 2px;
       width: 85% !important;
     }
 }
+
+@media screen and (max-width: 1400px){
+/** Mobile hide **/
+    #versus, #opponent_box {
+        display: none !important;
+    }
