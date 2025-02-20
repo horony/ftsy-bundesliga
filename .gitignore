@@ -2,4 +2,5 @@ secrets
 relikte
 html/write_news.php
 php/jobs/add-news.php
+py/__pycache__
 dev
