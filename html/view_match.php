@@ -237,7 +237,6 @@ if ($akt_spieltag == $clicked_spieltag) {
         GROUP BY ".$ftsy_owner_column."
     ")->fetch_object()->score_proj;								
     
-	// Overall combined live-projection score
 	$result_total_score = mysqli_query($con, "
 		SELECT ROUND(SUM(player_score), 1) AS total_score
 		FROM (
@@ -246,9 +245,9 @@ if ($akt_spieltag == $clicked_spieltag) {
 				CASE 
 					WHEN fix.match_status = 'FT' THEN COALESCE(akt.ftsy_score, 0) 
 					WHEN fix.match_status = 'NS' THEN COALESCE(proj.ftsy_score_projected, 0) 
-					WHEN fix.match_status IN ('1st', '2nd') 
+					WHEN fix.match_status IN ('1st', '2nd', 'HT') 
 						THEN COALESCE(akt.ftsy_score, 0) + 
-							 ((90 - COALESCE(akt.minutes_played_stat, 0)) / 90) * COALESCE(proj.ftsy_score_projected, 0)
+							((90 - COALESCE(akt.minutes_played_stat, 0)) / 90) * GREATEST(COALESCE(proj.ftsy_score_projected, 0) - 4, 0)
 					ELSE 0 
 				END AS player_score
 			FROM xa7580_db1.sm_playerbase base
@@ -262,9 +261,12 @@ if ($akt_spieltag == $clicked_spieltag) {
 				ON (base.current_team_id = fix.team_id OR base.current_team_id = fix.opp_id)
 			WHERE owner." . $ftsy_owner_column . " = '" . $team_id . "'
 				AND owner." . $ftsy_status_column . " != 'NONE'
+				AND fix.match_status IN ('FT', 'NS', '1st', '2nd', 'HT')
 			GROUP BY base.id
 		) AS player_scores;
 	")->fetch_object()->total_score;
+
+
 
 
 
@@ -377,11 +379,10 @@ if ($akt_spieltag == $clicked_spieltag) {
 					
 					
 
-echo "<div class='superheadscore'>";				
+echo "<div class='superheadscore'>";
     echo "<div class='headscore'>";
         echo "<div class='left-section'>";
 
-            // Team image
             echo "<div class='team-image' style='display: inline-block;'>";
                 $team_images = array(
                     3 => '../dev/img/3.png',
@@ -403,16 +404,14 @@ echo "<div class='superheadscore'>";
                         echo '<img src="' . $image_src . '">';
                     echo '</div>';
                 }
-            echo "</div>"; // Close team-image
+            echo "</div>";
 
-        echo "</div>"; // Close left-section
+        echo "</div>";
 
         // Live projection chart
         echo "<div class='chart-wrap vertical'></div>";
         echo "<div class='grid'>";
             echo "<div class='chart-section'>";
-
-                // Calculate the new width for the bars by multiplying the original width by 1.3
                 $new_width_total_score = $result_total_score * 1.3;
                 $new_width_score = $result_score * 1.3;
 
@@ -420,60 +419,55 @@ echo "<div class='superheadscore'>";
                     echo "<span class='label' style='white-space: nowrap;'>&#8605; " . $result_total_score . "</span>";
                 echo "</div>";
 
-                // Add a container for both bar_live_punkte and the pulsating dot
                 echo "<div class='bar-container' style='position: relative;'>";
                     echo "<div class='bar_live_punkte' style='width: " . $new_width_score . "px;' data-name='Medium' title='Medium " . $result_score . "'>";
                         echo "<span class='label' style='white-space: nowrap;'>" . $result_score . "</span>";
                     echo "</div>";
 
-                    // Add the pulsating green dot inside the bar-container
                     echo "<div class='ring-container'>";
                         echo "<div class='circle'></div>";
                         echo "<div class='ringring'></div>";
-                    echo "</div>"; // Close ring-container
+                    echo "</div>"; 
 
-                echo "</div>"; // Close bar-container
-            echo "</div>"; // Close chart-section
+                echo "</div>";
+            echo "</div>"; 
 
             echo "<div class='marker marker-50'></div>";
             echo "<div class='marker marker-100'></div>";
             echo "<div class='marker marker-150'></div>";
             echo "<div class='marker marker-200'></div>";
+
             echo "<div class='marker-text marker-text-50'>50</div>";
             echo "<div class='marker-text marker-text-100'>100</div>";
             echo "<div class='marker-text marker-text-150'>150</div>";
             echo "<div class='marker-text marker-text-200'>200</div>";
 
-        echo "</div>"; // Close grid
-    echo "</div>"; // Close headscore
+        echo "</div>"; 
+    echo "</div>"; 
 
-    // 🎯 **Cup Match Aggregated Score Section**
-    if ($cup_data) {
-        // Determine if this team_id is home or away in the aggregated score
-        if ($team_id == $cup_data['home_id']) {
-            $aggregated_score = $cup_data['total_home_score'];
-        } elseif ($team_id == $cup_data['away_id']) {
-            $aggregated_score = $cup_data['total_away_score'];
-        } else {
-            $aggregated_score = null; // If this is not a cup match team
-        }
-
-        if ($aggregated_score !== null) {
-            echo "<div class='cup-score custom-margin'>";
-                echo "<strong>🏆 Hin- & Rückspiel: " . $aggregated_score . "</strong>";
-            echo "</div>";
-        }
+if ($cup_data) {
+    if ($team_id == $cup_data['home_id']) {
+        $hinspiel_score = $cup_data['total_home_score']; 
+    } elseif ($team_id == $cup_data['away_id']) {
+        $hinspiel_score = $cup_data['total_away_score']; 
+    } else {
+        $hinspiel_score = null; 
     }
 
-    // Team name and achievement icons
+    if ($hinspiel_score !== null) {
+        $aggregated_score = $hinspiel_score + $result_score;
+
+        echo "<div class='cup-score custom-margin'>";
+            echo "<strong>🏆 Hin- & Rückspiel: " . $aggregated_score . " (" . $hinspiel_score . ")</strong>";
+        echo "</div>";
+    }
+}
     echo "<div class='team-name-section'>";
         $achievement_icons = mysqli_query($con, "SELECT achievement_icons FROM xa7580_db1.users_gamedata WHERE username = '".$user_name."'") -> fetch_object() -> achievement_icons;
         echo "<h2>" . mb_convert_encoding(strtoupper($team_name), 'UTF-8') . " " . $achievement_icons . "</h2>";
-    echo "</div>"; // Close team-name-section
+    echo "</div>"; 
 
-echo "</div>"; // Close superheadscore
-
-// Direct comparison stats
+echo "</div>"; 
 if ($akt_spieltag === $clicked_spieltag) {
     echo "<h5>Manager: " . mb_convert_encoding($user_name, 'UTF-8') . " | Direkter Vergleich: " . $bilanz['S'] . "-" . $bilanz['U'] . "-" . $bilanz['N'] . " | Übrige Spieler: " . $players_left . "</h5>";
 } else {
@@ -912,48 +906,34 @@ echo "<div class='fakeimg'></div>";
 							echo "<td style='color: gray;' align='center'>" . $row['position_short'] . "</td>";
 							echo "<td><img height='30px' width='auto' src='" . $row['logo_path'] . "'></td>";
 
-							$full_name = $row['display_name']; // Get the full name
-							$name_parts = explode(" ", $full_name); // Split name
-							$shortened_name = substr($name_parts[0], 0, 1) . ". " . end($name_parts); // Format as "L. Horony"
+							$full_name = $row['display_name']; 
+							$name_parts = explode(" ", $full_name); 
+							$shortened_name = substr($name_parts[0], 0, 1) . ". " . end($name_parts);
 
 							echo "<td>" . mb_convert_encoding($shortened_name, 'UTF-8') . "</td>";
 
-							// Convert kickoff time
 							$kickoff_time = date('H:i', strtotime($row['kickoff_ts']));
-
-							// Get projected and actual scores
 							$projected_score = $row['ftsy_score_projected'];
 
 							if (strtotime($row['kickoff_ts']) <= time()) {
-								// If game has started or finished, use actual fantasy score
 								$actual_score = isset($row['ftsy_score']) ? number_format($row['ftsy_score'], 1) : '0';
 							} else {
-								// Game not started yet
 								$actual_score = '-';
 							}
 
-							// Use the appearance_stat_x value for minutes played
 							$minutes_played = isset($row['appearance_stat_x']) ? $row['appearance_stat_x'] : 0;
 
-							// Live projection calculation (only if match is ongoing)
 							if (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] != 'FT') {
-								// Calculate remaining minutes
 								$remaining_minutes = 90 - $minutes_played;
-
-								// Apply the correct formula: ftsy_score + (projection/90 * remaining_minutes)
-								$live_projection_score = $row['ftsy_score'] + ($projected_score / 90 * $remaining_minutes);
-
-								// Round the calculated value to 1 decimal
+								$adjusted_projected_score = max($projected_score - 4, 0);
+								$live_projection_score = $row['ftsy_score'] + ($adjusted_projected_score / 90 * $remaining_minutes);
 								$live_projection_score = number_format($live_projection_score, 1);
 							} else {
-								// If the game hasn't started or it's finished
 								$live_projection_score = number_format($projected_score, 1);
 							}
 
-							// Score class formatting
 							$projection_class = ($live_projection_score == 0) ? 'projection zero-score' : 'projection';
 
-							// Style actual score based on value
 							$actual_score_class = '';
 							if ($actual_score !== '-') {
 								if ($actual_score < 0) {
@@ -969,15 +949,12 @@ echo "<div class='fakeimg'></div>";
 								}
 							}
 
-							// Create the player score display
 							$player_score_display = "<div class='player-score-wrapper'>
 														<span class='$projection_class'>&#8605 $live_projection_score</span>
 														<span class='actual-score $actual_score_class'>$actual_score</span>
 													 </div>";
 
-							// Determine match display format
 							if (strtotime($row['kickoff_ts']) > time()) {
-								// Game in future
 								$matchup_to_display = $row['kickoff_weekday'] . ", " . 
 													  $row['kickoff_day'] . "." . 
 													  $row['kickoff_month'] . ". " . 
@@ -988,13 +965,11 @@ echo "<div class='fakeimg'></div>";
 								echo "<td style='color: gray; font-size: 14px;'>" . $matchup_to_display . "</td>";
 								echo "<td align='center' title='Projection' class='player_score'>" . $player_score_display . "</td>";
 							} elseif (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] != 'FT') {
-								// Live game
 								echo "<td style='color: gray;'>" . $row['score_for'] . ":" . $row['score_against'] . 
 									 " vs. " . $row['gegner_code'] . 
 									 "<span style='color: red' class='pulsate'> <small><b> LIVE</b></small></span></td>";
-								echo "<td align='center' class='player_score'><span class='pulsate'>" . $player_score_display . "</span></td>";
+								echo "<td align='center' class='player_score'>" . $player_score_display . "</td>";
 							} elseif (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] == 'FT') {
-								// Final game result
 								echo "<td style='color: gray;'>" . $row['score_for'] . ":" . $row['score_against'] . 
 									 " vs. " . $row['gegner_code'] . 
 									 "<span style='color: black'><small><b> FINAL</b></small></span></td>";
@@ -1002,6 +977,7 @@ echo "<div class='fakeimg'></div>";
 							}
 
 						echo "</tr>";
+
 
 						// Detailed player stats
 
