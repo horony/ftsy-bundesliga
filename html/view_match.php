@@ -13,8 +13,8 @@ require("../php/auth.php");
 	<meta charset="UTF-8">   
 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="../dev/css/matchup.css">
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="../dev/css/nav.css">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/matchup.css">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
