@@ -62,12 +62,12 @@ body {
 
 	
 .headscore {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-bottom: -40px;
-  padding: 10px;
-  background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: -40px;
+    padding: 10px;
+    background-color: #f5f5f5;
 }
 
 .headscore .left-section {
@@ -148,18 +148,18 @@ body {
 }
 
 .headscore .round-image-div {
-  width: 100px;
-  display: inline-flex;
-  height: 100px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 10px;
+    width: 100px;
+    display: inline-flex;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
 }
 
 .headscore .round-image-div img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .round-image-div.zoomed img {
@@ -169,122 +169,124 @@ body {
 /*Hier beginnt das Tabellenlayout */
 
 .grid {
-  float: right;
-  min-width: 325px;
-  background-size: cover;
-  position: relative;
-  border: 1px solid #ccc;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  margin-left: -27px;
-  margin-bottom: -40px;
+    float: right;
+    min-width: 325px;
+    background-size: cover;
+    position: relative;
+	border: 1px solid #ccc;
+	border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+	margin-left: -27px;
+	margin-bottom: -40px;
 }
 
+
 .bar_live_punkte {
-  height: 30px;
-  font-weight: bold;
-  margin-bottom: 1px;
-  width: var(--bar-value);
-  background-color: #4CAF50;
-  box-shadow: 0 0 10px 5px #000;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  line-height: 40px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  z-index: 5;
+    height: 30px;
+    font-weight: bold;
+    margin-bottom: 1px;
+    width: var(--bar-value);
+    background-color: #4CAF50;
+    box-shadow: 0 0 10px 5px #000;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    line-height: 40px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    z-index: 5;
 }
 
 .bar_live_punkte > span {
-  padding-left: 29px;
+    padding-left: 29px;
 }
 
 .bar_live_prognose {
-  position: absolute;
-  height: 30px;
-  font-weight: bold;
-  font-size: 12px;
-  margin-bottom: 1px;
-  width: var(--bar-value);
-  background: url(../img/striped_grey.jpg);
-  background-repeat: repeat;
-  background-size: 100% 100%;
-  box-shadow: 0 0 7px 3px #000;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  line-height: 40px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  color: #003eff;
+    position: absolute;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 1px;
+    width: var(--bar-value);
+    background: url(../img/striped_grey.jpg);
+    background-repeat: repeat;
+    background-size: 100% 100%;
+    box-shadow: 0 0 7px 3px #000;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    line-height: 40px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    color: #003eff;
 }
 
 
 .bar_live_prognose span {
-  position: absolute;
-  right: -5px;
-  transform: translateX(100%);
-  white-space: nowrap;
-  padding-left: 6px;
-  font-size: 13px;
-  color: #003eff;
-  font-weight: bold;
-  border-radius: 5px;
-  background: none;
+    position: absolute;
+    right: -5px;
+    transform: translateX(100%);
+    white-space: nowrap;
+    padding-left: 6px;
+    font-size: 13px;
+    color: #003eff;
+    font-weight: bold;
+    border-radius: 5px;
+    background: none;
 }
 
+
 .marker {
-  position: absolute;
-  width: 2px;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0.5;
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0.5;
 }
 
 .marker-text {
-  position: absolute;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  top: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
+    position: absolute;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .marker-50 {
-  left: calc(65px - 1px);
-  top: 0;
+    left: calc(65px - 1px);
+    top: 0;
 }
 
 .marker-100 {
-  left: calc(130px - 1px);
-  top: 0;
+    left: calc(130px - 1px);
+    top: 0;
 }
 
 .marker-150 {
-  left: calc(195px - 1px);
-  top: 0;
+    left: calc(195px - 1px);
+    top: 0;
 }
 
 .marker-200 {
-  left: calc(260px - 1px);
-  top: 0;
+    left: calc(260px - 1px);
+    top: 0;
 }
 
 .marker-text-50 {
-  left: 65px;
-  bottom: 0;
+    left: 65px;
+    bottom: 0;
 }
 
 .marker-text-100 {
-  left: 130px;
-  bottom: 0;
+    left: 130px;
+    bottom: 0;
 }
 
 .marker-text-150 {
-  left: 195px;
-  bottom: 0;
+    left: 195px;
+    bottom: 0;
 }
 
 .marker-text-200 {
@@ -292,23 +294,29 @@ body {
   bottom: 0;
 }
 
+
+
+
 .cup-score {
-  background: #4CAF50;
-  padding: 5px 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  display: inline-block;
-  vertical-align: top;
+    background: #4CAF50;
+    padding: 5px 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .custom-margin {
-  margin-top: 35px; 
-  margin-bottom: -35px;
-  margin-left: 10px;
+    margin-top: 35px; 
+	margin-bottom: -35px;
+	margin-left: 10px;
 }
+
+
+
 
 100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
 }
@@ -338,11 +346,11 @@ body {
 }
 
 .headprojection {
-  display: flex;
-  float: right;
-  justify-content: space-between;
-  margin-bottom: -20px;
-  margin-top: -18px;
+    display: flex;
+    float: right;
+    justify-content: space-between;
+    margin-bottom: -20px;
+    margin-top: -18px;
 }
 
 .player_score {
@@ -416,20 +424,20 @@ body {
 
 
 .pulsate {
-  -webkit-animation: pulsate 2s ease-out;
-  -webkit-animation-iteration-count: infinite; 
-  opacity: 0.5;
+    -webkit-animation: pulsate 2s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.5;
 }
 @-webkit-keyframes pulsate {
-  0% { 
-    opacity: 0.5;
-  }
-  50% { 
-    opacity: 1.0;
-  }
-  100% { 
-    opacity: 0.5;
-  }
+    0% { 
+        opacity: 0.5;
+    }
+    50% { 
+        opacity: 1.0;
+    }
+    100% { 
+        opacity: 0.5;
+    }
 }
 
 
@@ -464,6 +472,10 @@ body {
   height: 2px;
 }
 
+/*.kader {
+  padding: 5px;
+}*/
+
 #myTable {
   font-size: 16px;
   width: 100%;
@@ -482,6 +494,7 @@ body {
   border-bottom: 1px solid #ddd;
 }
 
+
 .matchup-small-text {
   font-size: 0.75em; 
   line-height: 1.2em; 
@@ -493,12 +506,14 @@ body {
   text-overflow: ellipsis; 
 }
 
+
 .player_detail {
   display: none;
   font-size: 12px;
   color: #484848;
   background: #ddd;
 }
+
 
 .ring-container {
 	position: absolute; 
@@ -523,20 +538,22 @@ body {
 }
 
 .ringring {
-  border: 3px solid #00FF00;
-  -webkit-border-radius: 30px;
-  height: 22px;
-  width: 22px;
-  position: absolute;
-  left: 18px;
-  top: 18px;
-  -webkit-animation: pulsate 1s ease-out;
-  -webkit-animation-iteration-count: infinite; 
-  opacity: 0.0
+    border: 3px solid #00FF00;
+    -webkit-border-radius: 30px;
+    height: 22px;
+    width: 22px;
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.0
 }
 @-webkit-keyframes pulsate {
-  0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
-  50% {opacity: 1.0;}
+    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    
+
 }
 
 
