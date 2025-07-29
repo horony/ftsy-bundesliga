@@ -1,8 +1,8 @@
 UPDATE ftsy_scoring_hist hst
 
 INNER JOIN sm_player_stats st
-	ON 	hst.fixture_id= st.fixture_id
-    	AND hst.player_id= st.player_id
+    ON hst.fixture_id = st.fixture_id
+    AND hst.player_id = st.player_id
         
 SET   hst.round_name = st.round_name
       , hst.appearance_stat = st.appearance
@@ -54,4 +54,5 @@ SET   hst.round_name = st.round_name
       , hst.punches_stat = st.punches
       , hst.redcards_stat = st.redcards
       , hst.redyellowcards_stat = st.redyellowcards
-      , hst.update_ts = sysdate();
+      , hst.update_ts = sysdate()
+;

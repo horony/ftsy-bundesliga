@@ -2,7 +2,7 @@ CREATE TABLE dev_ftsy_scoring_ruleset (
     fantasy_league_id integer
     , player_position_en text
     , player_position_de_short text
-	, `appearance` float
+    , `appearance` float
     , `minutes_played` float
     , `goals_total` float 
     , `goals_minus_pen` float
