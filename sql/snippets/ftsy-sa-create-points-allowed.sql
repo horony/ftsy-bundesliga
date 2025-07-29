@@ -1,7 +1,7 @@
 CREATE TABLE xa7580_db1.ftsy_points_allowed AS 
 
 SELECT  
-	base.position_short
+    base.position_short
     , base.opp_team_id
     , base.team_name
     , base.team_code
@@ -9,7 +9,7 @@ SELECT
     , base.avg_allowed
     -- Calculate rank by position
     , CASE   
-    	WHEN base.position_short = 'AW' THEN @rank_aw := @rank_aw + 1 
+        WHEN base.position_short = 'AW' THEN @rank_aw := @rank_aw + 1 
         WHEN base.position_short = 'MF' THEN @rank_mf := @rank_mf + 1  
         WHEN base.position_short = 'TW' THEN @rank_tw := @rank_tw + 1  
         WHEN base.position_short = 'ST' THEN @rank_st := @rank_st + 1  
