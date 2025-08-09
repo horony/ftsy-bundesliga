@@ -13,21 +13,23 @@ select
 from (
     /* Data from the prod table */
     select 
-        `ftsy_tabelle_2020`.`player_id` AS `user_id`
-        , `ftsy_tabelle_2020`.`team_name` AS `team_name`
-        , `ftsy_tabelle_2020`.`punkte` AS `punkte`
-        , `ftsy_tabelle_2020`.`season_id` AS `season_id`
-        , `ftsy_tabelle_2020`.`score_for` AS `score_for`
-        , `ftsy_tabelle_2020`.`score_against` AS `score_against`
-        , `ftsy_tabelle_2020`.`siege` AS `siege`
-        , `ftsy_tabelle_2020`.`niederlagen` AS `niederlagen`
-        , `ftsy_tabelle_2020`.`unentschieden` AS `unentschieden`
-        , `ftsy_tabelle_2020`.`trost` AS `trost` 
-    from `ftsy_tabelle_2020` 
+        `f`.`player_id` AS `user_id`
+        , `u`.`teamname` AS `team_name`
+        , `f`.`punkte` AS `punkte`
+        , `f`.`season_id` AS `season_id`
+        , `f`.`score_for` AS `score_for`
+        , `f`.`score_against` AS `score_against`
+        , `f`.`siege` AS `siege`
+        , `f`.`niederlagen` AS `niederlagen`
+        , `f`.`unentschieden` AS `unentschieden`
+        , `f`.`trost` AS `trost` 
+    from `ftsy_tabelle_2020` `f`
+    left join `users` `u` 
+        on `u`.`id` = `f`.`player_id`
     where 
-        `ftsy_tabelle_2020`.`spieltag` = 34 
-        or ( `ftsy_tabelle_2020`.`spieltag` = (select `parameter`.`spieltag` - 1 from `parameter`) 
-        and `ftsy_tabelle_2020`.`season_id` = (select `parameter`.`season_id` from `parameter`) 
+        `f`.`spieltag` = 34 
+        or (`f`.`spieltag` = (select `parameter`.`spieltag` - 1 from `parameter`) 
+        and `f`.`season_id` = (select `parameter`.`season_id` from `parameter`))
 
     union all 
 
