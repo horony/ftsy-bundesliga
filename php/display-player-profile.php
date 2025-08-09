@@ -381,7 +381,7 @@ echo "<div id='transfer_daten'>";
                 echo "<td><img height='15px' src='".$row['abg_logo']."'></td>";
                 echo "<td>".mb_convert_encoding($row['abg_name'], 'UTF-8')."</td>";
                 echo "<td>".$row['transfer_type']."</td>";
-                echo "<td>".$row['amount']."</td>";
+                echo "<td>" . number_format($row['amount'], 0, ',', '.') . "</td>";
             echo "</tr>";
         }
 
