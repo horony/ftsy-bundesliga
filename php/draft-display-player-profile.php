@@ -85,7 +85,10 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
         echo "<div id='spielerprofil_fantasy'>";
 
             echo "<div id='spielerprofil_fantasy_head'>";
-                echo "BuLi 23/24";
+                $aktuelles_jahr = date("Y");
+                $aktuelles_jahr_cd = substr($aktuelles_jahr, -2); 
+                $naechstes_jahr_cd = str_pad(($aktuelles_jahr_cd + 1) % 100, 2, "0", STR_PAD_LEFT);
+                echo "BuLi $aktuelles_jahr_cd/$naechstes_jahr_cd";
             echo "</div>";
 
             echo "<div id='spielerprofil_fantasy_score'>";
