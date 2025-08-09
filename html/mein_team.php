@@ -140,7 +140,7 @@
             '22' => '../img/ftsy-team-logos/22.png',
             '27' => '../img/ftsy-team-logos/27.png',
             '28' => '../img/ftsy-team-logos/28.png',
-            '30' => '../img/ftsy-team-logos/30.png',
+			'30' => '../img/ftsy-team-logos/30.png',
         );
 
         $image_src = isset($team_images[$team_id]) ? $team_images[$team_id] : '';
@@ -166,7 +166,7 @@
         </div>
 
         <!-- Trophy Case -->
-        <div id="trophy_case" class="trophy_case_right">
+        <div class="trophy_case trophy_case_right">
             <?php
             if (!$con) {
                 die("Database connection failed: " . mysqli_connect_error());
@@ -213,7 +213,7 @@
             ?>
         </div>
 
-        <div id="trophy_case" class="trophy_case_right">
+        <div class="trophy_case trophy_case_right">
             <?php
                 $result_season = mysqli_query($con, "
                     SELECT fm.season_name 

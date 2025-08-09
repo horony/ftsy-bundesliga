@@ -51,9 +51,6 @@ require("../php/auth.php");
 		$akt_season_id = mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;	
 		$clicked_spieltag = mysqli_query($con, "SELECT buli_round_name FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object() -> buli_round_name;
 		
-
-
-
 $cup_query = mysqli_query($con, "SELECT cup_round, cup_leg, season_id, ftsy_home_id, ftsy_away_id, ftsy_home_score, ftsy_away_score 
                                  FROM xa7580_db1.ftsy_schedule 
                                  WHERE ftsy_match_id = '".$match_id."'");
