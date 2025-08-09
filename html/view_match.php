@@ -395,6 +395,7 @@ echo "<div class='superheadscore'>";
                     22 => '../img/ftsy-team-logos/22.png',
                     27 => '../img/ftsy-team-logos/27.png',
                     28 => '../img/ftsy-team-logos/28.png',
+                    30 => '../img/ftsy-team-logos/30.png',
                 );
 
                 $image_src = isset($team_images[$team_id]) ? $team_images[$team_id] : '';
