@@ -354,7 +354,7 @@ echo "<div id='transfer_daten'>";
             , COALESCE(auf.name, 'Unbekannt') AS auf_name
             , auf.logo_path AS auf_logo
             , tf.transfer_type
-            , CASE WHEN tf.transfer_type = 'Transfer' THEN coalesce(tf.amount, 'Unbekannt') ELSE tf.amount END AS amount                     
+            , CASE WHEN tf.transfer_type = 'Transfer' THEN coalesce(tf.amount, 0) ELSE tf.amount END AS amount                     
         FROM `sm_player_transfers` tf
         LEFT JOIN sm_teams abg
             ON abg.id = tf.from_team_id
@@ -381,7 +381,7 @@ echo "<div id='transfer_daten'>";
                 echo "<td><img height='15px' src='".$row['abg_logo']."'></td>";
                 echo "<td>".mb_convert_encoding($row['abg_name'], 'UTF-8')."</td>";
                 echo "<td>".$row['transfer_type']."</td>";
-                echo "<td>" . number_format($row['amount'], 0, ',', '.') . "</td>";
+                echo "<td>" . number_format($row['amount'] ?? 0, 0, ',', '.') . "</td>";
             echo "</tr>";
         }
 
