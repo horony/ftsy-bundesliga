@@ -9,20 +9,19 @@ $draft_status = mysqli_query($con, "SELECT draft_status FROM xa7580_db1.draft_me
 
 // Data on user which is on the clock
 $on_the_clock = mysqli_query($con, "
-	SELECT 	dof.teamname
-					, dof.user_id
-					, dof.pick
-					, dof.round
-					, CASE WHEN dm.current_round >= dm.round_time_change THEN seconds_last_picks ELSE seconds_first_picks END AS seconds_for_pick
-					, dm.start_ts
-					, dm.expire_ts
-
+	SELECT 	
+		dof.teamname
+		, dof.user_id
+		, dof.pick
+		, dof.round
+		, CASE WHEN dm.current_round >= dm.round_time_change THEN seconds_last_picks ELSE seconds_first_picks END AS seconds_for_pick
+		, dm.start_ts
+		, dm.expire_ts
 	FROM xa7580_db1.draft_order_full dof
-
 	INNER JOIN xa7580_db1.draft_meta dm 
 		ON 	dm.current_pick_no = dof.pick
-				AND dm.league_id = dof.league_id
-				AND dm.league_id = 1
+		AND dm.league_id = dof.league_id
+		AND dm.league_id = 1
 	") -> fetch_assoc();
 
 // Pass data to json array

@@ -3,13 +3,14 @@ include("../secrets/mysql_db_connection.php");
 $id = $_GET["player_id"];
 
 $drafted_players = mysqli_query($con, "	
-	SELECT 	display_name
-					, teamname_code
-					, team_logo
-					, position_short
-					, position_long
-					, round
-					, pick			 
+	SELECT 	
+        display_name
+        , teamname_code
+        , team_logo
+        , position_short
+        , position_long
+        , round
+        , pick			 
 	FROM xa7580_db1.draft_player_base 
 	WHERE pick_by = '".$id."' 
 	ORDER BY pick asc" 
