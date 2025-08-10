@@ -35,4 +35,5 @@ LEFT JOIN xa7580_db1.ftsy_scoring_projection_v proj
 WHERE  
     ( own.1_ftsy_owner_id IS NULL OR own.1_ftsy_owner_type != ? )
     AND base.rostered = 1
+    AND base.id NOT IN (SELECT player_id FROM waiver_new_transfers_playerbase)
 ORDER BY total_fb_score DESC, avg_fb_score DESC, last3_avg_fb_score DESC, last1_total_fb_score DESC

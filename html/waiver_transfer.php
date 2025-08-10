@@ -63,7 +63,7 @@ require("../php/auth.php");
                                     waiv.*
                                     , base1.short_code as add_verein
                                     , base2.short_code as drop_verein                          
-                                FROM xa7580_db1.waiver waiv
+                                FROM xa7580_db1.waiver_new_transfers waiv
                                 INNER JOIN xa7580_db1.sm_playerbase_basic_v base1
                                     ON waiv.waiver_add_id = base1.id
                                 INNER JOIN xa7580_db1.sm_playerbase_basic_v base2
@@ -94,16 +94,6 @@ require("../php/auth.php");
                 <!-- Footer -->
             <div id="footer" class="">
                 <?php
-                    // Date and time of next waivers
-                    $next_waiver = mysqli_query($con, "
-                        SELECT  
-                            CASE 
-                                WHEN waiver_date_1 > NOW() THEN DATE_FORMAT(waiver_date_1, '%e.%m %H:%i') 
-                                WHEN waiver_date_1 <= NOW() AND waiver_date_2 > NOW() THEN DATE_FORMAT(waiver_date_2, '%e.%m %H:%i') 
-                                ELSE 'Nächste Woche' 
-                                END AS waiver_datum 
-                        FROM xa7580_db1.parameter
-                        ") -> fetch_object() -> waiver_datum;
                     
                     // Current waiver priority
                     $waiver_prio = mysqli_query($con, "
@@ -119,15 +109,6 @@ require("../php/auth.php");
                     <br>
                     <span style="font-size: 18px; text-decoration: bold;">
                         <?php echo "#" . $waiver_prio; ?>
-                    </span>
-                </div>
-
-                <!-- Date next waiver -->
-                <div class="footer_box">
-                    Nächster Waiver
-                    <br>
-                    <span style="font-size: 18px; text-decoration: bold;">
-                        <?php echo $next_waiver; ?>
                     </span>
                 </div>
 
