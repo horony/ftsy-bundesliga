@@ -4,7 +4,7 @@ SELECT
     fix.season_id
     , fix.season_name
     , fix.round_id
-    , fix.round_name        
+    , fix.round_name
     , fix.fixture_id
     , fix.kickoff_dt
     , fix.kickoff_ts
@@ -20,10 +20,10 @@ SELECT
     , base.is_sidelined
     , base.image_path
     , base.current_team_id
-    , base.name 
-    , base.short_code 
-    , base.logo_path 
-    , base.1_ftsy_owner_typ
+    , base.name
+    , base.short_code
+    , base.logo_path
+    , base.1_ftsy_owner_type
     , base.1_ftsy_owner_id
     , base.1_ftsy_match_status
     , case when fix.localteam_name_code = base.short_code then 'H' else 'A' end 
