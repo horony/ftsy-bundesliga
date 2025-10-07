@@ -53,7 +53,7 @@ FROM (
 							CASE WHEN last3.ftsy_away_score > last3.ftsy_home_score THEN 'S'
 								 WHEN last3.ftsy_away_score < last3.ftsy_home_score THEN 'N'
 								 WHEN last3.ftsy_away_score = last3.ftsy_home_score THEN 'U' END
-						 ELSE '-'
+						 ELSE 'B'
 					END AS Last_3,
 					CASE WHEN last2.ftsy_home_id = finale_tabelle2.team_id THEN
 							CASE WHEN last2.ftsy_home_score > last2.ftsy_away_score THEN 'S'
@@ -63,7 +63,7 @@ FROM (
 							CASE WHEN last2.ftsy_away_score > last2.ftsy_home_score THEN 'S'
 								 WHEN last2.ftsy_away_score < last2.ftsy_home_score THEN 'N'
 								 WHEN last2.ftsy_away_score = last2.ftsy_home_score THEN 'U' END
-					 	 ELSE '-'
+					 	 ELSE 'B'
 					END AS Last_2,
 					CASE WHEN last1.ftsy_home_id = finale_tabelle2.team_id THEN
 							CASE WHEN last1.ftsy_home_score > last1.ftsy_away_score THEN 'S'
@@ -73,7 +73,7 @@ FROM (
 							CASE WHEN last1.ftsy_away_score > last1.ftsy_home_score THEN 'S'
 								 WHEN last1.ftsy_away_score < last1.ftsy_home_score THEN 'N'
 								 WHEN last1.ftsy_away_score = last1.ftsy_home_score THEN 'U' END
-					 	 ELSE '-'
+					 	 ELSE 'B'
 					END AS Last_1
 				 	, users.id as user_id
 				 	, users.teamname as user_teamname
