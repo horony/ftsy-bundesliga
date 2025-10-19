@@ -7,10 +7,15 @@ WITH base AS (
         , param.spieltag AS round_name
         , COUNT(own.player_id) AS players_fielded_cnt
         , CASE WHEN COUNT(own.player_id) != 11 THEN -20 ELSE COALESCE(SUM(ftsy_score),0) END AS ftsy_score_sum
-        , COALESCE(SUM(proj.ftsy_score_projected),0) AS ftsy_score_projected_sum
-        , SUM(CASE WHEN fix.kickoff_ts < NOW() AND fix.fixture_status != 'FT' THEN 1 ELSE 0 END) AS players_in_play_cnt
-        , SUM(CASE WHEN fix.kickoff_ts < NOW() AND fix.fixture_status = 'FT' THEN 1 ELSE 0 END) AS players_ft_cnt
-        , SUM(CASE WHEN fix.kickoff_ts > NOW() THEN 1 ELSE 0 END) AS players_ns_cnt 
+        , ROUND(SUM(CASE 
+            WHEN fix.fixture_status = 'FT' THEN COALESCE(scr.ftsy_score, 0) 
+            WHEN fix.fixture_status = 'NS' THEN COALESCE(proj.ftsy_score_projected, 0) 
+            WHEN fix.fixture_status IN ('1st', '2nd', 'HT') THEN COALESCE(scr.ftsy_score, 0) + ((90 - COALESCE(scr.minutes_played_stat, 0)) / 90) * GREATEST(COALESCE(proj.ftsy_score_projected, 0) - 4, 0)
+            ELSE 0
+            END),1) AS ftsy_score_projected_sum
+        , SUM(CASE WHEN fix.fixture_status IN ('1st', '2nd', 'HT') THEN 1 ELSE 0 END) AS players_in_play_cnt
+        , SUM(CASE WHEN fix.fixture_status = 'FT' THEN 1 ELSE 0 END) AS players_ft_cnt
+        , SUM(CASE WHEN fix.fixture_status = 'NS' THEN 1 ELSE 0 END) AS players_ns_cnt 
     FROM users u
     INNER JOIN parameter param
         ON 1 = 1
