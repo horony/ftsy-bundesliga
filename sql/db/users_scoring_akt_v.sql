@@ -50,9 +50,9 @@ SELECT
     , players_ft_cnt
     , players_ns_cnt
     , CASE 
-        WHEN players_ns_cnt > 0 AND players_in_play_cnt > 0 THEN CONCAT(players_in_play_cnt, ' Spieler live | ', players_ns_cnt, ' Spieler offen')
-        WHEN players_ns_cnt > 0 AND players_in_play_cnt = 0 THEN CONCAT(players_ns_cnt, ' Spieler offen')
-        WHEN players_ns_cnt = 0 AND players_in_play_cnt > 0 THEN CONCAT(players_in_play_cnt, ' Spieler live')
+        WHEN players_ft_cnt = 0 AND players_in_play_cnt = 0 THEN CONCAT(players_ns_cnt, ' NS')
+        WHEN players_ns_cnt = 0 AND players_in_play_cnt = 0 THEN CONCAT(players_ft_cnt, ' FT')
+        ELSE CONCAT(players_in_play_cnt, ' LIVE | ', players_ns_cnt, ' NS | ', players_ft_cnt, ' FT')
         END AS players_status
 FROM base 
 ;
