@@ -34,7 +34,7 @@ SELECT
         , SUM(CASE WHEN ftsy_score_for = ftsy_score_against THEN 1 ELSE 0 END) 
         , '-'
         , SUM(CASE WHEN ftsy_score_for < ftsy_score_against THEN 1 ELSE 0 END)
-        ) AS cup_recored
+        ) AS cup_record
 FROM cte_schedule
 GROUP by user_id, teamname, season_id, round_name
 ;
