@@ -2,10 +2,11 @@
   .header_image {
     max-width: 100% !important; 
     height: auto !important;
-    margin-bottom: -29px !important;
-    margin-top: -15px;
+    /* avoid overlapping the navigation */
+    margin: 0 0 0px 0 !important;
+    margin-top: 0 !important;
     object-fit: cover !important;
-    min-height: 100px !important; /* Set your minimum height here */
+    min-height: 80px !important; /* Set a reasonable minimum height */
     overflow-x: hidden !important; /* Hide the overflowing part of the image */
     direction: ltr !important; /* Change the direction to left-to-right */
     margin-left: 0 !important;
@@ -13,4 +14,4 @@
   }
 </style>
 
-<h1><img src="../img/textures/header_logo.png" class="header_image"></h1>
+<img src="../img/textures/header_logo.png" class="header_image">
