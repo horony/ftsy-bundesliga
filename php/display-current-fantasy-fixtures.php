@@ -109,7 +109,7 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                     AND ftsy_away_score = (SELECT MAX(LEAST(ftsy_home_score,ftsy_away_score)) FROM cte_schedule) 
                     THEN CONCAT(ftsy_away_score,'<span style=\'display:inline-block; font-size:0.7rem; line-height:1; transform:translateY(-1em);\'>🍀</span>')     
                 ELSE ftsy_away_score 
-            END AS ftsy_away_score,
+            END AS ftsy_away_score
         , CONCAT('⌀',COALESCE(ftsy_home_avg, '-')) AS ftsy_home_avg
         , CONCAT('⌀',COALESCE(ftsy_away_avg, '-')) AS ftsy_away_avg
         , ftsy_home_record AS home_description_1
