@@ -175,11 +175,11 @@ require("../php/auth.php");
     // Function to format ftsy values with colors and signs
     function formatFtsyValue($value) {
         if ($value > 0) {
-            return '<span style="color: darkgreen;">+' . $value . '</span>';
+            return '<span style="color: darkgreen;">+' . number_format($value, 1) . '</span>';
         } elseif ($value < 0) {
-            return '<span style="color: darkred;">-' . abs($value) . '</span>';
+            return '<span style="color: darkred;">-' . number_format(abs($value), 1) . '</span>';
         } else {
-            return '<span style="color: gray;">+' . $value . '</span>';
+            return '<span style="color: gray;">+' . number_format($value, 1) . '</span>';
         }
     }
 
