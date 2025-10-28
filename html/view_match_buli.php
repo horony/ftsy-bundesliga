@@ -98,8 +98,11 @@ require("../php/auth.php");
             scr.player_id
         FROM xa7580_db1.ftsy_scoring_hist scr
         WHERE 
-            scr.minutes_played_stat >= 45
-            AND scr.fixture_id = '".$fixture_id."'
+            scr.fixture_id = '".$fixture_id."'
+            AND (
+                scr.minutes_played_stat >= 45
+                OR (scr.redcards_stat > 0 OR scr.redyellowcards_stat > 0)
+            )
         ORDER BY ftsy_score ASC
         LIMIT 1
         ;") -> fetch_assoc();     
@@ -320,6 +323,7 @@ require("../php/auth.php");
                         , CASE WHEN ftsy.appearance_stat = 1 and ftsy.clean_sheet_ftsy > 0 THEN ftsy.clean_sheet_stat 
                                         ELSE NULL 
                                         END AS clean_sheet_stat_x
+                        , CASE WHEN topxi.player_id IS NOT NULL THEN 1 ELSE 0 END AS topxi_flg
                     FROM xa7580_db1.sm_playerbase base 
                     LEFT JOIN xa7580_db1.ftsy_scoring_hist ftsy 
                         ON ftsy.player_id = base.id
@@ -327,6 +331,11 @@ require("../php/auth.php");
                         AND ftsy.season_id = '".$akt_season_id."'
                     LEFT JOIN xa7580_db1.users u
                         ON u.id = ftsy.1_ftsy_owner_id
+                    LEFT JOIN xa7580_db1.topxi_fabu_ovr topxi
+                        ON topxi.player_id = base.id
+                        AND topxi.season_id = ftsy.season_id
+                        AND topxi.round_name = ftsy.round_name
+                        AND topxi_lvl = 'RND'
                     WHERE 
                         COALESCE(ftsy.appearance_stat, 0) = '".$sql_value."'
                         AND ftsy.current_team_id = '".$team_id."'   
@@ -374,6 +383,9 @@ require("../php/auth.php");
                             $shortened_name =  $shortened_name . '<span title="Man of the Match"> 👑</span>';
                         } elseif ($row['id'] == $player_id_totm) {
                             $shortened_name =  $shortened_name . '<span title="Turd of the Match"> 💩</span>';
+                        }
+                        if ($row['topxi_flg'] == 1) {
+                            $shortened_name =  $shortened_name . '<span title="Elf der Woche"> ⭐</span>';
                         }
                         echo "<td class='player-name'>" . mb_convert_encoding($shortened_name, 'UTF-8') . "</td>"; // Display the shortened name
                         echo "<td class='player-owner' title='" . $row['user_teamname'] . "'>" . $row['user_teamcode'] . "</td>";
