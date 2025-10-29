@@ -7,7 +7,8 @@ require("../php/auth.php");
 <head>
 	<title>FANTASY BUNDESLIGA</title> 
     <meta name="robots" content="noindex">
-    <meta charset="UTF-8">   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/matchup_buli.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
@@ -517,7 +518,7 @@ require("../php/auth.php");
                 echo "</tr>";
 
                 // Detailed stats in hidden popup row
-                echo "<tr class='player-detail'><td colspan='6'>";
+                echo "<tr class='player-detail'><td class='player-detail-cell' colspan='6'>";
                     if ($row['appearance_stat_x'] != NULL) {
                         /* Appearance */
                         echo( ($row['appearance_stat_x'] != NULL)? 'Gespielte Minuten: ' . $row['appearance_stat_x'] . ' ' . formatFtsyValue($row['appearance_ftsy']) . ' • ' : NULL);                                  
@@ -580,5 +581,24 @@ require("../php/auth.php");
     ?>
     </div> 
 </div>
+
+<script>
+// Function to adjust colspan based on screen size
+function adjustColspan() {
+    const isMobile = window.innerWidth <= 768;
+    const detailCells = document.querySelectorAll('.player-detail-cell');
+    
+    detailCells.forEach(cell => {
+        cell.setAttribute('colspan', isMobile ? '3' : '6');
+    });
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', adjustColspan);
+
+// Run on window resize
+window.addEventListener('resize', adjustColspan);
+</script>
+
 </body>
 </html>

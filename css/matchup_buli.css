@@ -1,6 +1,4 @@
-/* View Match Buli Styles - Enhanced Game Center Layout */
 
-/* Base styles from matchup.css */
 body {
   font-family: Arial, Helvetica, sans-serif; 
   background-color: rgb(10, 48, 66);
@@ -198,7 +196,6 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Original styles from matchup.css that are still relevant */
 .row {  
   display: flex;
   flex-wrap: nowrap;
@@ -207,21 +204,6 @@ body {
   overflow: hidden;
   max-width: 100%;
   overflow-x: auto;
-}
-
-#player_img {
-  border-radius: 50%;
-  display: block;
-  margin: 0 auto;
-}
-
-#akt_player_data {
-  width: 100%;
-}
-
-#akt_player_data td {
-  vertical-align: middle;
-  font-size: 11px;
 }
 
 /* Semantic Column Styling */
@@ -264,12 +246,6 @@ body {
   font-weight: bold;
 }
 
-/* Legacy fallback styles - can be removed once HTML is fully updated */
-td.player_position {
-  color: gray;
-  text-align: center;
-}
-
 #headline {
   flex: 100%;
   background-color: #4CAF50;
@@ -277,115 +253,6 @@ td.player_position {
   font-weight: bold;
   justify-content: center;  
   text-align: center;
-}
-
-.pre {
-  color: #003eff !important;
-}
-
-.superheadscore {
-  border: 1px solid #ccc;
-  margin-bottom: -20px;
-}
-
-.headscore {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-bottom: -40px;
-  padding: 10px;
-  background-color: #f5f5f5;
-}
-
-.headscore .left-section {
-  display: inline-block;
-  align-items: center;
-  flex-wrap: nowrap;
-  z-index: 2;
-}
-
-.headscore .chart-section {
-  flex-grow: 1;
-  display: flex;
-  justify-content: flex-start; 
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.headscore h2 {
-  display: inline-block;
-  z-index: 3;
-  font-size: 18px;
-  word-break: break-word;
-  font-weight: 1500;
-  align-items: center;
-  margin-left: 5px;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-clip: padding-box;
-  padding: 20px;
-  position: relative;
-  background-size: 100% 100%;
-  vertical-align: text-bottom;
-}
-
-.headscore h2::before {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.team-name-section h2 {
-  display: inline-block;
-  z-index: 3;
-  font-size: 20px;
-  word-break: break-word;
-  align-items: center;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-clip: padding-box;
-  padding-top: 20px;
-  position: relative;
-  background-size: 100% 100%;
-  margin-left: 13px;
-}
-
-.team-name-section h2::before {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.headscore .round-image-div {
-  width: 100px;
-  display: inline-flex;
-  height: 100px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 10px;
-}
-
-.headscore .round-image-div img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.round-image-div.zoomed img {
-  transform: scale(1.4);
 }
 
 /* Grid and Bar styles */
@@ -458,38 +325,6 @@ td.player_position {
   margin-left: 10px;
 }
 
-.scoreboard {
-  background-color: black;
-  font-weight: bold;
-  color: white;
-  letter-spacing: 3px;
-  font-size: 20px;
-  padding: 5px;
-  padding-left: 7px;
-  opacity: 0.8;
-  box-shadow: 0 0 10px 5px #000;
-}
-
-.scoreboard_proj {
-  background-image: url(grass2.jpg);
-  font-weight: bold;
-  color: #003eff;
-  letter-spacing: 3px;
-  font-size: 20px;
-  padding: 5px;
-  padding-left: 7px;
-  opacity: 0.8;
-  box-shadow: 0 0 10px 5px #000;
-}
-
-.headprojection {
-  display: flex;
-  float: right;
-  justify-content: space-between;
-  margin-bottom: -20px;
-  margin-top: -18px;
-}
-
 .player_score {
   font-weight: bold;
   letter-spacing: 3px;
@@ -549,58 +384,6 @@ td.player_position {
 .actual-score.dark-green {
   background-color: #8fbc8f;
   color: black;
-}
-
-.player_score1 {
-  font-weight: bold;
-  letter-spacing: 3px;
-  font-size: 19px;
-}
-
-.pulsate {
-  -webkit-animation: pulsate 2s ease-out;
-  -webkit-animation-iteration-count: infinite; 
-  opacity: 0.5;
-}
-
-@-webkit-keyframes pulsate {
-  0% { 
-    opacity: 0.5;
-  }
-  50% { 
-    opacity: 1.0;
-  }
-  100% { 
-    opacity: 0.5;
-  }
-}
-
-.spieler {
-  flex: 39.5%;
-  background-color: #f1f1f1;
-  padding: 20px;
-  margin: 0.25%;
-  max-width: 100%;
-}
-
-.gegner {
-  flex: 39.5%;
-  background-color: #f1f1f1;
-  padding: 20px;
-  margin: 0.25%;
-}
-
-.info {
-  flex: 19.5%;
-  background-color: white;
-  padding: 20px;
-  margin: 0.25%;
-}
-
-.fakeimg {
-  background-color: #4CAF50;
-  width: 100%;
-  height: 2px;
 }
 
 /* Container for roster table */
@@ -771,5 +554,21 @@ td.player_position {
   .team-score {
     font-size: 20px;
     padding: 6px 12px;
+  }
+
+  td.player-owner {
+    display: none;
+  }
+
+  td.player-minutes {
+    display: none;
+  }
+
+  td.player-image {
+    display: none;
+  }  
+
+  .team-logo {
+    display: none;
   }
 }
