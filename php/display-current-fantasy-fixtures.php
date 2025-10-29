@@ -249,7 +249,7 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                     THEN CONCAT('<b>',ftsy_home_score,'</b>') 
                 WHEN ftsy_home_score < ftsy_away_score 
                     AND ftsy_home_score = (SELECT MAX(LEAST(ftsy_home_score,ftsy_away_score)) FROM cte_schedule) 
-                    THEN CONCAT(ftsy_home_score,'<span style=\'display:inline-block; font-size:0.5rem; line-height:1; transform:translateY(-1em);\'>🍀</span>')     
+                    THEN CONCAT(ftsy_home_score,'<span style=\"display:inline-block; font-size:0.5rem; line-height:1; transform:translateY(-1em);\">🍀</span>')     
                     ELSE ftsy_home_score 
                     END AS ftsy_home_score       
             , CASE 
@@ -257,7 +257,7 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                     THEN CONCAT('<b>',ftsy_away_score,'</b>') 
                 WHEN ftsy_away_score < ftsy_home_score 
                     AND ftsy_away_score = (SELECT MAX(LEAST(ftsy_home_score,ftsy_away_score)) FROM cte_schedule) 
-                    THEN CONCAT(ftsy_away_score,'<span style=\'display:inline-block; font-size:0.5rem; line-height:1; transform:translateY(-1em);\'>🍀</span>')     
+                    THEN CONCAT(ftsy_away_score,'<span style=\"display:inline-block; font-size:0.5rem; line-height:1; transform:translateY(-1em);\">🍀</span>')     
                     ELSE ftsy_away_score 
                     END AS ftsy_away_score
             , CONCAT('<p style=\'color:blue\'>','↝',ftsy_home_proj,'</p>') AS ftsy_home_avg
