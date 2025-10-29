@@ -65,6 +65,8 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 , sch.ftsy_away_score
                 , tab1.avg_for AS ftsy_home_avg 
                 , tab2.avg_for AS ftsy_away_avg
+                , tab1.rang AS ftsy_home_position
+                , tab2.rang AS ftsy_away_position
                 , CONCAT(tab1.siege,'-',tab1.unentschieden,'-',tab1.niederlagen) AS ftsy_home_record
                 , CONCAT(tab2.siege,'-',tab2.unentschieden,'-',tab2.niederlagen) AS ftsy_away_record
                 , tab1.serie AS ftsy_home_serie
@@ -87,22 +89,22 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 AND sch.season_id = '$akt_season_id'
         )
         SELECT
-            match_id,
-            ftsy_home_id,
-            ftsy_away_id,
-            ftsy_home_name,
-            ftsy_away_name,
-            ftsy_home_cd,
-            ftsy_away_cd,
-            CASE 
+            match_id
+            , ftsy_home_id
+            , ftsy_away_id
+            , ftsy_home_name
+            , ftsy_away_name
+            , ftsy_home_cd
+            , ftsy_away_cd
+            , CASE 
                 WHEN ftsy_home_score >= ftsy_away_score 
                     THEN CONCAT('<b>',ftsy_home_score,'</b>') 
                 WHEN ftsy_home_score < ftsy_away_score 
                     AND ftsy_home_score = (SELECT MAX(LEAST(ftsy_home_score,ftsy_away_score)) FROM cte_schedule) 
                     THEN CONCAT(ftsy_home_score,'<span style=\'display:inline-block; font-size:0.7rem; line-height:1; transform:translateY(-1em);\'>🍀</span>')     
                 ELSE ftsy_home_score 
-            END AS ftsy_home_score,
-            CASE 
+            END AS ftsy_home_score
+            , CASE 
                 WHEN ftsy_away_score >= ftsy_home_score 
                     THEN CONCAT('<b>',ftsy_away_score,'</b>') 
                 WHEN ftsy_away_score < ftsy_home_score 
@@ -112,10 +114,12 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             END AS ftsy_away_score
         , CONCAT('⌀',COALESCE(ftsy_home_avg, '-')) AS ftsy_home_avg
         , CONCAT('⌀',COALESCE(ftsy_away_avg, '-')) AS ftsy_away_avg
-        , ftsy_home_record AS home_description_1
-        , ftsy_away_record AS away_description_1
-        , ftsy_home_serie AS home_description_2
-        , ftsy_away_serie AS away_description_2
+        , ftsy_home_position AS home_description_1
+        , ftsy_away_position AS away_description_1
+        , ftsy_home_record AS home_description_2
+        , ftsy_away_record AS away_description_2
+        , ftsy_home_serie AS home_description_3
+        , ftsy_away_serie AS away_description_3
         FROM cte_schedule
     ");
 } elseif ($selected_spieltag > $akt_spieltag and $match_type == 'league'){
@@ -133,6 +137,8 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 , sch.ftsy_away_score
                 , tab1.avg_for AS ftsy_home_avg 
                 , tab2.avg_for AS ftsy_away_avg
+                , tab1.rang AS ftsy_home_position
+                , tab2.rang AS ftsy_away_position
                 , CONCAT(tab1.siege,'-',tab1.unentschieden,'-',tab1.niederlagen) AS ftsy_home_record
                 , CONCAT(tab2.siege,'-',tab2.unentschieden,'-',tab2.niederlagen) AS ftsy_away_record
                 , tab1.serie AS ftsy_home_serie
@@ -180,10 +186,12 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 END AS ftsy_away_score
             , CONCAT('⌀', COALESCE(ftsy_home_avg, '-')) AS ftsy_home_avg
             , CONCAT('⌀', COALESCE(ftsy_away_avg, '-')) AS ftsy_away_avg
-            , ftsy_home_record AS home_description_1
-            , ftsy_away_record AS away_description_1
-            , ftsy_home_serie AS home_description_2
-            , ftsy_away_serie AS away_description_2
+            , ftsy_home_position AS home_description_1
+            , ftsy_away_position AS away_description_1
+            , ftsy_home_record AS home_description_2
+            , ftsy_away_record AS away_description_2
+            , ftsy_home_serie AS home_description_3
+            , ftsy_away_serie AS away_description_3
         FROM cte_schedule
     ");
 } elseif ($selected_spieltag == $akt_spieltag and $match_type == 'league') {
@@ -201,6 +209,8 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 , scr2.ftsy_score_sum AS ftsy_away_score
                 , scr1.ftsy_score_projected_sum AS ftsy_home_proj
                 , scr2.ftsy_score_projected_sum AS ftsy_away_proj
+                , tab1.rang AS ftsy_home_position
+                , tab2.rang AS ftsy_away_position
                 , CONCAT(tab1.siege,'-',tab1.unentschieden,'-',tab1.niederlagen) AS ftsy_home_record
                 , CONCAT(tab2.siege,'-',tab2.unentschieden,'-',tab2.niederlagen) AS ftsy_away_record
                 , scr1.players_status AS ftsy_home_players_status
@@ -252,10 +262,12 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                     END AS ftsy_away_score
             , CONCAT('<p style=\'color:blue\'>','↝',ftsy_home_proj,'</p>') AS ftsy_home_avg
             , CONCAT('<p style=\'color:blue\'>','↝',ftsy_away_proj,'</p>') AS ftsy_away_avg
-            , ftsy_home_record AS home_description_1
-            , ftsy_away_record AS away_description_1
-            , ftsy_home_players_status AS home_description_2
-            , ftsy_away_players_status AS away_description_2
+            , ftsy_home_position AS home_description_1
+            , ftsy_away_position AS away_description_1
+            , ftsy_home_record AS home_description_2
+            , ftsy_away_record AS away_description_2
+            , ftsy_home_players_status AS home_description_3
+            , ftsy_away_players_status AS away_description_3
         FROM cte_schedule
     ");
 } elseif ($selected_spieltag < $akt_spieltag and $match_type == 'cup') {
@@ -345,22 +357,22 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             , CASE WHEN sch.ftsy_away_id = sch2.ftsy_away_id THEN sch2.ftsy_away_score ELSE sch2.ftsy_home_score END AS ftsy_away_score_leg1                
             FROM xa7580_db1.ftsy_schedule sch
             LEFT JOIN xa7580_db1.ftsy_schedule sch2
-            ON sch2.cup_leg = 1
-            AND sch.cup_round = sch2.cup_round 
-            AND sch.season_id = sch2.season_id 
-            AND sch.ftsy_match_id != sch2.ftsy_match_id
-            AND (sch.ftsy_home_id = sch2.ftsy_home_id  OR sch.ftsy_home_id = sch2.ftsy_away_id)
+                ON sch2.cup_leg = 1
+                AND sch.cup_round = sch2.cup_round 
+                AND sch.season_id = sch2.season_id 
+                AND sch.ftsy_match_id != sch2.ftsy_match_id
+                AND (sch.ftsy_home_id = sch2.ftsy_home_id  OR sch.ftsy_home_id = sch2.ftsy_away_id)
             LEFT JOIN xa7580_db1.users_cup_stats_v stats1
-            ON sch.ftsy_home_id = stats1.user_id 
+                ON sch.ftsy_home_id = stats1.user_id 
             LEFT JOIN xa7580_db1.users_cup_stats_v stats2
-            ON sch.ftsy_away_id = stats2.user_id
+                ON sch.ftsy_away_id = stats2.user_id
             LEFT JOIN xa7580_db1.users u1
-            ON sch.ftsy_home_id = u1.id
+                ON sch.ftsy_home_id = u1.id
             LEFT JOIN xa7580_db1.users u2
-            ON sch.ftsy_away_id = u2.id    
+                ON sch.ftsy_away_id = u2.id    
             WHERE 
-            sch.buli_round_name = '$selected_spieltag'
-            AND sch.season_id = '$akt_season_id'
+                sch.buli_round_name = '$selected_spieltag'
+                AND sch.season_id = '$akt_season_id'
     )
     SELECT
         match_id
@@ -498,14 +510,17 @@ while($col = mysqli_fetch_array($result)){
                         echo "<div class='bottom-row space-between'>";
                             echo "<div class='row'>";
                                 echo "<div class='description-one'>";
-                                    echo $col['home_description_1'];
+                                    echo '#' . $col['home_description_1'];
+                                echo "</div>";
+                                echo "<div class='description-one'>";
+                                    echo $col['home_description_2'];
                                 echo "</div>";
                                 echo "<div class='description-two'>";
                                     if ($selected_spieltag == $akt_spieltag){
                                         echo "<i class='fa-solid fa-person-running' style='font-size:8px'></i>";
                                         echo " ";
                                     }
-                                    echo $col['home_description_2'];
+                                    echo $col['home_description_3'];
                                 echo "</div>";
                             echo "</div>";
                             echo "<div class='roster-score-and-projection-matchup'>";
@@ -547,14 +562,17 @@ while($col = mysqli_fetch_array($result)){
                         echo "<div class='bottom-row flip space-between'>";
                             echo "<div class='row flip'>";
                                 echo "<div class='description-one'>";
-                                    echo $col['away_description_1'];
+                                    echo '#' . $col['away_description_1'];
+                                echo "</div>";
+                                echo "<div class='description-one'>";
+                                    echo $col['away_description_2'];
                                 echo "</div>";
                                 echo "<div class='description-two'>";
                                     if ($selected_spieltag == $akt_spieltag){
                                         echo "<i class='fa-solid fa-person-running' style='font-size:8px'></i>";
                                         echo " ";
                                     }
-                                    echo $col['away_description_2'];
+                                    echo $col['away_description_3'];
                                 echo "</div>";
                             echo "</div>";
                             echo "<div class='roster-score-and-projection-matchup flip'>";

@@ -140,7 +140,26 @@ main {
   background: #f4fff4;
 }
 
-.matchup-owner-item .description-two{
+.matchup-owner-item .row .description-two {
+  color: #606f8c;
+  font-weight: bold;
+  margin-left: 0.25rem;
+}
+
+.matchup-owner-item .row.flip .description-two {
+  color: #606f8c;
+  font-weight: bold;
+  margin-right: 0.25rem;
+}
+
+
+
+.matchup-owner-item .description-three{
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.matchup-owner-item .description-three{
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
@@ -486,7 +505,7 @@ main {
     min-height: 2.8rem;
   }
 
-  .matchup-owner-item .description-two {
+  .matchup-owner-item .description-three {
     display: none !important;
   }
 }
