@@ -16,8 +16,10 @@ $selected_spieltag = $_GET["spieltag"];
 // Display headline
 echo "<div id='headline'><h2>Bundesliga Spieltag " . $selected_spieltag . "</h2></div>";
 
-$result = mysqli_query($con,"
-    WITH cte_team_ftsy_score AS (
+$cte_sql_ftsy_score = '';
+
+if($selected_spieltag < $akt_spieltag) {
+    $cte_sql_ftsy_score = "
         SELECT 
             current_team_id AS team_id
             , SUM(ftsy_score) AS team_ftsy_score_sum
@@ -26,6 +28,25 @@ $result = mysqli_query($con,"
             round_name = '".$selected_spieltag."'
             AND season_id = '".$akt_season_id."'
         GROUP BY current_team_id
+    ";
+} elseif ($selected_spieltag == $akt_spieltag) {
+    $cte_sql_ftsy_score = "
+        SELECT 
+            pb.current_team_id AS team_id
+            , ROUND(COALESCE(SUM(akt.ftsy_score),0),1) AS team_ftsy_score_sum
+        FROM xa7580_db1.sm_playerbase pb
+        LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt
+            ON akt.player_id = pb.id
+        WHERE 
+            pb.current_team_id IS NOT NULL
+        GROUP BY pb.current_team_id
+    ";
+}
+
+// Fetch fixtures with fantasy scores
+$result = mysqli_query($con,"
+    WITH cte_team_ftsy_score AS (
+        ".$cte_sql_ftsy_score."
         )
     SELECT 
         v.fixture_id
