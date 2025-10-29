@@ -475,13 +475,13 @@ require("../php/auth.php");
                 /* Determine projected score display for current round */
                 if ($clicked_spieltag == $akt_spieltag) {
                     $projected_score = $row['ftsy_score_projected'];
-                        if (strtotime($row['kickoff_ts']) <= time()) {
+                        if ($kickoff_ts <= time()) {
                             $actual_score = isset($row['ftsy_score']) ? number_format($row['ftsy_score'], 1) : '0';
                         } else {
                             $actual_score = '-';
                         }
                         $minutes_played = isset($row['appearance_stat_x']) ? $row['appearance_stat_x'] : 0;
-                        if (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] != 'FT') {
+                        if (strtotime($kickoff_ts) <= time() && $fixture_status != 'FT') {
                             $remaining_minutes = 90 - $minutes_played;
                             $adjusted_projected_score = max($projected_score - 4, 0);
                             $live_projection_score = $row['ftsy_score'] + ($adjusted_projected_score / 90 * $remaining_minutes);
