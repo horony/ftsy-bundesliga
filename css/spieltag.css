@@ -141,18 +141,14 @@ main {
 }
 
 .matchup-owner-item .row .description-two {
-  color: #606f8c;
-  font-weight: bold;
-  margin-left: 0.25rem;
+  color: #2c3e50;
+  margin-left: 0.5rem;
 }
 
 .matchup-owner-item .row.flip .description-two {
-  color: #606f8c;
-  font-weight: bold;
-  margin-right: 0.25rem;
+  color: #2c3e50;
+  margin-right: 0.5rem;
 }
-
-
 
 .matchup-owner-item .description-three{
   margin-left: 0.5rem;

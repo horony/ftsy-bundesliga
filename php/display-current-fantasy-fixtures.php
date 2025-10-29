@@ -512,10 +512,10 @@ while($col = mysqli_fetch_array($result)){
                                 echo "<div class='description-one'>";
                                     echo '#' . $col['home_description_1'];
                                 echo "</div>";
-                                echo "<div class='description-one'>";
+                                echo "<div class='description-two'>";
                                     echo $col['home_description_2'];
                                 echo "</div>";
-                                echo "<div class='description-two'>";
+                                echo "<div class='description-three'>";
                                     if ($selected_spieltag == $akt_spieltag){
                                         echo "<i class='fa-solid fa-person-running' style='font-size:8px'></i>";
                                         echo " ";
@@ -564,10 +564,10 @@ while($col = mysqli_fetch_array($result)){
                                 echo "<div class='description-one'>";
                                     echo '#' . $col['away_description_1'];
                                 echo "</div>";
-                                echo "<div class='description-one'>";
+                                echo "<div class='description-two'>";
                                     echo $col['away_description_2'];
                                 echo "</div>";
-                                echo "<div class='description-two'>";
+                                echo "<div class='description-three'>";
                                     if ($selected_spieltag == $akt_spieltag){
                                         echo "<i class='fa-solid fa-person-running' style='font-size:8px'></i>";
                                         echo " ";
