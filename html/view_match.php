@@ -849,6 +849,7 @@ require("../php/auth.php");
                             echo( ($row['clearances_stat'] != NULL AND $row['clearances_stat'] != 0)? 'Befreiungsschläge: ' . $row['clearances_stat'] . ' ' . formatFtsyValue($row['clearances_ftsy']) . ' • ' : NULL);  
                             echo( ($row['clearances_offline_stat'] != NULL AND $row['clearances_offline_stat'] != 0)? 'Befreiungsschläge: ' . $row['clearances_offline_stat'] . ' ' . formatFtsyValue($row['clearances_offline_ftsy']) . ' • ' : NULL);  
                             /* Goalkeeping */
+                            echo( ($row['saves_stat'] != NULL AND $row['saves_stat'] != 0)? 'Paraden: ' . $row['saves_stat'] . ' ' . formatFtsyValue($row['saves_ftsy']) . ' • ' : NULL);                           
                             echo( ($row['outside_box_saves_stat'] != NULL AND $row['outside_box_saves_stat'] != 0)? 'Paraden Fernschüsse: ' . $row['outside_box_saves_stat'] . ' ' . formatFtsyValue($row['outside_box_saves_ftsy']) . ' • ' : NULL);   
                             echo( ($row['inside_box_saves_stat'] != NULL AND $row['inside_box_saves_stat'] != 0)? 'Paraden innerhalb 16er: ' . $row['inside_box_saves_stat'] . ' ' . formatFtsyValue($row['inside_box_saves_ftsy']) . ' • ' : NULL);   
                             echo( ($row['pen_saved_stat'] != NULL AND $row['pen_saved_stat'] != 0)? '11er gehalten: ' . $row['pen_saved_stat'] . ' ' . formatFtsyValue($row['pen_saved_ftsy']) . ' • ' : NULL); 
