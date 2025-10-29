@@ -61,7 +61,19 @@ $result = mysqli_query($con,"
         , COALESCE(cte_home.team_ftsy_score_sum, 0) AS home_team_ftsy_score
         , COALESCE(cte_away.team_ftsy_score_sum, 0) AS away_team_ftsy_score
         , v.fixture_status
-        , v.kickoff_ts
+        , CONCAT(
+            CASE DAYOFWEEK(v.kickoff_ts)
+                WHEN 1 THEN 'So.'
+                WHEN 2 THEN 'Mo.'
+                WHEN 3 THEN 'Di.'
+                WHEN 4 THEN 'Mi.'
+                WHEN 5 THEN 'Do.'
+                WHEN 6 THEN 'Fr.'
+                WHEN 7 THEN 'Sa.'
+            END,
+            ' ',
+            DATE_FORMAT(v.kickoff_ts, '%d.%m.%Y %H:%i')
+            ) AS kickoff_ts
     FROM xa7580_db1.sm_fixtures_basic_v v
     LEFT JOIN xa7580_db1.sm_teams t_local
         ON v.localteam_id = t_local.id
@@ -103,7 +115,7 @@ while($col = mysqli_fetch_array($result)){
                                 echo "</div>";
                                 // Score
                                 echo "<div class='roster-score-and-projection-matchup'>";
-                                    echo "<div class='score'>".$col['localteam_score']."</div>";
+                                    echo "<div class='scoreboard-buli'>".$col['localteam_score']."</div>";
                                 echo "</div>";
                             echo "</div>";
                         echo "</div>";
@@ -145,7 +157,7 @@ while($col = mysqli_fetch_array($result)){
                                 echo "</div>";
                                 echo "<div class='roster-score-and-projection-matchup flip'>";
                                     // Score
-                                    echo "<div class='score'>".$col['visitorteam_score']."</div>";
+                                    echo "<div class='scoreboard-buli'>".$col['visitorteam_score']."</div>";
                                 echo "</div>";
                             echo "</div>";
                         echo "</div>";

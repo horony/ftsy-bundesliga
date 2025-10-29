@@ -71,7 +71,7 @@ $preselect = $akt_spieltag;
     </div>
     <!-- Footnote -->
     <div class='matchday-footnote'>
-        Legende: TBD
+       Legende: NS = Not Started, 1st = 1st Half,  2nd = 2nd Half, HT = Halftime, FT = Fulltime, P = Postponed
     </div>
 </main>
 </body>
