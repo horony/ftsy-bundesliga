@@ -572,3 +572,26 @@ body {
     flex-basis: 50%;
   }
 }
+
+/* Matchup to display hover effects */
+.matchup-to-display {
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+.matchup-to-display:hover {
+  color: black !important;
+  text-decoration: none;
+}
+
+.matchup-to-display:hover::after {
+  font-size: 14px;
+  color: black;
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+}

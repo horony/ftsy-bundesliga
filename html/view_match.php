@@ -450,7 +450,8 @@ require("../php/auth.php");
                         , base.position_short
                         , base.logo_path                                                             
                         , base.display_name
-                        , buli.kickoff_ts 
+                        , buli.fixture_id
+                        , buli.kickoff_ts
                         , buli.kickoff_dt
                         , buli.fixture_status
                         , CASE WHEN base.team_id = buli.localteam_id THEN buli.visitorteam_name_code ELSE buli.localteam_name_code END AS gegner_code
@@ -603,6 +604,7 @@ require("../php/auth.php");
                         , base.position_short
                         , base.logo_path                                                             
                         , base.display_name
+                        , buli.fixture_id
                         , buli.kickoff_ts 
                         , buli.kickoff_dt
                         , buli.fixture_status
@@ -645,6 +647,7 @@ require("../php/auth.php");
                         , ftsy.position_short
                         , ftsy.logo_path                                                             
                         , ftsy.display_name
+                        , buli.fixture_id
                         , buli.kickoff_ts 
                         , buli.kickoff_dt
                         , buli.fixture_status
@@ -786,7 +789,7 @@ require("../php/auth.php");
                 // Round in future
                 echo "<div class='kader'><table id='myTable'>";
                     while($row = mysqli_fetch_array($result)) {
-                        echo "<tr class = 'summary1'>";
+                        echo "<tr class = 'summary1' title='Zeige Scoring-Details'>";
                             echo "<td style='display:none;'>" . $row['id'] . "</td>";
                             echo "<td style='color: gray;' align='center'>" . $row['position_short'] . "</td>";
                             echo "<td><img height='30px' width='auto' src='" . $row['logo_path'] . "'></td>";
@@ -795,7 +798,8 @@ require("../php/auth.php");
                             $shortened_name = substr($name_parts[0], 0, 1) . ". " . end($name_parts); // Shorten the first name to its initial and keep the last name
                             echo "<td>" . mb_convert_encoding($shortened_name, 'UTF-8') . "</td>"; // Display the shortened name
                             $matchup_to_display = $row['kickoff_weekday'] . ", " . $row['kickoff_day'] . "." . $row['kickoff_month'] . ". " . strval($row['kickoff_time_trunc']). " vs. ".$row['gegner_code']. " (".$row['homeaway'] . ")";
-                            echo "<td style='color: gray;'>" .$matchup_to_display. "</td>";
+                            $buli_link = 'view_match_buli.php?ID=' . strval($row['fixture_id']);
+                            echo "<td style='color: gray;'><a href='" . $buli_link . "' class='matchup-to-display' title='Gehe zu Bundesliga-Spiel'>" .$matchup_to_display. "</a></td>";
                             echo "<td align='center' class='player_score'></td>";
                         echo "</tr>";
                     }
@@ -804,7 +808,7 @@ require("../php/auth.php");
                 // Round in the past
                 echo "<div class='kader'><table id='myTable'>";
                 while($row = mysqli_fetch_array($result)) {
-                    echo "<tr class = 'summary1'>";
+                    echo "<tr class = 'summary1' title='Zeige Scoring-Details'>";
                         echo "<td style='display:none;'>" . $row['id'] . "</td>";
                         echo "<td style='color: gray;' align='center'>" . $row['position_short'] . "</td>";
                         echo "<td><img height='30px' width='auto' src='" . $row['logo_path'] . "'></td>";
@@ -812,7 +816,8 @@ require("../php/auth.php");
                         $name_parts = explode(" ", $full_name);   // Split the name into parts (first and last names)
                         $shortened_name = substr($name_parts[0], 0, 1) . ". " . end($name_parts); // Shorten the first name to its initial and keep the last name
                         echo "<td>" . mb_convert_encoding($shortened_name, 'UTF-8') . "</td>"; // Display the shortened name
-                        echo "<td class='matchup-to-display'>" . $matchup_to_display . "</td>";
+                        $buli_link = 'view_match_buli.php?ID=' . strval($row['fixture_id']);
+                        echo "<td><a href='" . $buli_link . "' class='matchup-to-display' title='Gehe zu Bundesliga-Spiel'>" . $matchup_to_display . "</a></td>";
                         echo "<td style='color: gray;'>" . $row['score_for'] . ":" . $row['score_against'] . " vs. " . $row['gegner_code'] . "<span style='color: black' class=''><small><b> FINAL<b/></small></span></td>";
                         echo "<td align='center' class='player_score'><span class=''>" . $row['ftsy_score'] . "</span></td>";
                     echo "</tr>";
@@ -874,7 +879,7 @@ require("../php/auth.php");
                 // Round is current round
                 echo "<div class='kader'><table id='myTable'>";
                 while ($row = mysqli_fetch_array($result)) {
-                    echo "<tr class='summary1'>";
+                    echo "<tr class='summary1' title='Zeige Scoring-Details'>";
                         echo "<td style='display:none;'>" . $row['id'] . "</td>";
                         echo "<td style='color: gray;' align='center'>" . $row['position_short'] . "</td>";
                         echo "<td><img height='30px' width='auto' src='" . $row['logo_path'] . "'></td>";
@@ -919,7 +924,8 @@ require("../php/auth.php");
 
                         if (strtotime($row['kickoff_ts']) > time()) {
                             $matchup_to_display = $row['kickoff_weekday'] . ", " . $row['kickoff_day'] . "." . $row['kickoff_month'] . ". " . $kickoff_time . " vs. " . $row['gegner_code'] . " (" . $row['homeaway'] . ")";
-                            echo "<td style='color: gray; font-size: 14px;'>" . $matchup_to_display . "</td>";
+                            $buli_link = 'view_match_buli.php?ID=' . strval($row['fixture_id']);
+                            echo "<td style='color: gray; font-size: 14px;'><a href='" . $buli_link . "' class='matchup-to-display' title='Gehe zu Bundesliga-Spiel'>" . $matchup_to_display . "</a></td>";
                             echo "<td align='center' title='Projection' class='player_score'>" . $player_score_display . "</td>";
                         } elseif (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] != 'FT') {
                             echo "<td style='color: gray;'>" . $row['score_for'] . ":" . $row['score_against'] . 
