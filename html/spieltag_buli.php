@@ -1,5 +1,14 @@
 <?php include("../php/auth.php"); ?>
 <?php include("../secrets/mysql_db_connection.php"); ?>
+<?php
+// get current spieltag and season
+$result_params_sql = mysqli_query($con, "SELECT spieltag, season_id from xa7580_db1.parameter ") -> fetch_object();
+$akt_spieltag = $result_params_sql->spieltag;
+$akt_season_id = $result_params_sql->season_id;
+
+// optionally allow a preselected round (from GET)
+$preselect = $akt_spieltag;
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +24,11 @@
     <script type="text/javascript" src="../js/spieltag-buli-display-fixtures.js"></script>
     <script type="text/javascript" src="../js/spieltag-buli-clickable-fixtures.js"></script>
     <script type="text/javascript" src="../js/spieltag-change-round.js"></script>
+    <script>
+        // Pass current season and spieltag data to JavaScript
+        window.currentSpieltag = <?= $akt_spieltag ?>;
+        window.currentSeasonId = <?= $akt_season_id ?>;
+    </script>
 </head>
 <body>
 <!-- Header --> 
@@ -23,14 +37,6 @@
 </header>
 <!-- Navigation -->
 <?php include("navigation.php"); ?>
-<?php
-// get current spieltag and season
-$akt_spieltag = mysqli_query($con, "SELECT spieltag FROM xa7580_db1.parameter") -> fetch_object() -> spieltag;
-$akt_season_id = mysqli_query($con, "SELECT season_id FROM xa7580_db1.parameter") -> fetch_object() -> season_id;
-
-// optionally allow a preselected round (from GET)
-$preselect = $akt_spieltag;
-?>
 
 <main>
     <div class="league-matchups">

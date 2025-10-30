@@ -19,6 +19,12 @@ echo "<div id='headline'><h2>Bundesliga Spieltag " . $selected_spieltag . "</h2>
 $cte_sql_ftsy_score = '';
 
 if($selected_spieltag < $akt_spieltag) {
+
+    // Top XI Link for past rounds
+    echo "<div id='topxi-link-container' class='topxi-link-container'>";
+        echo "<a href='topxi.php?nav=FABU&season=" . $akt_season_id . "&round=" . $selected_spieltag . "' id='topxi-link' class='topxi-link' title='Zur Elf der Woche'>» Elf der Woche ⭐</a>";
+    echo "</div>";
+
     $cte_sql_ftsy_score = "
         SELECT 
             current_team_id AS team_id

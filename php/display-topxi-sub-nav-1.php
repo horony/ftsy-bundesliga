@@ -44,7 +44,6 @@ if ($lvl1 == 'FANTASY-BUNDESLIGA'){
 } elseif ($lvl1 == 'BUNDESLIGA-TEAMS'){
 
 	# header of sub_nav
-
 	echo "<div class='lvl1_button_head'><bold>Team:</bold></div>";
 
 	# populate remaining sub_nav from database

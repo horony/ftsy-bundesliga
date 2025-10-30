@@ -319,6 +319,12 @@ main {
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
   z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.matchup-row:hover .vs-label .label {
+  color: white;
+  background-color: #27ae60;
 }
 
 .matchup-owner-item {
@@ -329,6 +335,11 @@ main {
   position: relative;
   border-radius: 1.25rem;
   border: 1px solid rgba(58,70,91,0.5);
+  transition: border-color 0.3s ease;
+}
+
+.matchup-row:hover .matchup-owner-item {
+  border-color: #27ae60;
 }
 
 .matchup-owner-item .row {
@@ -506,4 +517,37 @@ main {
   .matchup-owner-item .description-three {
     display: none !important;
   }
+}
+
+/* Topxi Link Styles */
+
+.topxi-link-container {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.topxi-link, #topxi-link {
+  display: inline-block;
+  color: #666666;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.topxi-link:hover, #topxi-link:hover {
+  color: #27ae60;
+  font-weight: 600;
+  text-decoration: none;
+  transform: scale(1.05);
+}
+
+.topxi-link:before, #topxi-link:before {
+  margin-right: 0.25rem;
+}
+
+.topxi-link i, #topxi-link i {
+  margin-right: 0.5rem;
 }
