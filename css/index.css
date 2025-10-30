@@ -253,6 +253,26 @@ cursor:pointer;
 color: #4caf50;
 }
 
+.fixture_row {
+  cursor: pointer;
+}
+
+.fixture_row:hover {
+  color: #4caf50;
+}
+
+.fixture_row:hover a {
+  color: #4caf50;
+}
+
+.fixture_row:hover tr td {
+  color: #4caf50;
+}
+
+.fixture_row:hover tr td a {
+  color: #4caf50;
+}
+
 .scores_table tr td a{
   color: white;
   text-decoration: none

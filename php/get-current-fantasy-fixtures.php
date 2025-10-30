@@ -7,8 +7,9 @@ $user = $_SESSION['username'];
 $user_id = $_SESSION['user_id'];
 $ftsy_owner_column = strval($_SESSION['league_id']) . '_ftsy_owner_id';
 $ftsy_status_column = strval($_SESSION['league_id']) . '_ftsy_match_status';
-$akt_spieltag = mysqli_query($con, "SELECT spieltag FROM xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
-$akt_season_id = mysqli_query($con, "SELECT season_id FROM xa7580_db1.parameter ") -> fetch_object() -> season_id;  
+$parameter_result = mysqli_query($con, "SELECT spieltag, season_id FROM xa7580_db1.parameter ") -> fetch_object();
+$akt_spieltag = $parameter_result -> spieltag;	
+$akt_season_id = $parameter_result -> season_id;
 
 // Fetch Fantasy fixtures from DB
 $result = mysqli_query($con,"
@@ -50,12 +51,16 @@ $result = mysqli_query($con,"
         AND sch.season_id = '".$akt_season_id."'
 ");
 
-// Print out results
+// Print out results as a table
 echo "<table class='scores_table'>";
     while($row = mysqli_fetch_array($result)) {
         $link = 'html/view_match.php?ID=' . strval($row['match_id']);
-        echo "<tr class='tr_home'><td><a href='" . $link . "' >" . mb_convert_encoding($row['home'], 'UTF-8') . "</a></td><td><a href='" . $link . "' >" . mb_convert_encoding($row['score_home'],'UTF-8') . "</a></td></tr>";
-        echo "<tr class='tr_away'><td><a href='" . $link . "' >" . mb_convert_encoding($row['away'], 'UTF-8') . "</a></td><td><a href='" . $link . "' >" . mb_convert_encoding($row['score_away'],'UTF-8') . "</a></td></tr>";
+        echo "<tbody class='fixture_row'>";
+            echo "<tr class='tr_home'><td><a href='" . $link . "' >" . mb_convert_encoding($row['home'], 'UTF-8') . "</a></td><td><a href='" . $link . "' >" . mb_convert_encoding($row['score_home'],'UTF-8') . "</a></td></tr>";
+            echo "<tr class='tr_away'><td><a href='" . $link . "' >" . mb_convert_encoding($row['away'], 'UTF-8') . "</a></td><td><a href='" . $link . "' >" . mb_convert_encoding($row['score_away'],'UTF-8') . "</a></td></tr>";
+        echo "</tbody>";
     }
 echo "</table>";
+
+echo "<div id='table_nav'><a id='' href='html/spieltag.php'>» Zum Fantasy-Spieltag</a></div>";
 ?>
