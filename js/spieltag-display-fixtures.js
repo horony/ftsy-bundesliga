@@ -5,7 +5,7 @@ var request;
 $(document).ready(function(){	
     $("select").change(function(event){
         event.preventDefault();
-      if (request) { request.abort(); }
+        if (request) { request.abort(); }
         var spieltag = $(this).val();             
 
         // Get current Fantasy round from MySQL DB
@@ -37,8 +37,8 @@ $(function(){
         url: "../php/get-current-fantasy-round.php",             
         dataType: "text",                 
         success: function(response){                    
-        var spieltag = response
-        $("select").val(spieltag).trigger('change');
+            var spieltag = response;
+            $("select").val(spieltag).trigger('change');
         }
     });
 });

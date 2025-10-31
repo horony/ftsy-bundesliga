@@ -50,32 +50,32 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTopxiLink(initialSpieltag);
 
     trigger.addEventListener('click', function(e){
-      e.stopPropagation();
-      if (typeof e.detail === 'number' && e.detail === 0) return;
-      if (grid.style.display === 'grid') closeGrid(); else openGrid();
+        e.stopPropagation();
+        if (typeof e.detail === 'number' && e.detail === 0) return;
+        if (grid.style.display === 'grid') closeGrid(); else openGrid();
     });
 
     // cell click
     grid.addEventListener('click', function(e){
-      var btn = e.target.closest('.spieltag-cell');
-      if (!btn) return;
-      var val = btn.getAttribute('data-value');
+        var btn = e.target.closest('.spieltag-cell');
+        if (!btn) return;
+        var val = btn.getAttribute('data-value');
 
-      // update visual selection
-      var prev = grid.querySelector('.spieltag-cell.selected');
-      if (prev) prev.classList.remove('selected');
-      btn.classList.add('selected');
+        // update visual selection
+        var prev = grid.querySelector('.spieltag-cell.selected');
+        if (prev) prev.classList.remove('selected');
+        btn.classList.add('selected');
 
-      // update trigger and hidden select and dispatch change
-      current.textContent = val;
-      hiddenSelect.value = val;
-      var evt = new Event('change', { bubbles: true });
-      hiddenSelect.dispatchEvent(evt);
+        // update trigger and hidden select and dispatch change
+        current.textContent = val;
+        hiddenSelect.value = val;
+        var evt = new Event('change', { bubbles: true });
+        hiddenSelect.dispatchEvent(evt);
       
-      // Update topxi link
-      updateTopxiLink(val);
+        // Update topxi link
+        updateTopxiLink(val);
       
-      closeGrid();
+        closeGrid();
     });
 
     // close on outside click or escape

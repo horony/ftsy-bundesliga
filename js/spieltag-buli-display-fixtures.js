@@ -1,5 +1,4 @@
 // Display current Fantasy fixtures
-
 var request;
 
 $(document).ready(function(){	
