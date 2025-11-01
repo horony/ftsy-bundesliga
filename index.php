@@ -77,18 +77,18 @@
                             , news.drop_id 
                             , news.add_besitzer
                             , news.drop_besitzer 
-                            , news.`type` as news_type
+                            , news.`type` AS news_type
                             , user.teamname
-                            , base_add.display_name as added_player
-                            , base_add.name as added_verein
-                            , base_add.image_path as added_img
-                            , base_add.logo_path as added_team_img
-                            , base_add.position_short as added_pos
-                            , base_drop.display_name as dropped_player
-                            , base_drop.name as dropped_verein
-                            , base_drop.image_path as dropped_img
-                            , base_drop.logo_path as dropped_team_img
-                            , base_drop.position_short as dropped_pos
+                            , COALESCE(base_add.display_name, buli_home.name) AS added_player
+                            , base_add.name AS added_verein
+                            , base_add.image_path AS added_img
+                            , COALESCE(base_add.logo_path, buli_home.logo_path) AS added_team_img
+                            , base_add.position_short AS added_pos
+                            , COALESCE(base_drop.display_name, buli_away.name) AS dropped_player
+                            , base_drop.name AS dropped_verein
+                            , base_drop.image_path AS dropped_img
+                            , COALESCE(base_drop.logo_path, buli_away.logo_path) AS dropped_team_img
+                            , base_drop.position_short AS dropped_pos
                             , news.story
                         FROM xa7580_db1.news news
                         LEFT JOIN users user
@@ -99,11 +99,17 @@
                         LEFT JOIN sm_playerbase_basic_v base_drop
                             ON news.drop_id = base_drop.id 
                             AND news.`type` != 'buli_ergebnis'
+                        LEFT JOIN sm_teams buli_home
+                            ON news.add_id = buli_home.id 
+                            AND news.`type` = 'buli_ergebnis'
+                        LEFT JOIN sm_teams buli_away
+                            ON news.drop_id = buli_away.id 
+                            AND news.`type` = 'buli_ergebnis'
                         WHERE 	
                             news.league_id = 0 
                             OR news.league_id = '".$_SESSION['league_id']."'
-                        ORDER BY news.ID DESC 
-                        LIMIT 25
+                        ORDER BY news.id DESC 
+                        LIMIT 30
                     ");	
 
                     $row_cnt = $result->num_rows;
@@ -137,7 +143,7 @@
                                 echo "<div class='news_article_text'>";
                                     echo "<b>Free Agency: </b><a href='" . $link . "' class='news_team' data-id='" . $row['team'] . "'>" . mb_convert_encoding($row['teamname'], 'UTF-8') . "</a> verpflichtet Free Agent <a href='" . $link_player_add . "' class='news_player' data-id='" . $row['add_id'] . "'>" . mb_convert_encoding($row['added_player'], 'UTF-8') . "</a> (" . mb_convert_encoding($row['added_verein'], 'UTF-8') . ") und entlässt <a href='" . $link_player_drop . "' class='news_player' data-id='" . $row['drop_id'] . "'>" . mb_convert_encoding($row['dropped_player'], 'UTF-8') . "</a> (" . mb_convert_encoding($row['dropped_verein'], 'UTF-8') . ").";
                                     echo "<br><span class='news_create_dt'>" . $row['create_dt'] . "</span>";
-                                echo "</div>";	
+                                echo "</div>";
 
                             } elseif ($row['news_type'] == 'waiver_wire') {
                                 /* User adds player from waiver */
@@ -229,32 +235,21 @@
                                     echo "<br><span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
                                 echo "</div>";	
                             } elseif ($row['news_type'] == 'buli_ergebnis') {
-                                /* Bundesliga fixture final score (legacy) */ 
-                                /* Currently deprecated 
-
-                                echo "<div class='bundesliga_logo'>";
-                                        echo "<img src='/img/bundesliga.png'>";
+                                /* Bundesliga fixture final score */ 
+                                echo "<div class='img_player added_player'>";
+                                    echo "<img class='news_player_img' src='" . $row['added_team_img'] . "' style='max-width: 60px; max-height: 60px;'>";
                                 echo "</div>";
-                                echo "<div class='bundesliga_ergebnis_score_wrapper'>";
-                                echo "<div class='bundesliga_ergebnis_headline'>";
-                                    echo "ENDSTAND";
+                                echo "<div class='img_player dropped_player'>";
+                                    echo "<img class='news_player_img' src='" . $row['dropped_team_img'] . "' style='max-width: 60px; max-height: 60px;'>";
                                 echo "</div>";
-                                echo "<div class='bundesliga_ergebnis'>";
-                                    echo "<div class='bundesliga_ergebnis_verein'>";
-                                        $home_logo = mysqli_query($con, "SELECT verein_logo FROM xa7580_db1.bundesliga_vereine WHERE Verein_short = '".$row['add_besitzer']."'") -> fetch_object() -> verein_logo;
-                                        echo "<img src='https://www.fantasy-bundesliga.de/img/vereine/" .$home_logo. "'>";
-                                echo "</div>";
-                                echo "<div class='bundesliga_ergebnis_score'>";
-                                    echo $row['add_id'] . ':' . $row['drop_id'];
-                                echo "</div>";
-                                echo "<div class='bundesliga_ergebnis_verein'>";
-                                        $away_logo = mysqli_query($con, "SELECT verein_logo FROM bundesliga_vereine WHERE Verein_short = '".$row['drop_besitzer']."'") -> fetch_object() -> verein_logo;	
-                                        echo "<img src='https://www.fantasy-bundesliga.de/img/vereine/" .$away_logo. "'>";
-                                echo "</div>";
-                                    echo "</div>";
-                                echo "</div>";*/
+                                echo "<div class='news_news'>";
+                                    echo "<b>Bundesliga: </b>"  . mb_convert_encoding($row['story'], 'UTF-8') . ".";
+                                    $link = 'html/view_match_buli.php?ID=' . strval($row['headline']) . ' ';
+                                    echo "<a href='" . $link . "'>Zum Spiel »</a></br>";
+                                    echo "<br><span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
+                                echo "</div>";	
                             }
-                            echo "</div>"; // Close news_article_wrapper
+                            echo "</div>";
                         };
                     }
                     ?>

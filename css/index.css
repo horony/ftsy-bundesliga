@@ -417,10 +417,8 @@ color: #4caf50;
 
 .bundesliga_ergebnis_headline{
   font-size: 10px;
-
-font-weight: bold;
-
-text-align: center;
+  font-weight: bold;
+  text-align: center;
 }
 
 .bundesliga_ergebnis_score_wrapper{
