@@ -21,7 +21,7 @@ BEGIN
             , CONCAT('Abpfiff IN ', COALESCE(ven.city, 'unbekannter Stadt'), '. <b>', COALESCE(t_home.name, 'Unbekanntes Team'), '</b> und <b>', COALESCE(t_away.name, 'Unbekanntes Team'), '</b> trennen sich <b>', COALESCE(fix.localteam_score, '?'), ':', COALESCE(fix.visitorteam_score, '?'), '</b>')
             , fix.visitorteam_id
             , 'FT-TRIGGER'
-            , `buli_ergebnis`
+            , 'buli_ergebnis'
             , NOW()
         FROM sm_fixtures fix
         LEFT JOIN sm_teams t_home 
