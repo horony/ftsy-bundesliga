@@ -1,5 +1,4 @@
 INSERT INTO ftsy_scoring_hist
-
 SELECT  
     fix.season_id
     , fix.season_name
@@ -26,12 +25,12 @@ SELECT
     , base.1_ftsy_owner_type
     , base.1_ftsy_owner_id
     , base.1_ftsy_match_status
-    , case when fix.localteam_name_code = base.short_code then 'H' else 'A' end 
-    , case when fix.localteam_name_code = base.short_code then fix.visitorteam_name else fix.localteam_name end 
-    , case when fix.localteam_name_code = base.short_code then fix.visitorteam_name_code else fix.localteam_name_code end 
-    , case when fix.localteam_name_code = base.short_code then fix.visitorteam_id else fix.localteam_id end 
-    , case when fix.localteam_name_code = base.short_code then fix.localteam_score else fix.visitorteam_score end 
-    , case when fix.localteam_name_code = base.short_code then fix.visitorteam_score else fix.localteam_score end 
+    , CASE WHEN fix.localteam_name_code = base.short_code THEN 'H' ELSE 'A' END 
+    , CASE WHEN fix.localteam_name_code = base.short_code THEN fix.visitorteam_name ELSE fix.localteam_name END 
+    , CASE WHEN fix.localteam_name_code = base.short_code THEN fix.visitorteam_name_code ELSE fix.localteam_name_code END 
+    , CASE WHEN fix.localteam_name_code = base.short_code THEN fix.visitorteam_id ELSE fix.localteam_id END 
+    , CASE WHEN fix.localteam_name_code = base.short_code THEN fix.localteam_score ELSE fix.visitorteam_score END 
+    , CASE WHEN fix.localteam_name_code = base.short_code THEN fix.visitorteam_score ELSE fix.localteam_score END 
     , appearance_ftsy
     , appearance_stat
     , minutes_played_ftsy
@@ -135,8 +134,8 @@ SELECT
     , null
 FROM sm_playerbase_basic_v base
 INNER JOIN sm_fixtures_basic_v fix
-    ON fix.round_name = (SELECT spieltag from parameter)
-    AND fix.season_id = (SELECT season_id from parameter)
+    ON fix.round_name = (SELECT spieltag FROM parameter)
+    AND fix.season_id = (SELECT season_id FROM parameter)
     AND ( base.current_team_id  = fix.localteam_id or base.current_team_id = fix.visitorteam_id)
 LEFT JOIN ftsy_scoring_akt_v scr
     ON scr.player_id = base.id

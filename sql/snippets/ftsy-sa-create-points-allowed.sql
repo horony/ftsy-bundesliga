@@ -1,5 +1,4 @@
 CREATE TABLE xa7580_db1.ftsy_points_allowed AS 
-
 SELECT  
     base.position_short
     , base.opp_team_id
@@ -15,17 +14,17 @@ SELECT
         WHEN base.position_short = 'ST' THEN @rank_st := @rank_st + 1  
         END AS rank 
 FROM (
-    SELECT  
+    SELECT
         hst.position_short
         , hst.opp_team_id
         , hst.opp_team_name AS team_name
         , hst.opp_team_code AS team_code
-        , sum(ftsy_score) AS sum_allowed
-        , round(avg(ftsy_score),1) AS avg_allowed
+        , SUM(ftsy_score) AS sum_allowed
+        , ROUND(AVG(ftsy_score),1) AS avg_allowed
     FROM xa7580_db1.ftsy_scoring_hist hst
     WHERE  
-        hst.season_id = (SELECT season_id from parameter)
-        AND hst.round_name < (SELECT spieltag from parameter)
+        hst.season_id = (SELECT season_id FROM parameter)
+        AND hst.round_name < (SELECT spieltag FROM parameter)
         AND hst.minutes_played_stat >= 80 -- only include points of players with 80min playing time
     GROUP BY  
         hst.position_short

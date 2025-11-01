@@ -1,21 +1,21 @@
 SELECT 
     base.id
-    , team.logo_path as verein_logo
-    , base.display_name as name
-    , base.position_short as pos
-    , case 
-        when base.is_suspended is not null then 'suspended'
-        when base.injured = 1 then 'injured'
-        else 'fit'
-        end as fitness
-    , snap.ftsy_score_sum as total_fb_score
-    , snap.ftsy_score_avg_last_3 as last3_avg_fb_score
-    , snap.ftsy_score_last as last1_total_fb_score
-    , snap.ftsy_score_avg as avg_fb_score
-    , own.1_ftsy_owner_type as Besitzer
+    , team.logo_path AS verein_logo
+    , base.display_name AS name
+    , base.position_short AS pos
+    , CASE 
+        WHEN base.is_suspended IS NOT NULL THEN 'suspended'
+        WHEN base.injured = 1 THEN 'injured'
+        ELSE 'fit'
+        END AS fitness
+    , snap.ftsy_score_sum AS total_fb_score
+    , snap.ftsy_score_avg_last_3 AS last3_avg_fb_score
+    , snap.ftsy_score_last AS last1_total_fb_score
+    , snap.ftsy_score_avg AS avg_fb_score
+    , own.1_ftsy_owner_type AS Besitzer
     , opp.opp_code
     , opp.opp_name
-    , pts_allowed.rank as rank_allowed
+    , pts_allowed.rank AS rank_allowed
     , pts_allowed.avg_allowed
     , proj.ftsy_score_projected
 FROM xa7580_db1.sm_playerbase base

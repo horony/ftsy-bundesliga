@@ -1,8 +1,8 @@
-/* Step 1: Execute sm_fixturespy. for the round with the postponed fixture, in order to update table sm_fixtures */
+/* Step 1: Execute sm_fixturespy. for the round with the postponed fixture, IN order to UPDATE TABLE sm_fixtures */
 
-/* Step 2: Execute sm_player_stats.py for the round with the postponed fixture, in order to update table sm_player_stats */
+/* Step 2: Execute sm_player_stats.py for the round with the postponed fixture, IN order to UPDATE TABLE sm_player_stats */
 
-/* Step 3: Evaluate the update and get fixture_id */
+/* Step 3: Evaluate the UPDATE AND get fixture_id */
 
 SELECT * 
 FROM ftsy_scoring_all_v
@@ -12,7 +12,7 @@ WHERE
 ORDER BY fixture_id DESC, ftsy_score DESC
 ;
 
-/* Step 4: Update table ftsy_scoring_hist */
+/* Step 4: UPDATE TABLE ftsy_scoring_hist */
 
 UPDATE ftsy_scoring_hist hst
 INNER JOIN ftsy_scoring_all_v scr
@@ -123,34 +123,34 @@ SET
     , hst.update_ts = sysdate()
 ;
 
-/* Step 5: Update table ftsy_schedule */
+/* Step 5: UPDATE TABLE ftsy_schedule */
 
 UPDATE xa7580_db1.ftsy_schedule sch
 LEFT JOIN (
     SELECT 
-        hst.1_ftsy_owner_id as `Besitzer1`
-        , SUM(COALESCE(hst.ftsy_score,0)) as fantasy_score1
-        , COUNT(hst.player_id) as anz1
+        hst.1_ftsy_owner_id AS `Besitzer1`
+        , SUM(COALESCE(hst.ftsy_score,0)) AS fantasy_score1
+        , COUNT(hst.player_id) AS anz1
     FROM ftsy_scoring_hist hst
     WHERE  
         hst.1_ftsy_owner_type = 'USR' 
         AND hst.1_ftsy_match_status != 'NONE'
         AND hst.round_name = 18 -- Edit here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        AND hst.season_id = (select season_id from parameter)
+        AND hst.season_id = (SELECT season_id FROM parameter)
     GROUP BY hst.1_ftsy_owner_id
   ) akt_score_1
       ON sch.ftsy_home_id = akt_score_1.Besitzer1
 LEFT JOIN (
     SELECT 
-        hst.1_ftsy_owner_id as `Besitzer2`
-        , SUM(COALESCE(hst.ftsy_score,0)) as fantasy_score2
-        , COUNT(hst.player_id) as anz2
+        hst.1_ftsy_owner_id AS `Besitzer2`
+        , SUM(COALESCE(hst.ftsy_score,0)) AS fantasy_score2
+        , COUNT(hst.player_id) AS anz2
     FROM ftsy_scoring_hist hst
     WHERE
         hst.1_ftsy_owner_type = 'USR' 
         AND hst.1_ftsy_match_status != 'NONE'
         AND hst.round_name = 18 -- Edit here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        AND hst.season_id = (select season_id from parameter)
+        AND hst.season_id = (SELECT season_id FROM parameter)
     GROUP BY hst.1_ftsy_owner_id
   ) akt_score_2
     ON sch.ftsy_away_id = akt_score_2.Besitzer2  
@@ -161,4 +161,4 @@ WHERE
     sch.buli_round_name = 18 -- Edit here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     AND season_id = (SELECT season_id FROM parameter)
 
-/* Step 6: Remove postponed round from spieltag_abschluss.php */
+/* Step 6: Remove postponed round FROM spieltag_abschluss.php */

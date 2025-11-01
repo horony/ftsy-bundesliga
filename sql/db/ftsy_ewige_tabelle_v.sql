@@ -1,18 +1,18 @@
-create view ftsy_ewige_tabelle_v as
-select    
+CREATE VIEW ftsy_ewige_tabelle_v AS
+SELECT    
     `t`.`user_id` AS `user_id`
     ,`t`.`team_name` AS `team_name`
-    ,sum(`t`.`punkte`) AS `sum_punkte`
-    ,count(distinct `t`.`season_id`) AS `anz_saisons`
-    ,sum(`t`.`siege` + `t`.`niederlagen` + `t`.`unentschieden`) AS `anz_spiele`
-    ,sum(`t`.`score_for`) AS `sum_score_for`,sum(`t`.`score_against`) AS `sum_score_agains`
-    ,sum(`t`.`siege`) AS `anz_siege`
-    ,sum(`t`.`niederlagen`) AS `anz_niederlagen`
-    ,sum(`t`.`unentschieden`) AS `anz_unentschieden`
-    ,sum(`t`.`trost`) AS `anz_trost` 
-from (
-    /* Data from the prod table */
-    select 
+    ,SUM(`t`.`punkte`) AS `sum_punkte`
+    ,COUNT(DISTINCT `t`.`season_id`) AS `anz_saisons`
+    ,SUM(`t`.`siege` + `t`.`niederlagen` + `t`.`unentschieden`) AS `anz_spiele`
+    ,SUM(`t`.`score_for`) AS `sum_score_for`,SUM(`t`.`score_against`) AS `sum_score_agains`
+    ,SUM(`t`.`siege`) AS `anz_siege`
+    ,SUM(`t`.`niederlagen`) AS `anz_niederlagen`
+    ,SUM(`t`.`unentschieden`) AS `anz_unentschieden`
+    ,SUM(`t`.`trost`) AS `anz_trost` 
+FROM (
+    /* Data FROM the prod TABLE */
+    SELECT 
         `f`.`player_id` AS `user_id`
         , `u`.`teamname` AS `team_name`
         , `f`.`punkte` AS `punkte`
@@ -23,18 +23,18 @@ from (
         , `f`.`niederlagen` AS `niederlagen`
         , `f`.`unentschieden` AS `unentschieden`
         , `f`.`trost` AS `trost` 
-    from `ftsy_tabelle_2020` `f`
-    left join `users` `u` 
-        on `u`.`id` = `f`.`player_id`
-    where 
+    FROM `ftsy_tabelle_2020` `f`
+    LEFT JOIN `users` `u` 
+        ON `u`.`id` = `f`.`player_id`
+    WHERE 
         `f`.`spieltag` = 34 
-        or (`f`.`spieltag` = (select `parameter`.`spieltag` - 1 from `parameter`) 
-        and `f`.`season_id` = (select `parameter`.`season_id` from `parameter`))
+        OR (`f`.`spieltag` = (SELECT `parameter`.`spieltag` - 1 FROM `parameter`) 
+        AND `f`.`season_id` = (SELECT `parameter`.`season_id` FROM `parameter`))
 
-    union all 
+    UNION ALL 
 
-    /* Historic data from 2019 */
-    select  
+    /* Historic data FROM 2019 */
+    SELECT  
         `u`.`id` AS `user_id`
         ,`u`.`teamname` AS `team_name`
         ,`ft19`.`punkte` AS `punkte`
@@ -45,18 +45,18 @@ from (
         ,`ft19`.`niederlagen` AS `niederlagen`
         ,`ft19`.`unentschieden` AS `unentschieden`
         ,`ft19`.`trost` AS `trost` 
-    from `fantasy_tabelle_2019` `ft19` 
-    left join `users` `u` 
-        on `u`.`username` = `ft19`.`player`
-    where 
+    FROM `fantasy_tabelle_2019` `ft19` 
+    LEFT JOIN `users` `u` 
+        ON `u`.`username` = `ft19`.`player`
+    WHERE 
         `ft19`.`spieltag` = 34 
 
-    union all 
+    UNION ALL 
 
-    /* Historic data from 2018 */
-    select  
+    /* Historic data FROM 2018 */
+    SELECT  
         `u`.`id` AS `user_id`
-        ,coalesce(`u`.`teamname`,`ft18`.`team`) AS `team_name`
+        ,COALESCE(`u`.`teamname`,`ft18`.`team`) AS `team_name`
         ,`ft18`.`punkte` AS `punkte`
         ,2018 AS `season_id`
         ,`ft18`.`score_for` AS `score_for`
@@ -65,11 +65,11 @@ from (
         ,`ft18`.`niederlagen` AS `niederlagen`
         ,`ft18`.`unentschieden` AS `unentschieden`
         ,`ft18`.`trost` AS `trost` 
-    from `fantasy_tabelle_2018` `ft18` 
-    left join `users` `u` 
-        on `u`.`id` = `ft18`.`player`
-    where 
+    FROM `fantasy_tabelle_2018` `ft18` 
+    LEFT JOIN `users` `u` 
+        ON `u`.`id` = `ft18`.`player`
+    WHERE 
         `ft18`.`spieltag` = 34
     ) `t` 
-group by `t`.`user_id`,`t`.`team_name` 
-order by sum(`t`.`punkte`) desc, sum(`t`.`siege`) desc, sum(`t`.`unentschieden`) desc, sum(`t`.`score_for`) desc
+GROUP BY `t`.`user_id`,`t`.`team_name` 
+ORDER BY SUM(`t`.`punkte`) DESC, SUM(`t`.`siege`) DESC, SUM(`t`.`unentschieden`) DESC, SUM(`t`.`score_for`) DESC

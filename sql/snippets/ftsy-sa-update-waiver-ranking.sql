@@ -17,7 +17,7 @@ UPDATE xa7580_db1.users_gamedata game
                 FROM xa7580_db1.users_gamedata game
                 INNER JOIN xa7580_db1.ftsy_tabelle_2020 tab
                     ON game.user_id = tab.player_id
-                    AND tab.spieltag = (SELECT max(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = (SELECT season_id FROM parameter))
+                    AND tab.spieltag = (SELECT MAX(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = (SELECT season_id FROM parameter))
                     AND tab.season_id = (SELECT season_id FROM parameter)
             ) tab
         , (SELECT @curRank := 0) r

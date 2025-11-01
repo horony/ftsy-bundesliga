@@ -1,13 +1,13 @@
-/* Creates view with detailed stats and ftsy score for each player in each fixture he was on a team */
+/* Creates VIEW with detailed stats AND ftsy score for each player IN each fixture he was ON a team */
 
-drop view if exists ftsy_scoring_akt_v;
+DROP VIEW IF EXISTS ftsy_scoring_akt_v;
 
-create view ftsy_scoring_akt_v as
-with ftsy_stats as (
-    select  
+CREATE VIEW ftsy_scoring_akt_v AS
+with ftsy_stats AS (
+    SELECT  
         stats.fixture_id
         ,stats.player_id
-        ,player.display_name as player_name
+        ,player.display_name AS player_name
         ,player.position_short
         ,teams_own.short_code AS own_team_code
         ,teams_opp.short_code AS opp_team_code
@@ -120,75 +120,75 @@ with ftsy_stats as (
         ,stats.redcards AS redcards_stat
         ,round((rules.redyellowcards * stats.redyellowcards),1) AS redyellowcards_ftsy
         ,stats.redyellowcards AS redyellowcards_stat
-    from sm_player_stats stats 
-    /* Join player information */
-    left join sm_playerbase player
-        on stats.player_id = player.id
-    /* Join Paramters for current round and season */
-    left join parameter
-        on 1 = 1
-    /* Join team information */
-    left join sm_teams teams_own 
-        on teams_own.id = stats.own_team_id
-    left join sm_teams teams_opp
-        on teams_opp.id = stats.opp_team_id
-    /* Join rules to calculate ftsy scores according to players position */
-    left join ftsy_scoring_ruleset rules 
-        on player.position_short = rules.player_position_de_short
-    where 
+    FROM sm_player_stats stats 
+    /* JOIN player information */
+    LEFT JOIN sm_playerbase player
+        ON stats.player_id = player.id
+    /* JOIN Paramters for current round AND season */
+    LEFT JOIN parameter
+        ON 1 = 1
+    /* JOIN team information */
+    LEFT JOIN sm_teams teams_own 
+        ON teams_own.id = stats.own_team_id
+    LEFT JOIN sm_teams teams_opp
+        ON teams_opp.id = stats.opp_team_id
+    /* JOIN rules to calculate ftsy scores according to players position */
+    LEFT JOIN ftsy_scoring_ruleset rules 
+        ON player.position_short = rules.player_position_de_short
+    WHERE 
         stats.round_name = parameter.spieltag
-        and stats.season_id = parameter.season_id
+        AND stats.season_id = parameter.season_id
     ) 
-select     
+SELECT     
 	ftsy_stats.*
-    , coalesce(appearance_ftsy,0)
-        + coalesce(minutes_played_ftsy,0)
-        + coalesce(goals_total_ftsy,0)
-        + coalesce(goals_minus_pen_ftsy,0)
-        + coalesce(assists_ftsy,0)
-        + coalesce(big_chances_created_ftsy,0)
-        + coalesce(key_passes_ftsy,0)
-        + coalesce(passes_total_ftsy,0)
-        + coalesce(passes_complete_ftsy,0)
-        + coalesce(passes_incomplete_ftsy,0)
-        + coalesce(passes_accuracy_ftsy,0)
-        + coalesce(crosses_total_ftsy,0)
-        + coalesce(crosses_complete_ftsy,0)
-        + coalesce(crosses_incomplete_ftsy,0)
-        + coalesce(shots_total_ftsy,0)
-        + coalesce(shots_on_goal_ftsy,0)
-        + coalesce(shots_missed_ftsy,0)
-        + coalesce(shots_blocked_ftsy,0)
-        + coalesce(big_chances_missed_ftsy,0)
-        + coalesce(hit_woodwork_ftsy,0)
-        + coalesce(pen_committed_ftsy,0)
-        + coalesce(pen_missed_ftsy,0)
-        + coalesce(pen_saved_ftsy,0)
-        + coalesce(pen_scored_ftsy,0)
-        + coalesce(pen_won_ftsy,0)
-        + coalesce(duels_total_ftsy,0)
-        + coalesce(duels_won_ftsy,0)
-        + coalesce(duels_lost_ftsy,0)
-        + coalesce(dribble_attempts_ftsy,0)
-        + coalesce(dribbles_success_ftsy,0)
-        + coalesce(dribbles_failed_ftsy,0)
-        + coalesce(clean_sheet_ftsy,0)
-        + coalesce(goals_conceded_ftsy,0)
-        + coalesce(goalkeeper_goals_conceded_ftsy,0)
-        + coalesce(interceptions_ftsy,0)
-        + coalesce(blocks_ftsy,0)
-        + coalesce(clearances_ftsy,0)
-        + coalesce(clearances_offline_ftsy,0)
-        + coalesce(tackles_ftsy,0)
-        + coalesce(error_lead_to_goal_ftsy,0)
-        + coalesce(owngoals_ftsy,0)
-        + coalesce(dispossessed_ftsy,0)
-        + coalesce(dribbled_past_ftsy,0)
-        + coalesce(saves_ftsy,0)
-        + coalesce(inside_box_saves_ftsy,0)
-        + coalesce(outside_box_saves_ftsy,0)
-        + coalesce(punches_ftsy,0)
-        + coalesce(redcards_ftsy,0)
-        + coalesce(redyellowcards_ftsy,0)
-        as ftsy_score
-from ftsy_stats
+    , COALESCE(appearance_ftsy,0)
+        + COALESCE(minutes_played_ftsy,0)
+        + COALESCE(goals_total_ftsy,0)
+        + COALESCE(goals_minus_pen_ftsy,0)
+        + COALESCE(assists_ftsy,0)
+        + COALESCE(big_chances_created_ftsy,0)
+        + COALESCE(key_passes_ftsy,0)
+        + COALESCE(passes_total_ftsy,0)
+        + COALESCE(passes_complete_ftsy,0)
+        + COALESCE(passes_incomplete_ftsy,0)
+        + COALESCE(passes_accuracy_ftsy,0)
+        + COALESCE(crosses_total_ftsy,0)
+        + COALESCE(crosses_complete_ftsy,0)
+        + COALESCE(crosses_incomplete_ftsy,0)
+        + COALESCE(shots_total_ftsy,0)
+        + COALESCE(shots_on_goal_ftsy,0)
+        + COALESCE(shots_missed_ftsy,0)
+        + COALESCE(shots_blocked_ftsy,0)
+        + COALESCE(big_chances_missed_ftsy,0)
+        + COALESCE(hit_woodwork_ftsy,0)
+        + COALESCE(pen_committed_ftsy,0)
+        + COALESCE(pen_missed_ftsy,0)
+        + COALESCE(pen_saved_ftsy,0)
+        + COALESCE(pen_scored_ftsy,0)
+        + COALESCE(pen_won_ftsy,0)
+        + COALESCE(duels_total_ftsy,0)
+        + COALESCE(duels_won_ftsy,0)
+        + COALESCE(duels_lost_ftsy,0)
+        + COALESCE(dribble_attempts_ftsy,0)
+        + COALESCE(dribbles_success_ftsy,0)
+        + COALESCE(dribbles_failed_ftsy,0)
+        + COALESCE(clean_sheet_ftsy,0)
+        + COALESCE(goals_conceded_ftsy,0)
+        + COALESCE(goalkeeper_goals_conceded_ftsy,0)
+        + COALESCE(interceptions_ftsy,0)
+        + COALESCE(blocks_ftsy,0)
+        + COALESCE(clearances_ftsy,0)
+        + COALESCE(clearances_offline_ftsy,0)
+        + COALESCE(tackles_ftsy,0)
+        + COALESCE(error_lead_to_goal_ftsy,0)
+        + COALESCE(owngoals_ftsy,0)
+        + COALESCE(dispossessed_ftsy,0)
+        + COALESCE(dribbled_past_ftsy,0)
+        + COALESCE(saves_ftsy,0)
+        + COALESCE(inside_box_saves_ftsy,0)
+        + COALESCE(outside_box_saves_ftsy,0)
+        + COALESCE(punches_ftsy,0)
+        + COALESCE(redcards_ftsy,0)
+        + COALESCE(redyellowcards_ftsy,0)
+        AS ftsy_score
+FROM ftsy_stats

@@ -4,7 +4,7 @@ WITH cte_schedule AS (
         u.id AS user_id
         , u.teamname
         , p.season_id
-        , p.spieltag as round_name
+        , p.spieltag AS round_name
         , CASE WHEN u.id = sch.ftsy_home_id THEN sch.ftsy_home_score ELSE sch.ftsy_away_score END AS ftsy_score_for
         , CASE WHEN u.id = sch.ftsy_home_id THEN sch.ftsy_away_score ELSE sch.ftsy_home_score END AS ftsy_score_against
     FROM users u
@@ -36,5 +36,5 @@ SELECT
         , SUM(CASE WHEN ftsy_score_for < ftsy_score_against THEN 1 ELSE 0 END)
         ) AS cup_record
 FROM cte_schedule
-GROUP by user_id, teamname, season_id, round_name
+GROUP BY user_id, teamname, season_id, round_name
 ;

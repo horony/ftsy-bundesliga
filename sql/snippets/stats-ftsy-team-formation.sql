@@ -6,7 +6,7 @@ INNER JOIN (
         buli_round_name
     FROM `ftsy_schedule`
     WHERE 
-        season_id = (SELECT season_id from parameter)
+        season_id = (SELECT season_id FROM parameter)
         AND match_type = 'league' 
     GROUP BY buli_round_name
     ) sch 

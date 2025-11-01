@@ -11,7 +11,7 @@ SET
         FROM sm_rounds
         WHERE 
             season_id = (SELECT season_id FROM parameter)
-            AND name = (SELECT spieltag from parameter)
+            AND name = (SELECT spieltag FROM parameter)
     )
     , par.waiver_date_2 = (
         SELECT 
@@ -24,5 +24,5 @@ SET
           FROM sm_rounds
           WHERE   
               season_id = (SELECT season_id FROM parameter)
-              AND name = (SELECT spieltag from parameter)
+              AND name = (SELECT spieltag FROM parameter)
     )

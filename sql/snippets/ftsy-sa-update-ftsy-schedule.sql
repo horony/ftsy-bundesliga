@@ -1,9 +1,9 @@
 UPDATE xa7580_db1.ftsy_schedule sch
 LEFT JOIN (
     SELECT   
-        own.1_ftsy_owner_id as Besitzer1
-        , SUM(COALESCE(akt.ftsy_score,0)) as fantasy_score1
-        , COUNT(own.player_id) as anz1
+        own.1_ftsy_owner_id AS Besitzer1
+        , SUM(COALESCE(akt.ftsy_score,0)) AS fantasy_score1
+        , COUNT(own.player_id) AS anz1
     FROM ftsy_player_ownership own
     LEFT JOIN ftsy_scoring_akt_v akt
         ON own.player_id = akt.player_id
@@ -15,9 +15,9 @@ LEFT JOIN (
     ON sch.ftsy_home_id = akt_score_1.Besitzer1
 LEFT JOIN (
     SELECT   
-        own.1_ftsy_owner_id as Besitzer2
-        , SUM(COALESCE(akt.ftsy_score,0)) as fantasy_score2
-        , COUNT(own.player_id) as anz2
+        own.1_ftsy_owner_id AS Besitzer2
+        , SUM(COALESCE(akt.ftsy_score,0)) AS fantasy_score2
+        , COUNT(own.player_id) AS anz2
     FROM ftsy_player_ownership own
     LEFT JOIN ftsy_scoring_akt_v akt
         ON own.player_id = akt.player_id

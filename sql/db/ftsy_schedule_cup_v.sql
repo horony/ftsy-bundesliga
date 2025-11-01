@@ -57,7 +57,7 @@ WITH cte_two_legs AS (
         AND leg1.ftsy_away_id != ''
 
 ), cte_both AS (
-    /* Combine both one-leg and two-leg cup matches */
+    /* Combine both one-leg AND two-leg cup matches */
     SELECT * 
     FROM cte_two_legs
     
@@ -67,7 +67,7 @@ WITH cte_two_legs AS (
     FROM cte_one_leg
 )
 SELECT 
-    /* Apply final business logic and output */
+    /* Apply final business logic AND output */
     cte_both.season_id
     , cte_both.match_type
     , cte_both.cup_round
