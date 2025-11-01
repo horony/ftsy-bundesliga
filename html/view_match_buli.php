@@ -32,11 +32,11 @@ require("../php/auth.php");
     
     // Get meta data    
     $fixture_id = $_GET["ID"];
-    $akt_spieltag = mysqli_query($con, "SELECT spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
-    $akt_season_id = mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;  
-    $clicked_spieltag = mysqli_query($con, "SELECT round_name FROM xa7580_db1.sm_fixtures WHERE fixture_id = '".$fixture_id."' LIMIT 1") -> fetch_object() -> round_name;
+    $akt_spieltag = (int) mysqli_query($con, "SELECT spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
+    $akt_season_id = (int) mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;  
+    $selected_spieltag = (int) mysqli_query($con, "SELECT round_name FROM xa7580_db1.sm_fixtures WHERE fixture_id = '".$fixture_id."' LIMIT 1") -> fetch_object() -> round_name;
 
-    echo "<h2>BUNDESLIGA GAME CENTER - SPIELTAG " . $clicked_spieltag . "</h2>";
+    echo "<h2>BUNDESLIGA GAME CENTER - SPIELTAG " . $selected_spieltag . "</h2>";
     ?>
 </div>
 <!-- Headline End -->
@@ -53,7 +53,7 @@ require("../php/auth.php");
         $cte_sql_ftsy_score = "
             SELECT 
                 current_team_id AS team_id
-                , SUM(ftsy_score) AS team_ftsy_score_sum
+                , ROUND(SUM(COALESCE(ftsy_score, 0)), 1) AS team_ftsy_score_sum
             FROM xa7580_db1.ftsy_scoring_hist
             WHERE 
                 fixture_id = '".$fixture_id."'
@@ -63,7 +63,7 @@ require("../php/auth.php");
         $cte_sql_ftsy_score = "
             SELECT 
                 pb.current_team_id AS team_id
-                , ROUND(COALESCE(SUM(akt.ftsy_score),0),1) AS team_ftsy_score_sum
+                , ROUND(SUM(COALESCE(ftsy_score, 0)), 1) AS team_ftsy_score_sum
             FROM xa7580_db1.sm_playerbase pb
             LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt
                 ON akt.player_id = pb.id
@@ -274,7 +274,7 @@ require("../php/auth.php");
             $select_projection = "";
             $select_redyellowcards = "";
 
-            if ($clicked_spieltag == $akt_spieltag) {
+            if ($selected_spieltag == $akt_spieltag) {
                 // Current round
                 $join_scoring_table = "
                     LEFT JOIN xa7580_db1.ftsy_scoring_akt_v ftsy
@@ -296,12 +296,12 @@ require("../php/auth.php");
                     , ftsy.redyellowcards_stat
                     , COALESCE(ftsy.redyellowcards_ftsy,0) AS redyellowcards_ftsy
                     ";
-            } elseif ($clicked_spieltag < $akt_spieltag) {
+            } elseif ($selected_spieltag < $akt_spieltag) {
                 // Round in the past
                 $join_scoring_table = "
                     LEFT JOIN xa7580_db1.ftsy_scoring_hist ftsy 
                         ON ftsy.player_id = base.id
-                        AND ftsy.round_name = '".$clicked_spieltag."'
+                        AND ftsy.round_name = '".$selected_spieltag."'
                         AND ftsy.season_id = '".$akt_season_id."'
                 ";
                 $join_ownership_tables = "
@@ -432,7 +432,7 @@ require("../php/auth.php");
                 LEFT JOIN xa7580_db1.topxi_fabu_ovr topxi
                     ON topxi.player_id = base.id
                     AND topxi.season_id = '".$akt_season_id."'
-                    AND topxi.round_name = '".$clicked_spieltag."'
+                    AND topxi.round_name = '".$selected_spieltag."'
                     AND topxi_lvl = 'RND'
                 WHERE 
                     COALESCE(ftsy.appearance_stat, 0) = '".$sql_value."'
@@ -473,9 +473,9 @@ require("../php/auth.php");
                 }
 
                 /* Determine projected score display for current round */
-                if ($clicked_spieltag == $akt_spieltag) {
+                if ($selected_spieltag == $akt_spieltag) {
                     $projected_score = $row['ftsy_score_projected'];
-                        if ($kickoff_ts <= time()) {
+                        if (strtotime($kickoff_ts) <= time()) {
                             $actual_score = isset($row['ftsy_score']) ? number_format($row['ftsy_score'], 1) : '0';
                         } else {
                             $actual_score = '-';
@@ -564,7 +564,7 @@ require("../php/auth.php");
                         echo( ($row['redcards_stat'] != NULL AND $row['redcards_stat'] != 0)? 'Rot: ' . $row['redcards_stat'] . ' ' . formatFtsyValue($row['redcards_ftsy']) : NULL);  
                         echo( ($row['redyellowcards_stat'] != NULL AND $row['redyellowcards_stat'] != 0)? 'Gelb-Rot: ' . $row['redyellowcards_stat'] . ' ' . formatFtsyValue($row['redyellowcards_ftsy']) : NULL);   
                         /* Projection */
-                        if( $clicked_spieltag == $akt_spieltag) {
+                        if( $selected_spieltag == $akt_spieltag) {
                             echo( 'Projection: <span style="color: blue">' . $row['ftsy_score_projected'] . ' </span>' );   
                         }
                     } else {
