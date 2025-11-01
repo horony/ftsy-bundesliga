@@ -107,8 +107,8 @@ except:
     df_venues.to_sql(name='tmp_sm_venues', con=engine, index=False, if_exists='replace')
     with engine.connect() as con:
         con.execute('ALTER TABLE `tmp_sm_venues` ADD PRIMARY KEY (`id`);')   
-        con.execute('INSERT INTO sm_venues SELECT * FROM tmp_sm_venues t2 ON DUPLICATE KEY UPDATE load_ts = t2.load_ts, name = t2.name, city = t2.city, address = t2.address, coordinates = t2.coordinates, capacity = t2.capacity, surface = t2.surface, image_path = t2.image_path;')    
-        con.execute('DROP TABLE tmp_sm_venues;')    
+        con.execute('INSERT INTO sm_venues SELECT * FROM tmp_sm_venues t2 ON DUPLICATE KEY UPDATE load_ts = t2.load_ts, address = t2.address, coordinates = t2.coordinates, capacity = t2.capacity, surface = t2.surface, image_path = t2.image_path;')    
+        con.execute('DROP TABLE tmp_sm_venues;')
 
     db_message = "Table sm_venues updated"
 
