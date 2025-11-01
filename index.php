@@ -243,7 +243,7 @@
                                     echo "<img class='news_player_img' src='" . $row['dropped_team_img'] . "' style='max-width: 60px; max-height: 60px;'>";
                                 echo "</div>";
                                 echo "<div class='news_news'>";
-                                    echo "<b>Bundesliga: </b>"  . mb_convert_encoding($row['story'], 'UTF-8') . ".";
+                                    echo "<b>Bundesliga: </b>"  . mb_convert_encoding($row['story'], 'UTF-8') . ". ";
                                     $link = 'html/view_match_buli.php?ID=' . strval($row['headline']) . ' ';
                                     echo "<a href='" . $link . "'>Zum Spiel »</a></br>";
                                     echo "<br><span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
