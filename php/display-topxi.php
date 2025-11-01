@@ -461,7 +461,7 @@ echo "<div class='striped_background'>";
                             $grade_color = '#06A022';
                         } elseif ($color_score > 30 ){
                             $grade_color = '#06a06f';
-                        } ELSE {
+                        } else {
                             $grade_color = '#dddddd';
                         }
                     } else {
@@ -483,7 +483,7 @@ echo "<div class='striped_background'>";
                             $grade_color = '#06A022';
                         } elseif ($color_score > ($color_start_val * pow((1+$color_steps),5)) ){
                             $grade_color = '#06a06f';
-                        } ELSE {
+                        } else {
                             $grade_color = '#dddddd';
                         }						
                     }
