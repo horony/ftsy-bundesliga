@@ -14,7 +14,6 @@ require("../php/auth.php");
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   
     <!-- Custom Scripts -->
     <script>
@@ -38,7 +37,7 @@ require("../php/auth.php");
 
     <!-- Content -->
     <div id="headline" class="row">
-        <h2 style='color:white; text-align: center'>SPIELER DATENBANK<h2>	
+        <h2 style='color:white; text-align: center'>SPIELER DATENBANK</h2>	
     </div>
 
     <div class="row">
@@ -105,7 +104,7 @@ require("../php/auth.php");
                             echo "<td>" . utf8_encode($row['Besitzer']) . "</td>"; 
                         echo "</tr>";
                     }
-                echo "</table>"
+                echo "</table>";
             echo "</div>";
             mysqli_close($con);
             ?>
