@@ -41,7 +41,7 @@ if($selected_spieltag < $akt_spieltag) {
             pb.current_team_id AS team_id
             , ROUND(COALESCE(SUM(akt.ftsy_score),0),1) AS team_ftsy_score_sum
         FROM xa7580_db1.sm_playerbase pb
-        LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt
+        LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv akt
             ON akt.player_id = pb.id
         WHERE 
             pb.current_team_id IS NOT NULL

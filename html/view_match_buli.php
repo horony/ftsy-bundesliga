@@ -65,7 +65,7 @@ require("../php/auth.php");
                 pb.current_team_id AS team_id
                 , ROUND(SUM(COALESCE(ftsy_score, 0)), 1) AS team_ftsy_score_sum
             FROM xa7580_db1.sm_playerbase pb
-            LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt
+            LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv akt
                 ON akt.player_id = pb.id
                 AND akt.fixture_id = '".$fixture_id."'
             WHERE 
@@ -139,7 +139,7 @@ require("../php/auth.php");
         $motm_sql = mysqli_query($con, " 
             SELECT 
                 scr.player_id
-            FROM xa7580_db1.ftsy_scoring_akt_v scr
+            FROM xa7580_db1.ftsy_scoring_akt_mv scr
             WHERE 
                 scr.fixture_id = '".$fixture_id."'
                 AND scr.ftsy_score > 10
@@ -150,7 +150,7 @@ require("../php/auth.php");
         $totm_sql = mysqli_query($con, " 
             SELECT 
                 scr.player_id
-            FROM xa7580_db1.ftsy_scoring_akt_v scr
+            FROM xa7580_db1.ftsy_scoring_akt_mv scr
             WHERE 
                 scr.fixture_id = '".$fixture_id."'
                 AND (
@@ -277,7 +277,7 @@ require("../php/auth.php");
             if ($selected_spieltag == $akt_spieltag) {
                 // Current round
                 $join_scoring_table = "
-                    LEFT JOIN xa7580_db1.ftsy_scoring_akt_v ftsy
+                    LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv ftsy
                         ON ftsy.player_id = base.id
                 ";
                 $join_ownership_tables = "

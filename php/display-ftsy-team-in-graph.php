@@ -110,7 +110,7 @@ $kader = mysqli_query($con,"
 			AND fix.round_name = (SELECT spieltag FROM parameter)
 			AND fix.season_id = (SELECT season_id FROM parameter)
 	        
-	LEFT JOIN ftsy_scoring_akt_v ftsy
+	LEFT JOIN ftsy_scoring_akt_mv ftsy
 		ON	ftsy.player_id = base.id
 	    	AND fix.fixture_id = ftsy.fixture_id
 

@@ -205,7 +205,7 @@ require("../php/auth.php");
                 $result_score = mysqli_query($con, "
                     SELECT SUM(ftsy_score) AS score
                     FROM xa7580_db1.ftsy_player_ownership base 
-                    INNER JOIN xa7580_db1.ftsy_scoring_akt_v akt 
+                    INNER JOIN xa7580_db1.ftsy_scoring_akt_mv akt 
                         ON akt.player_id = base.player_id
                     WHERE ".$ftsy_owner_column." = '".$team_id."'
                         AND ".$ftsy_status_column." != 'NONE'
@@ -238,7 +238,7 @@ require("../php/auth.php");
                         FROM xa7580_db1.sm_playerbase base
                         LEFT JOIN xa7580_db1.ftsy_player_ownership owner
                             ON base.id = owner.player_id
-                        LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt  
+                        LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv akt  
                             ON base.id = akt.player_id
                         LEFT JOIN xa7580_db1.ftsy_scoring_projection_v proj  
                             ON base.id = proj.player_id
@@ -258,7 +258,7 @@ require("../php/auth.php");
                 $result_score_g = mysqli_query($con," 
                     SELECT SUM(ftsy_score) AS score
                     FROM xa7580_db1.ftsy_player_ownership base 
-                    INNER JOIN xa7580_db1.ftsy_scoring_akt_v akt 
+                    INNER JOIN xa7580_db1.ftsy_scoring_akt_mv akt 
                         ON akt.player_id = base.player_id
                     WHERE   
                         ".$ftsy_owner_column." = '".$team_id_opp."'
@@ -578,7 +578,7 @@ require("../php/auth.php");
                             END AS clean_sheet_stat_x
                         , proj.ftsy_score_projected 
                     FROM xa7580_db1.sm_playerbase_basic_v base 
-                    LEFT JOIN xa7580_db1.ftsy_scoring_akt_v ftsy 
+                    LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv ftsy 
                         ON ftsy.player_id = base.id
                     LEFT JOIN xa7580_db1.ftsy_scoring_projection_v proj
                         ON proj.player_id = base.id     

@@ -29,7 +29,7 @@ WITH base AS (
         ON (ply.current_team_id = fix.localteam_id OR ply.current_team_id = fix.visitorteam_id)
         AND fix.round_name = param.spieltag
         AND fix.season_id = param.season_id
-    LEFT JOIN ftsy_scoring_akt_v scr 
+    LEFT JOIN ftsy_scoring_akt_mv scr 
         ON own.player_id = scr.player_id
     LEFT JOIN ftsy_scoring_projection_v proj
         ON own.player_id = proj.player_id

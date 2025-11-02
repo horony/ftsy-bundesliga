@@ -26,7 +26,7 @@ $result = mysqli_query($con,"
             , SUM(akt.ftsy_score) AS score_home
             , COUNT(base.player_id) AS aufgestellt_home
         FROM xa7580_db1.ftsy_player_ownership base
-        LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt
+        LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv akt
             ON base.player_id = akt.player_id
         WHERE 
             base.".$ftsy_status_column." != 'NONE'
@@ -39,7 +39,7 @@ $result = mysqli_query($con,"
             , SUM(akt.ftsy_score) AS score_away
             , COUNT(base.player_id) AS aufgestellt_away
         FROM xa7580_db1.ftsy_player_ownership base
-        LEFT JOIN xa7580_db1.ftsy_scoring_akt_v akt
+        LEFT JOIN xa7580_db1.ftsy_scoring_akt_mv akt
             ON base.player_id = akt.player_id
         WHERE 
             base.".$ftsy_status_column." != 'NONE'
