@@ -1,6 +1,6 @@
 DELIMITER $$
 
-CREATE TRIGGER ft_trigger
+CREATE TRIGGER tr_fixture_ft
     AFTER UPDATE ON sm_fixtures
     FOR EACH ROW
 BEGIN
