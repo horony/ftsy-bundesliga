@@ -9,8 +9,15 @@
 include('../../secrets/mysql_db_connection.php');
 
 // get the 2 waiver dates from database
-$waiver_1 = mysqli_query($con, "SELECT DATE(waiver_date_1) as waiver_1 FROM xa7580_db1.parameter") -> fetch_object() -> waiver_1;
-$waiver_2 = mysqli_query($con, "SELECT DATE(waiver_date_2) as waiver_2 FROM xa7580_db1.parameter") -> fetch_object() -> waiver_2;
+$result = mysqli_query($con, "
+    SELECT 
+        DATE(waiver_date_1) AS waiver_1
+        , DATE(waiver_date_2) AS waiver_2 
+    FROM xa7580_db1.parameter
+    ");
+$waiver_row = $result->fetch_object();
+$waiver_1 = $waiver_row->waiver_1;
+$waiver_2 = $waiver_row->waiver_2;
 
 // check if execution date of script matches waiver date
 if ( (date("Y-m-d") == $waiver_1) OR (date("Y-m-d") == $waiver_2 ) ) { 
@@ -22,15 +29,21 @@ if ( (date("Y-m-d") == $waiver_1) OR (date("Y-m-d") == $waiver_2 ) ) {
     /**************************************/
 
     // set all waiver flags to 0
-    mysqli_query($con, "UPDATE xa7580_db1.users_gamedata SET waiver_safe_flg = 0");
-    mysqli_query($con, "UPDATE xa7580_db1.users_gamedata SET waiver_ex_flg = 0");
+    mysqli_query($con, "
+        UPDATE xa7580_db1.users_gamedata 
+        SET 
+            waiver_safe_flg = 0
+            , waiver_ex_flg = 0
+        ");
 
-    // set waiver_sage_flg to 1 if no waiver request exist for a user
-    mysqli_query($con, "UPDATE xa7580_db1.users_gamedata user 
-                        LEFT JOIN xa7580_db1.waiver waiv 
-                            ON user.user_id = waiv.owner 
-                        SET user.waiver_safe_flg = 1 
-                        WHERE waiv.owner IS NULL");
+    // set waiver_safe_flg to 1 if no waiver request exist for a user
+    mysqli_query($con, "
+        UPDATE xa7580_db1.users_gamedata user 
+        LEFT JOIN xa7580_db1.waiver waiv 
+            ON user.user_id = waiv.owner 
+        SET user.waiver_safe_flg = 1 
+        WHERE waiv.owner IS NULL
+        ");
 
     // count total waiver requests
     $anzahl_anfragen = mysqli_query($con, "SELECT COUNT(ID) AS anzahl_anfragen FROM xa7580_db1.waiver") -> fetch_object() -> anzahl_anfragen;
@@ -45,8 +58,15 @@ if ( (date("Y-m-d") == $waiver_1) OR (date("Y-m-d") == $waiver_2 ) ) {
     /*****************************************/
 
     // set all WVR to FA
-    mysqli_query ($con, "UPDATE xa7580_db1.ftsy_player_ownership SET 1_ftsy_owner_type = 'FA' WHERE 1_ftsy_owner_type = 'WVR'");
-    mysqli_query ($con, "UPDATE xa7580_db1.ftsy_player_ownership SET 2_ftsy_owner_type = 'FA' WHERE 2_ftsy_owner_type = 'WVR'");
+    mysqli_query ($con, "
+        UPDATE xa7580_db1.ftsy_player_ownership 
+        SET 
+            1_ftsy_owner_type = CASE WHEN 1_ftsy_owner_type = 'WVR' THEN 'FA' ELSE 1_ftsy_owner_type END
+            , 2_ftsy_owner_type = CASE WHEN 2_ftsy_owner_type = 'WVR' THEN 'FA' ELSE 2_ftsy_owner_type END 
+        WHERE 
+            1_ftsy_owner_type = 'WVR' 
+            OR 2_ftsy_owner_type = 'WVR'
+        ");
 
     // create backup of waiver table
     mysqli_query($con, "DROP TABLE xa7580_db1.waiver_safe");
@@ -70,14 +90,16 @@ if ( (date("Y-m-d") == $waiver_1) OR (date("Y-m-d") == $waiver_2 ) ) {
             $player_add_id = mysqli_query ($con, "SELECT waiver_add_id FROM xa7580_db1.waiver WHERE owner = '".$user."' ORDER BY prio ASC LIMIT 1") -> fetch_object() -> waiver_add_id;
             $player_drop_id = mysqli_query ($con, "SELECT waiver_drop_id FROM xa7580_db1.waiver WHERE owner = '".$user."' ORDER BY prio ASC LIMIT 1") -> fetch_object() -> waiver_drop_id;
             
-            $player_add_owner = mysqli_query ($con, "SELECT 1_ftsy_owner_type as Besitzer FROM xa7580_db1.ftsy_player_ownership WHERE player_id = '".$player_add_id."'") -> fetch_object() -> Besitzer;
-            $player_drop_owner = mysqli_query ($con, "SELECT 1_ftsy_owner_id as Besitzer FROM xa7580_db1.ftsy_player_ownership WHERE player_id = '".$player_drop_id."'") -> fetch_object() -> Besitzer;
+            $player_add_owner = mysqli_query ($con, "SELECT 1_ftsy_owner_type AS Besitzer FROM xa7580_db1.ftsy_player_ownership WHERE player_id = '".$player_add_id."'") -> fetch_object() -> Besitzer;
+            $player_drop_owner = mysqli_query ($con, "SELECT 1_ftsy_owner_id AS Besitzer FROM xa7580_db1.ftsy_player_ownership WHERE player_id = '".$player_drop_id."'") -> fetch_object() -> Besitzer;
 
-            $player_add_team = mysqli_query ($con, "SELECT usr.teamname as teamname 
-                                                    FROM xa7580_db1.ftsy_player_ownership base 
-                                                    INNER JOIN xa7580_db1.users usr 
-                                                        ON usr.id = base.1_ftsy_owner_id 
-                                                    WHERE base.player_id = '".$player_drop_id."'") -> fetch_object() -> teamname;
+            $player_add_team = mysqli_query ($con, "
+                SELECT usr.teamname AS teamname
+                FROM xa7580_db1.ftsy_player_ownership base
+                INNER JOIN xa7580_db1.users usr
+                    ON usr.id = base.1_ftsy_owner_id 
+                WHERE base.player_id = '".$player_drop_id."'
+                ") -> fetch_object() -> teamname;
 
             echo "Check waiver request by " . $player_add_owner . ": Add player_id " . $player_add_id . " | Drop player_id " . $player_drop_id .  nl2br("\n");
 
@@ -111,11 +133,16 @@ EOT;
                 mysqli_query ($con, "DELETE FROM xa7580_db1.trade WHERE ini_trade_id = '".$player_add_id."' OR rec_trade_id = '".$player_add_id."' OR ini_trade_id = '".$player_drop_id."' OR rec_trade_id = '".$player_drop_id."' ");
 
                 // Calculate new waiver order in current execution
-                if ($user != $last_user){   $akt_waiver = mysqli_query($con, "SELECT waiver_position FROM users_gamedata WHERE user_id = '".$user."'")->fetch_object()->waiver_position;
-                                            mysqli_query ($con, "UPDATE xa7580_db1.users_gamedata SET waiver_position = waiver_position-1 WHERE user_id != '".$user."' AND waiver_position > '".$akt_waiver."' ");
-                                            mysqli_query ($con, "UPDATE xa7580_db1.users_gamedata SET waiver_position = 10, waiver_ex_flg = 1 WHERE user_id = '".$user."'"); 
-                                            
-                    }
+                if ($user != $last_user){ 
+                    $akt_waiver = mysqli_query($con, "
+                        SELECT waiver_position 
+                        FROM users_gamedata 
+                        WHERE user_id = '".$user."'
+                        ")->fetch_object()->waiver_position;
+                    
+                    mysqli_query ($con, "UPDATE xa7580_db1.users_gamedata SET waiver_position = waiver_position-1 WHERE user_id != '".$user."' AND waiver_position > '".$akt_waiver."' ");
+                    mysqli_query ($con, "UPDATE xa7580_db1.users_gamedata SET waiver_position = 10, waiver_ex_flg = 1 WHERE user_id = '".$user."'");                             
+                }
                 
                 $anzahl_anfragen = mysqli_query($con, "SELECT COUNT(ID) AS anzahl_anfragen FROM xa7580_db1.waiver") -> fetch_object() -> anzahl_anfragen;
                 $last_user = $user;
@@ -127,7 +154,7 @@ EOT;
                 mysqli_query ($con, "DELETE FROM xa7580_db1.waiver WHERE ID = '$waiver_id' AND owner = '$user'"); 
                 $anzahl_anfragen = mysqli_query($con, "SELECT COUNT(ID) AS anzahl_anfragen FROM xa7580_db1.waiver") -> fetch_object() -> anzahl_anfragen;
 
-                }
+            }
         }
     }
 
@@ -137,19 +164,20 @@ EOT;
     mysqli_query($con, "UPDATE xa7580_db1.users_gamedata SET waiver_safe_flg = 1 WHERE waiver_ex_flg = 0");
 
     // Calculate new draft order
-    mysqli_query($con, "UPDATE  xa7580_db1.users_gamedata game
-                        SET waiver_position = (
-                          SELECT new_ranking FROM (
-                            SELECT users_gamedata.username, waiver_safe_flg, waiver_position, @curRank := @curRank + 1 AS new_ranking
-                            FROM xa7580_db1.users_gamedata
-                            INNER JOIN xa7580_db1.users
-                              ON  users.id = users_gamedata.user_id
-                                  AND users.active_account_flg = 1
-                            , (SELECT @curRank := 0) r
-                            ORDER BY waiver_safe_flg DESC, waiver_position ASC;
-                            ) tmp 
-                          WHERE tmp.username = game.username
-                          )
-                        ");
+    mysqli_query($con, "
+        UPDATE  xa7580_db1.users_gamedata game
+        SET waiver_position = (
+            SELECT new_ranking FROM (
+                SELECT users_gamedata.username, waiver_safe_flg, waiver_position, @curRank := @curRank + 1 AS new_ranking
+                FROM xa7580_db1.users_gamedata
+                INNER JOIN xa7580_db1.users
+                    ON users.id = users_gamedata.user_id
+                    AND users.active_account_flg = 1
+                , (SELECT @curRank := 0) r
+                ORDER BY waiver_safe_flg DESC, waiver_position ASC;
+                ) tmp 
+            WHERE tmp.username = game.username
+            )
+        ");
 }
 ?>
