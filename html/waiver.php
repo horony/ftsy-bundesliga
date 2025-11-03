@@ -74,7 +74,7 @@ require("../php/auth.php");
                                 mb_convert_encoding($r["waiver_add_name"], 'UTF-8') . "</b><small> " . 
                                 htmlspecialchars($r["add_verein"]) . "</small>&nbsp;&harr;&nbsp;<b>" . 
                                 mb_convert_encoding($r["waiver_drop_name"], 'UTF-8') . "</b><small> " . 
-                                htmlspecialchars($r["drop_verein"]) . "</small>"
+                                htmlspecialchars($r["drop_verein"]) . "</small>";
                             echo "</li>";			
                         }
                         ?>
