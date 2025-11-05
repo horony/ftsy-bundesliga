@@ -4,12 +4,17 @@
 
 <head>
     <title>FANTASY BUNDESLIGA</title> 
+
+    <!-- Meta tags -->
+    <meta name="robots" content="noindex">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Stylesheets -->    
     <link rel="stylesheet" type="text/css" media="screen, projection" href="css/nav.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="css/index.css">
-
-    <meta name="robots" content="noindex">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-
+    
+    <!-- External libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 

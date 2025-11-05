@@ -1,13 +1,10 @@
-body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+body {
+  font-family: Arial, Helvetica, sans-serif; 
+  background-color: #ffffff;
+}
 
 * {
   box-sizing: border-box;
-}
-
-/* Style the body */
-body {
-  font-family: Arial;
-
 }
 
 #wrapper {
@@ -33,12 +30,10 @@ body {
   justify-content: space-evenly;
   background-image: url(../img/textures/grass.jpg);
   background-repeat: repeat;
-  overflow: hidden;
 }
 
 #headline {
   flex: 100%;
-  /*background-image: none;*/
   color: white;
   font-weight: bold;
   justify-content: center;  
@@ -80,12 +75,7 @@ body {
 
 .side_bar {
   flex: calc(30% - 20px);
-  /*background: rgba(241, 241, 241, .3);*/
   margin-left: 10px;
-  /*padding: 20px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 20px;*/
 }
 
 .graybox{
@@ -123,15 +113,6 @@ body {
   padding-top: 10px;
   padding-left: 5px;
   padding-right: 5px;
-
-}
-
-.alert_badge{
-
-}
-
-.alert_text{
-
 }
 
 #next_waiver{
@@ -157,19 +138,21 @@ body {
 }
 
 
+/* ========================================
+   ALERT AND LINK STYLES
+   ======================================== */
 .alert_wrap a, #waiver_nav a, #table_nav a {
   color: #4caf50;
   text-decoration: none;
   font: 11px Arial;
-  cursor:pointer;
-
+  cursor: pointer;
 }
 
 .alert_wrap a:hover, #waiver_nav a:hover, #table_nav a:hover {
   color: #4caf50;
   text-decoration: underline;
   font: 11px Arial;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 
@@ -179,27 +162,6 @@ body {
   padding-left: 5px;
   padding-right: 5px;
 }
-
-/*
-#boxscores a, #tabellen a {
-  text-decoration: none;
-  cursor:pointer;
-
-}
-
-/*
-#boxscores tr:hover, #tabellen tr:hover {
-  text-decoration: none;
-  color: #4caf50;
-
-}
-*/
-/*
-#boxscores a:hover, #tabellen a:hover {
-  cursor:pointer;
-
-}
-*/
 #scores_nav {
   text-align: center;
   padding-top: 10px;
@@ -218,16 +180,10 @@ body {
   font-weight: bold;
 }
 
-#scores_nav li {
-  /*float: left;*/
-}
-
 #scores_nav li a {
-  /*display: block;*/
   color: white;
   text-align: center;
   text-decoration: none;
-  /*margin-right: 20px;*/
   padding-top: 10px
 }
 
@@ -236,21 +192,23 @@ tr.tr_away >td {
   padding-top: -6px
 }
 
+/* ========================================
+   SCORES AND FIXTURES STYLES
+   ======================================== */
 .scores_table{
   width: 100%;
   color: white;
   font: 11px Arial;
-
 }
 
 table.scores_table tr:hover td {
-color: #4caf50;
+  color: #4caf50;
 }
 
 table.scores_table tr:hover td a{
-text-decoration: none; 
-cursor:pointer;
-color: #4caf50;
+  text-decoration: none; 
+  cursor: pointer;
+  color: #4caf50;
 }
 
 .fixture_row {
@@ -277,19 +235,6 @@ color: #4caf50;
   color: white;
   text-decoration: none
 }
-
-/*
-#scores_table:hover td {
-  font-color: #4caf50;
-  text-decoration: none;
-}
-
-#scores_table tr:hover td {
-  font-color: #4caf50;
-  text-decoration: none;
-
-}
-*/
 .match_team{
   color: white;
   font: 11px Arial;
@@ -304,11 +249,9 @@ color: #4caf50;
   text-decoration: none;
 }
 
-
-#standings{
-
-}
-
+/* ========================================
+   NEWS STYLES
+   ======================================== */
 .news_article_wrapper{
   display: inline-flex;
   padding: 10px;
@@ -377,8 +320,7 @@ color: #4caf50;
 
 .news_news a, .li_news a{
   color: #4caf50;
-      text-decoration: none;
-
+  text-decoration: none;
 }
 
 .news_news a:hover, .li_news a:hover {
@@ -469,11 +411,6 @@ color: #4caf50;
   width: auto;
 }
 
-
-hr {
-
-}
-
 #switch_to_mobile{
   display: none !important;
   font-size: 20px;
@@ -493,6 +430,12 @@ hr {
 @media screen and (max-width: 999px) {
   .row, .navbar {   
     flex-direction: column;
+  }
+  
+  #main_section {
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 5px;
   }
 }
 

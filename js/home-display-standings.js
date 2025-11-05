@@ -17,11 +17,25 @@ function showFantasyTabelle(str) {
 
 // Change colors considering which elements (Bundesliga or Fantasy) is currently clicked
 function changeColorTabelle1(){
-	document.getElementById("button_fantasy_tabelle").style.color = "#4caf50";
-	document.getElementById("button_bundesliga_tabelle").style.color = "white";
+	var fantasyButton = document.getElementById("button_fantasy_tabelle");
+	var bundesligaButton = document.getElementById("button_bundesliga_tabelle");
+	
+	if (fantasyButton) {
+		fantasyButton.style.color = "#4caf50";
+	}
+	if (bundesligaButton) {
+		bundesligaButton.style.color = "white";
+	}
 }
 
 function changeColorTabelle2(){
-	document.getElementById("button_bundesliga_tabelle").style.color = "#4caf50";
-	document.getElementById("button_fantasy_tabelle").style.color = "white";
+	var fantasyButton = document.getElementById("button_fantasy_tabelle");
+	var bundesligaButton = document.getElementById("button_bundesliga_tabelle");
+	
+	if (bundesligaButton) {
+		bundesligaButton.style.color = "#4caf50";
+	}
+	if (fantasyButton) {
+		fantasyButton.style.color = "white";
+	}
 }
