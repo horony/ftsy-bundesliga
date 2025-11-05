@@ -34,8 +34,9 @@ require("../php/auth.php");
     $user_id = $_SESSION['user_id'];
     $ftsy_owner_column = strval($_SESSION['league_id']) . '_ftsy_owner_id';
     $ftsy_status_column = strval($_SESSION['league_id']) . '_ftsy_match_status';
-    $akt_spieltag = mysqli_query($con, "SELECT spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
-    $akt_season_id = mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;  
+    $parameter_data = mysqli_query($con, "SELECT spieltag, season_id FROM xa7580_db1.parameter") -> fetch_object();
+    $akt_spieltag = $parameter_data -> spieltag; 
+    $akt_season_id = $parameter_data -> season_id;  
     $clicked_spieltag = mysqli_query($con, "SELECT buli_round_name FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object() -> buli_round_name;
     
     $cup_query = mysqli_query($con, "
@@ -57,7 +58,11 @@ require("../php/auth.php");
 
         // Get the first leg match
         $leg1_query = mysqli_query($con, "
-            SELECT ftsy_home_score, ftsy_away_score, ftsy_home_id, ftsy_away_id 
+            SELECT 
+                ftsy_home_score
+                , ftsy_away_score
+                , ftsy_home_id
+                , ftsy_away_id 
             FROM xa7580_db1.ftsy_schedule 
             WHERE 
                 season_id = '".$season_id."' 
@@ -163,10 +168,11 @@ require("../php/auth.php");
         ") -> fetch_object() -> username;
 
     // Team names
-    $mein_team = mysqli_query($con,"SELECT ftsy_home_name FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object() -> ftsy_home_name;
-    $gegner_team = mysqli_query($con,"SELECT ftsy_away_name FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object() -> ftsy_away_name;
-    $mein_team_id = mysqli_query($con,"SELECT ftsy_home_id FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object() -> ftsy_home_id;
-    $gegner_team_id = mysqli_query($con,"SELECT ftsy_away_id FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object() -> ftsy_away_id;
+    $team_data = mysqli_query($con,"SELECT ftsy_home_name, ftsy_away_name, ftsy_home_id, ftsy_away_id FROM xa7580_db1.ftsy_schedule WHERE ftsy_match_id = '".$match_id."'") -> fetch_object();
+    $mein_team = $team_data -> ftsy_home_name;
+    $gegner_team = $team_data -> ftsy_away_name;
+    $mein_team_id = $team_data -> ftsy_home_id;
+    $gegner_team_id = $team_data -> ftsy_away_id;
 
     $array_home = array("for_id"=>$mein_team_id, "for_name"=>$mein_team, "for_user"=>$user, "opp_id"=>$gegner_team_id, "opp_name"=>$gegner_team, "opp_user"=>$gegner_manager);
     $array_away = array("opp_id"=>$mein_team_id, "opp_name"=>$mein_team, "opp_user"=>$user, "for_id"=>$gegner_team_id, "for_name"=>$gegner_team, "for_user"=>$gegner_manager);
@@ -594,7 +600,7 @@ require("../php/auth.php");
                         WHEN base.position_short = 'MF' THEN 2 
                         WHEN base.position_short = 'AW' THEN 3 
                         WHEN base.position_short = 'TW' THEN 4 
-                        END  
+                        END
                     ");
             } elseif($clicked_spieltag > $akt_spieltag) {
                 // Round in the future
@@ -928,14 +934,16 @@ require("../php/auth.php");
                             echo "<td style='color: gray; font-size: 14px;'><a href='" . $buli_link . "' class='matchup-to-display' title='Gehe zu Bundesliga-Spiel'>" . $matchup_to_display . "</a></td>";
                             echo "<td align='center' title='Projection' class='player_score'>" . $player_score_display . "</td>";
                         } elseif (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] != 'FT') {
-                            echo "<td style='color: gray;'>" . $row['score_for'] . ":" . $row['score_against'] . 
+                            $buli_link = 'view_match_buli.php?ID=' . strval($row['fixture_id']);
+                            echo "<td style='color: gray; font-size: 14px;'><a href='" . $buli_link . "' class='matchup-to-display' title='Gehe zu Bundesliga-Spiel'>" . $row['score_for'] . ":" . $row['score_against'] . 
                                 " vs. " . $row['gegner_code'] . 
-                                "<span style='color: red' class='pulsate'> <small><b> LIVE</b></small></span></td>";
+                                "<span style='color: red' class='pulsate'> <small><b> LIVE</b></small></span></a></td>";
                             echo "<td align='center' class='player_score'>" . $player_score_display . "</td>";
                         } elseif (strtotime($row['kickoff_ts']) <= time() && $row['fixture_status'] == 'FT') {
-                            echo "<td style='color: gray;'>" . $row['score_for'] . ":" . $row['score_against'] . 
+                            $buli_link = 'view_match_buli.php?ID=' . strval($row['fixture_id']);
+                            echo "<td style='color: gray; font-size: 14px;'><a href='" . $buli_link . "' class='matchup-to-display' title='Gehe zu Bundesliga-Spiel'>" . $row['score_for'] . ":" . $row['score_against'] . 
                                 " vs. " . $row['gegner_code'] . 
-                                "<span style='color: black'><small><b> FINAL</b></small></span></td>";
+                                "<span style='color: black'><small><b> FINAL</b></small></span></a></td>";
                             echo "<td align='center' class='player_score'>" . $player_score_display . "</td>";
                         }
                     echo "</tr>";
