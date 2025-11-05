@@ -25,8 +25,9 @@
 <?php include("navigation.php"); ?>
 <?php
 // get current spieltag and season
-$akt_spieltag = mysqli_query($con, "SELECT spieltag FROM xa7580_db1.parameter") -> fetch_object() -> spieltag;
-$akt_season_id = mysqli_query($con, "SELECT season_id FROM xa7580_db1.parameter") -> fetch_object() -> season_id;
+$parameter_data = mysqli_query($con, "SELECT spieltag, season_id FROM xa7580_db1.parameter") -> fetch_object();
+$akt_spieltag = $parameter_data -> spieltag;
+$akt_season_id = $parameter_data -> season_id;
 
 // fetch match_type per round
 $round_types = [];

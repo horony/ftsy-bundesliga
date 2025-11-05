@@ -473,10 +473,12 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             , cup_round
             , COALESCE(ftsy_home_score+ftsy_home_score_leg1,0) AS ftsy_home_score_agg
             , COALESCE(ftsy_away_score+ftsy_away_score_leg1,0) AS ftsy_away_score_agg
-            , ftsy_home_record AS home_description_1
-            , ftsy_away_record AS away_description_1
-            , ftsy_home_players_status AS home_description_2
-            , ftsy_away_players_status AS away_description_2
+            , NULL AS home_description_1
+            , NULL AS away_description_1
+            , ftsy_home_record AS home_description_2
+            , ftsy_away_record AS away_description_2
+            , ftsy_home_players_status AS home_description_3
+            , ftsy_away_players_status AS away_description_3
         FROM cte_schedule
     ");
 }
@@ -569,7 +571,11 @@ while($col = mysqli_fetch_array($result)){
                         echo "<div class='bottom-row flip space-between'>";
                             echo "<div class='row flip'>";
                                 echo "<div class='description-one'>";
-                                    echo '#' . $col['away_description_1'];
+                                    if ($match_type == 'league') {
+                                        echo '#' . $col['away_description_1'];
+                                    } else {
+                                        echo $col['away_description_1'];
+                                    }
                                 echo "</div>";
                                 echo "<div class='description-two'>";
                                     echo $col['away_description_2'];

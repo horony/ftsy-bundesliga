@@ -12,7 +12,6 @@ $akt_season_id = $result_params_sql->season_id;
 
 $selected_spieltag = $_GET["spieltag"];
 
-
 // Display headline
 echo "<div id='headline'><h2>Bundesliga Spieltag " . $selected_spieltag . "</h2></div>";
 
