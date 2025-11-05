@@ -519,7 +519,11 @@ while($col = mysqli_fetch_array($result)){
                         echo "<div class='bottom-row space-between'>";
                             echo "<div class='row'>";
                                 echo "<div class='description-one'>";
-                                    echo '#' . $col['home_description_1'];
+                                    if ($match_type == 'league') {
+                                        echo '#' . $col['away_description_1'];
+                                    } else {
+                                        echo $col['away_description_1'];
+                                    }
                                 echo "</div>";
                                 echo "<div class='description-two'>";
                                     echo $col['home_description_2'];
