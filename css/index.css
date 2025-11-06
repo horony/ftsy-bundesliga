@@ -1,6 +1,8 @@
 body {
   font-family: Arial, Helvetica, sans-serif; 
   background-color: #ffffff;
+  margin: 0;
+  padding: 0;
 }
 
 * {
@@ -13,14 +15,39 @@ body {
 }
 
 #main_section{
-  background: white;
+  background: white !important;
   border: solid 1px lightgray;
   padding: 10px;
-  margin-left: 15%;
-  margin-right: 15%;
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 999px) {
+  .row, .navbar {   
+    flex-direction: column;
+  }
+  
+  #main_section {
+    margin: 0 5px !important;
+    padding: 5px !important;
+    max-width: none !important;
+  }
+  
+  #headline {
+    height: 10px !important;
+    min-height: 10px;
+    max-height: 10px;
+  }
+  
+  .img_player {
+    display: none !important;
+  }
+}
 
 /* Column container */
 .row {  
@@ -38,6 +65,9 @@ body {
   font-weight: bold;
   justify-content: center;  
   text-align: center;
+  height: 40px !important;
+  min-height: 40px;
+  max-height: 40px;
 }
 
 .center {
@@ -168,7 +198,7 @@ body {
 }
 
 #scores_nav ul {
-  list-style-type: none;
+  list-style-type: none !important;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -180,12 +210,18 @@ body {
   font-weight: bold;
 }
 
+#scores_nav li {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
 #scores_nav li a {
   color: white;
   text-align: center;
   text-decoration: none;
   padding-top: 10px
 }
+
 
 tr.tr_away >td {
   padding-bottom: 6px;
@@ -249,9 +285,6 @@ table.scores_table tr:hover td a{
   text-decoration: none;
 }
 
-/* ========================================
-   NEWS STYLES
-   ======================================== */
 .news_article_wrapper{
   display: inline-flex;
   padding: 10px;
@@ -267,6 +300,7 @@ table.scores_table tr:hover td a{
 .news_article_text{
   font: 14px Arial;
   color: #333;
+  padding-bottom: 25px;
 }
 
 .news_article_text a{
@@ -308,6 +342,11 @@ table.scores_table tr:hover td a{
   font: 14px Arial;
   color: #333;
   text-decoration: none;
+  position: relative;
+}
+
+.news_content{
+  padding-bottom: 25px;
 }
 
 .li_news{
@@ -433,9 +472,15 @@ table.scores_table tr:hover td a{
   }
   
   #main_section {
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: 5px;
+    margin: 0 10px !important;
+    padding: 10px !important;
+    max-width: none !important;
+  }
+  
+  #headline {
+    height: 10px !important;
+    min-height: 10px;
+    max-height: 10px;
   }
 }
 

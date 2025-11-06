@@ -39,7 +39,6 @@
 
 <div id = "wrapper">
     <div id="headline" class="row">
-        <h3><h3>	
     </div>
 
     <!-- Actual page content -->
@@ -228,16 +227,20 @@
                             } elseif ($row['news_type'] == 'news') {
                                 /* Admin news */
                                 echo "<div class='news_news'>";
-                                    echo "<h4>" . mb_convert_encoding($row['headline'], 'UTF-8') . "</h4>";
-                                    echo mb_convert_encoding($row['story'], 'UTF-8');
-                                    echo "<br><br><span class='news_create_dt'>" . $row['create_dt'] . "</span>";
+                                    echo "<div class='news_content'>";
+                                        echo "<h4>" . mb_convert_encoding($row['headline'], 'UTF-8') . "</h4>";
+                                        echo mb_convert_encoding($row['story'], 'UTF-8');
+                                    echo "</div>";
+                                    echo "<span class='news_create_dt'>" . $row['create_dt'] . "</span>";
                                 echo "</div>";
                             } elseif ($row['news_type'] == 'li_news') {
                                 /* LigaInsider news */
                                 $link = strval(mb_convert_encoding($row['add_besitzer'], 'UTF-8'));
                                 echo "<div class='news_news'>";
-                                    echo "<b>LigaInsider: </b>".mb_convert_encoding($row['story'], 'UTF-8').". <a href='" . $link . "'>Zum Artikel »</a></br>";
-                                    echo "<br><span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
+                                    echo "<div class='news_content'>";
+                                        echo "<b>LigaInsider: </b>".mb_convert_encoding($row['story'], 'UTF-8').". <a href='" . $link . "'>Zum Artikel »</a>";
+                                    echo "</div>";
+                                    echo "<span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
                                 echo "</div>";	
                             } elseif ($row['news_type'] == 'buli_ergebnis') {
                                 /* Bundesliga fixture final score */ 
@@ -248,10 +251,12 @@
                                     echo "<img class='news_player_img' src='" . $row['dropped_team_img'] . "' style='max-width: 60px; max-height: 60px;'>";
                                 echo "</div>";
                                 echo "<div class='news_news'>";
-                                    echo "<b>Bundesliga: </b>"  . mb_convert_encoding($row['story'], 'UTF-8') . ". ";
-                                    $link = 'html/view_match_buli.php?ID=' . strval($row['headline']) . ' ';
-                                    echo "<a href='" . $link . "'>Zum Spiel »</a></br>";
-                                    echo "<br><span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
+                                    echo "<div class='news_content'>";
+                                        echo "<b>Bundesliga: </b>"  . mb_convert_encoding($row['story'], 'UTF-8') . ". ";
+                                        $link = 'html/view_match_buli.php?ID=' . strval($row['headline']) . ' ';
+                                        echo "<a href='" . $link . "'>Zum Spiel »</a>";
+                                    echo "</div>";
+                                    echo "<span class='news_create_dt'>" . $row['create_dt'] . " by " . $row['name'] . "</span>";
                                 echo "</div>";	
                             }
                             echo "</div>";
@@ -392,11 +397,11 @@
             <!-- Standings -->
             <div class="row graybox" id="standings">
                 <div class="graybox_header">TABELLE</div>
-                <div id="scores_nav">
-                  <ul>
-                      <li><a id="button_fantasy_tabelle" onclick="showFantasyTabelle(); changeColorTabelle1()">FANTASY</a></li>
-                      <!-- <li><a id="button_bundesliga_tabelle" onclick="changeColorTabelle2()">BUNDESLIGA</a></li> -->
-                  </ul>
+                <div id="scores_nav" class="table_nav">
+                    <ul>
+                        <li><a id="button_fantasy_tabelle" onclick="showFantasyTabelle(); changeColorTabelle1()">FANTASY</a></li>
+                        <!-- <li><a id="button_bundesliga_tabelle" onclick="changeColorTabelle2()">BUNDESLIGA</a></li> -->
+                    </ul>
                 </div>
                 <div id="tabellen">
                     <!-- Content loaded by get-current-fantasy-standings.php -->
