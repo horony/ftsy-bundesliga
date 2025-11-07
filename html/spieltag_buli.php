@@ -7,7 +7,7 @@ $akt_spieltag = $result_params_sql->spieltag;
 $akt_season_id = $result_params_sql->season_id;
 
 // optionally allow a preselected round (from GET)
-$preselect = $akt_spieltag;
+$preselect = isset($_GET['round']) && is_numeric($_GET['round']) ? (int)$_GET['round'] : $akt_spieltag;
 ?>
 <!DOCTYPE html>
 <html>
