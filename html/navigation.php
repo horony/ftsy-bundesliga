@@ -1,10 +1,17 @@
 <?php
 //include auth.php file on all secure pages
-include("https://fantasy-bundesliga.de/php/auth.php");
+include("../php/auth.php");
 
 // Define navigation links centrally
 $base_url = "https://fantasy-bundesliga.de/html/";
-$team_name = strval(mb_convert_encoding($_SESSION["user_teamname"],'UTF-8'));
+
+// Get team name safely from session
+if (isset($_SESSION["user_teamname"]) && !empty($_SESSION["user_teamname"])) {
+    $team_name = strval(mb_convert_encoding($_SESSION["user_teamname"], 'UTF-8'));
+} else {
+    // Fallback: use username if teamname not available
+    $team_name = isset($_SESSION["username"]) ? $_SESSION["username"] : 'unknown';
+}
 
 $nav_links = [
     'fantasy' => [
@@ -23,7 +30,7 @@ $nav_links = [
         'research' => $base_url . 'research.php?click_player=1018'
     ],
     'mein_team' => [
-        'verwalten' => $base_url . 'mein_team.php?show_team=' . $team_name . '.php',
+        'verwalten' => $base_url . 'mein_team.php?show_team=' . urlencode($team_name),
         'game_center' => 'https://fantasy-bundesliga.de/php/redirect-to-active-match.php'
     ],
     'bundesliga' => [

@@ -45,12 +45,25 @@
 				include '../secrets/mysql_db_connection.php';
 
 				// Collect data
-
 				if (empty($_GET["show_team"])) {
-					$show_team = mb_convert_encoding($_SESSION['username'], 'UTF-8');
+					if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+						$show_team = mb_convert_encoding($_SESSION['username'], 'UTF-8');
+					} else {
+						die("ERROR: No username found in session. Please login again.");
+					}
 				} else {
-					$show_team =  mb_convert_encoding($_GET["show_team"], 'UTF-8');	
-					$show_team = mysqli_query($con, "SELECT username from xa7580_db1.users WHERE teamname = '".$show_team."' ") -> fetch_object() -> username;	
+					$team_name =  mb_convert_encoding($_GET["show_team"], 'UTF-8');	
+					$team_result = mysqli_query($con, "SELECT username from xa7580_db1.users WHERE teamname = '".mysqli_real_escape_string($con, $team_name)."' ");
+					if ($team_result && $team_result->num_rows > 0) {
+						$show_team = $team_result -> fetch_object() -> username;	
+					} else {
+						// Team not found, fallback to current user
+						if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+							$show_team = mb_convert_encoding($_SESSION['username'], 'UTF-8');
+						} else {
+							die("ERROR: Team '$team_name' not found and no valid session username.");
+						}
+					}
 				}
 
 				$abg_spieltag = mysqli_query($con, "SELECT CAST(spieltag - 1  as unsigned) as spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag;	
