@@ -1,66 +1,202 @@
 <?php
 //include auth.php file on all secure pages
 include("https://fantasy-bundesliga.de/php/auth.php");
+
+// Define navigation links centrally
+$base_url = "https://fantasy-bundesliga.de/html/";
+$team_name = strval(mb_convert_encoding($_SESSION["user_teamname"],'UTF-8'));
+
+$nav_links = [
+    'fantasy' => [
+        'spieltag' => $base_url . 'spieltag.php',
+        'tabelle' => $base_url . 'tabelle.php',
+        'pokal' => $base_url . 'pokal.php',
+        'stats' => $base_url . 'stats.php',
+        'topxi' => $base_url . 'topxi.php',
+        'draft' => $base_url . 'draft.php',
+        'regelwerk' => $base_url . 'regelwerk.php'
+    ],
+    'transfermarkt' => [
+        'aufnehmen' => $base_url . 'transfermarkt.php',
+        'waiver' => $base_url . 'waiver.php',
+        'trades' => $base_url . 'waiver_delete.php',
+        'research' => $base_url . 'research.php?click_player=1018'
+    ],
+    'mein_team' => [
+        'verwalten' => $base_url . 'mein_team.php?show_team=' . $team_name . '.php',
+        'game_center' => 'https://fantasy-bundesliga.de/php/redirect-to-active-match.php'
+    ],
+    'bundesliga' => [
+        'spieltag_buli' => $base_url . 'spieltag_buli.php'
+    ]
+];
+
+$nav_labels = [
+    'fantasy' => [
+        'spieltag' => 'Spieltag',
+        'tabelle' => 'Tabelle',
+        'pokal' => 'Pokal',
+        'stats' => 'Statistiken',
+        'topxi' => 'Elf der Woche',
+        'draft' => 'Draft',
+        'regelwerk' => 'Regeln'
+    ],
+    'transfermarkt' => [
+        'aufnehmen' => 'Spieler aufnehmen',
+        'waiver' => 'Waiver Priorisierung',
+        'trades' => 'Trades & Waivers',
+        'research' => 'Spieler-Datenbank'
+    ],
+    'mein_team' => [
+        'verwalten' => 'Team verwalten',
+        'game_center' => 'Game-Center'
+    ],
+    'bundesliga' => [
+        'spieltag_buli' => 'Spieltag'
+    ]
+];
 ?>
+<!DOCTYPE html>
 <html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/nav.css">
+</head>
+<body>
 
-<aside>
+<div class="main-nav">
+    <!-- Hidden checkbox for mobile toggle -->
+    <input type="checkbox" id="mobile-toggle" class="mobile-toggle">
+    
+    <div class="nav-container">
+        <!-- Left side: Home + all navigation -->
+        <div class="nav-left-group">
+            <!-- Always visible: Home button -->
+            <a href="https://fantasy-bundesliga.de/index.php" class="home-active">
+                <i class="fas fa-home nav-item-icon"></i>Home
+            </a>
+            
+            <!-- Desktop navigation - hidden on mobile -->
+            <div class="desktop-nav">
+                <div class="dropdown">
+                    <button class="dropdownbtn"><i class="fas fa-gamepad nav-item-icon"></i>Fantasy</button>
+                    <div class="dropdown-content">
+                        <?php foreach($nav_links['fantasy'] as $key => $url): ?>
+                            <a href="<?php echo $url; ?>"><?php echo $nav_labels['fantasy'][$key]; ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
 
-  <script>
-    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
-    function responsive_nav() {
-      var x = document.getElementById("myTopnav");
-      if (x.className === "topnav") {
-        x.className += " responsive";
-      } else {
-        x.className = "topnav";
-      }
-    } 
-  </script>
+                <div class="dropdown">
+                    <button class="dropdownbtn"><i class="fas fa-exchange-alt nav-item-icon"></i>Transfermarkt</button>
+                    <div class="dropdown-content">
+                        <?php foreach($nav_links['transfermarkt'] as $key => $url): ?>
+                            <a href="<?php echo $url; ?>"><?php echo $nav_labels['transfermarkt'][$key]; ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
 
-  <!-- The navigation menu -->
-  <div class="topnav" id="myTopnav">
-    <a href="https://fantasy-bundesliga.de/index.php" class="active">Home</a>
+                <div class="dropdown">
+                    <button class="dropdownbtn"><i class="fas fa-heart nav-item-icon"></i>Mein Team</button>
+                    <div class="dropdown-content">
+                        <?php foreach($nav_links['mein_team'] as $key => $url): ?>
+                            <a href="<?php echo $url; ?>"><?php echo $nav_labels['mein_team'][$key]; ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
 
-    <div class="dropdown">
-      <button class="dropdownbtn">Liga</button>
-      <div class="dropdown-content">
-        <a href="https://fantasy-bundesliga.de/html/spieltag.php">Spieltag</a>
-        <a href="https://fantasy-bundesliga.de/html/tabelle.php">Tabelle</a>
-        <a href="https://fantasy-bundesliga.de/html/pokal.php">Pokal</a>
-        <a href="https://fantasy-bundesliga.de/html/draft.php">Draft</a>
-        <a href="https://fantasy-bundesliga.de/html/stats.php">Statistiken</a>
-        <a href="https://fantasy-bundesliga.de/html/topxi.php">Elf der Woche</a>
-      </div>
+                <div class="dropdown">
+                    <button class="dropdownbtn"><i class="fas fa-futbol nav-item-icon"></i>Bundesliga</button>
+                    <div class="dropdown-content">
+                        <?php foreach($nav_links['bundesliga'] as $key => $url): ?>
+                            <a href="<?php echo $url; ?>"><?php echo $nav_labels['bundesliga'][$key]; ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right side: Mein Account (desktop) + Burger Menu (mobile) -->
+        <div class="nav-right-group">
+            <!-- Desktop account -->
+            <div class="desktop-account">
+                <a href="https://fantasy-bundesliga.de/html/account_verwaltung.php"><i class="fas fa-user-cog nav-item-icon"></i>Mein Account</a>
+            </div>
+            
+            <!-- Mobile burger menu -->
+            <label for="mobile-toggle" class="icon">&#9776;</label>
+        </div>
+        
+        <!-- Mobile navigation menu - hidden by default -->
+        <div class="mobile-nav">
+            <div class="dropdown">
+                <input type="radio" name="mobile-dropdown" id="mobile-fantasy-toggle" class="dropdown-toggle">
+                <label for="mobile-fantasy-toggle" class="dropdownbtn"><i class="fas fa-gamepad nav-item-icon"></i>Fantasy</label>
+                <div class="dropdown-content">
+                    <?php foreach($nav_links['fantasy'] as $key => $url): ?>
+                        <a href="<?php echo $url; ?>"><?php echo $nav_labels['fantasy'][$key]; ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <input type="radio" name="mobile-dropdown" id="mobile-transfermarkt-toggle" class="dropdown-toggle">
+                <label for="mobile-transfermarkt-toggle" class="dropdownbtn"><i class="fas fa-exchange-alt nav-item-icon"></i>Transfermarkt</label>
+                <div class="dropdown-content">
+                    <?php foreach($nav_links['transfermarkt'] as $key => $url): ?>
+                        <a href="<?php echo $url; ?>"><?php echo $nav_labels['transfermarkt'][$key]; ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <input type="radio" name="mobile-dropdown" id="mobile-mein-team-toggle" class="dropdown-toggle">
+                <label for="mobile-mein-team-toggle" class="dropdownbtn"><i class="fas fa-heart nav-item-icon"></i>Mein Team</label>
+                <div class="dropdown-content">
+                    <?php foreach($nav_links['mein_team'] as $key => $url): ?>
+                        <a href="<?php echo $url; ?>"><?php echo $nav_labels['mein_team'][$key]; ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <input type="radio" name="mobile-dropdown" id="mobile-bundesliga-toggle" class="dropdown-toggle">
+                <label for="mobile-bundesliga-toggle" class="dropdownbtn"><i class="fas fa-futbol nav-item-icon"></i>Bundesliga</label>
+                <div class="dropdown-content">
+                    <?php foreach($nav_links['bundesliga'] as $key => $url): ?>
+                        <a href="<?php echo $url; ?>"><?php echo $nav_labels['bundesliga'][$key]; ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            
+            <!-- Hidden radio button to close all dropdowns -->
+            <input type="radio" name="mobile-dropdown" id="mobile-close-all" class="dropdown-toggle" style="display: none;">
+            
+            <a href="https://fantasy-bundesliga.de/html/account_verwaltung.php"><i class="fas fa-user-cog nav-item-icon"></i>Mein Account</a>
+        </div>
     </div>
+</div>
 
-    <div class="dropdown" id="transfermarkt">
-      <button class="dropdownbtn" >Transfermarkt</button>
-      <div class="dropdown-content">
-        <a href="https://fantasy-bundesliga.de/html/transfermarkt.php">Spieler aufnehmen</a>
-        <a class="" href="https://fantasy-bundesliga.de/html/waiver.php">Waiver Priorisierung</a>
-        <a class="" href="https://fantasy-bundesliga.de/html/waiver_delete.php">Trades & Waivers</a>
-        <a href="https://fantasy-bundesliga.de/html/research.php?click_player=1018">Spieler-Datenbank</a>
-      </div>
-    </div>
+<script>
+// Allow closing mobile dropdowns by clicking on already open menu
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileNav = document.querySelector('.mobile-nav');
+    const labels = mobileNav.querySelectorAll('.dropdownbtn');
+    
+    labels.forEach(label => {
+        label.addEventListener('click', function(e) {
+            const radio = document.getElementById(this.getAttribute('for'));
+            
+            // If this radio is already checked, uncheck it by selecting the hidden close radio
+            if (radio && radio.checked) {
+                e.preventDefault();
+                document.getElementById('mobile-close-all').checked = true;
+            }
+        });
+    });
+});
+</script>
 
-    <div class="dropdown">
-      <button class="dropdownbtn">Mein Team</button>
-      <div class="dropdown-content">
-        <?php
-          $team_name = strval(mb_convert_encoding($_SESSION["user_teamname"],'UTF-8'));
-          echo "<a href='https://fantasy-bundesliga.de/html/mein_team.php?show_team='".$team_name."'.php'>Team verwalten</a>";
-        ?>
-        <a href="https://fantasy-bundesliga.de/php/redirect-to-active-match.php">Game-Center</a>
-      </div>
-    </div>
-
-    <a href="https://fantasy-bundesliga.de/html/regelwerk.php" id="regeln">Regeln</a>
-
-    <a href="https://fantasy-bundesliga.de/html/account_verwaltung.php" id="account">Mein Account</a>
-
-    <a href='javascript:void(0);' class="icon" onclick='responsive_nav()'>&#9776;</a>
-
-  </div>
-</aside>
+</body>
 </html>
