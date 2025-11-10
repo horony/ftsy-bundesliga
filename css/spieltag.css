@@ -317,7 +317,7 @@ main {
   align-items: center;
   justify-content: center;
   background-color: white;
-  z-index: 99;
+  z-index: 10;
 }
 
 .matchup-header .vs-label .label {
@@ -588,4 +588,10 @@ main {
 
 .topxi-link i, #topxi-link i {
   margin-right: 0.5rem;
+}
+
+/* Ensure matchup items have lower z-index than navigation */
+.league-matchup-row-item {
+  position: relative;
+  z-index: 1;
 }

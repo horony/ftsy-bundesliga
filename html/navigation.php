@@ -202,6 +202,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Function to update dropdown position
+    function updateDropdownPosition() {
+        const nav = document.querySelector('.main-nav');
+        const dropdowns = document.querySelectorAll('.main-nav .dropdown-content');
+        
+        if (nav && dropdowns.length > 0) {
+            const navRect = nav.getBoundingClientRect();
+            const topPosition = navRect.bottom;
+            
+            dropdowns.forEach(dropdown => {
+                dropdown.style.top = topPosition + 'px';
+            });
+        }
+    }
+    
+    // Update position on scroll and resize
+    window.addEventListener('scroll', updateDropdownPosition);
+    window.addEventListener('resize', updateDropdownPosition);
+    
+    // Update position when dropdown is hovered
+    const dropdownTriggers = document.querySelectorAll('.main-nav .dropdown');
+    dropdownTriggers.forEach(trigger => {
+        trigger.addEventListener('mouseenter', updateDropdownPosition);
+    });
+    
+    // Initial position update
+    updateDropdownPosition();
 });
 </script>
 
