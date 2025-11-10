@@ -4,6 +4,8 @@
         background-repeat: repeat;
         width: 100%;
         min-height: 80px;
+        max-height: 80px;
+        height: 80px;
         display: flex;
         align-items: center;
         justify-content: flex-start;

@@ -94,7 +94,7 @@ echo "<div id='player_season_summary'>";
     $season_summary_data = mysqli_query($con, "   
         SELECT  
             ses.season_name
-            , GROUP_CONCAT(DISTINCT logo_path) AS team_logo_path_list
+            , GROUP_CONCAT(DISTINCT scr.logo_path) AS team_logo_path_list
             , SUM(COALESCE(scr.ftsy_score,0)) AS ftsy_score_sum
             , ROUND(AVG(CASE WHEN scr.appearance_stat = 1 THEN scr.ftsy_score ELSE NULL END),1) AS ftsy_score_avg
             , SUM(CASE WHEN scr.appearance_stat = 1 THEN 1 else 0 end) AS appearances
@@ -122,15 +122,12 @@ echo "<div id='player_season_summary'>";
             , CASE WHEN SUM(coalesce(scr.redyellowcards_stat,0)) + SUM(coalesce(scr.redcards_stat,0)) > 0 THEN 1 ELSE 0 END AS platzverweise
             , CASE WHEN xi_season.player_name IS NOT NULL THEN 1 ELSE 0 END AS topxi_ovr_flg
             , COALESCE(topxi_rnd_cnt, 0) AS topxi_rnd_cnt
-        FROM ftsy_scoring_all_v scr
-        LEFT JOIN sm_teams tm 
-            ON scr.own_team_code = tm.short_code
-            AND tm.venue_id IS NOT NULL
+        FROM ftsy_scoring_hist scr
         INNER JOIN sm_fixtures fix
             ON fix.fixture_id = scr.fixture_id      
         INNER JOIN sm_seasons ses
             ON ses.season_id = fix.season_id
-            AND ses.season_id > 17361
+            AND ses.season_id >= 17361
         LEFT JOIN topxi_fabu_ovr xi_season
             ON ses.season_id = xi_season.season_id
             AND scr.player_id = xi_season.player_id
@@ -257,7 +254,7 @@ $seasons_query = mysqli_query($con, "
     FROM sm_seasons sea
     WHERE 
         sea.season_id IN (SELECT season_id FROM cte_player_seasons)
-        AND sea.season_id > 17361
+        AND sea.season_id >= 17361
     ORDER BY sea.season_id DESC
 ");
 
@@ -289,7 +286,7 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
                 rds.id
                 , rds.name
                 , CONCAT(CONCAT(fix.localteam_name_code, ' vs. '), fix.visitorteam_name_code) AS matchup
-                , scr.own_team_code
+                , scr.team_code AS own_team_code
                 , CONCAT(CONCAT(fix.localteam_score, ':'), fix.visitorteam_score) AS ft_score
                 , CASE WHEN scr.appearance_stat = 1 THEN scr.ftsy_score ELSE NULL END AS ftsy_score
                 , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONVERT(scr.minutes_played_stat,CHAR), ' Min.') ELSE NULL END AS minutes_played
@@ -313,7 +310,7 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
                 , CASE WHEN scr.appearance_stat = 1 THEN CASE WHEN (coalesce(scr.redyellowcards_stat,0) + coalesce(scr.redcards_stat,0)) > 0 THEN 1 ELSE 0 END ELSE NULL END AS platzverweise
                 , CASE WHEN topxi.player_name IS NOT NULL THEN 1 ELSE 0 END AS topxi_rnd_flg
             FROM `sm_rounds` rds
-            LEFT JOIN ftsy_scoring_all_v scr
+            LEFT JOIN ftsy_scoring_hist scr
                 ON scr.round_name = rds.name
                 AND scr.fixture_id IN (SELECT DISTINCT fixture_id FROM sm_fixtures WHERE season_id = '". $seasons[$season_counter]['id']."') 
             LEFT JOIN sm_fixtures_basic_v fix

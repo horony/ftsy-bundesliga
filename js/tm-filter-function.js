@@ -6,11 +6,11 @@ $(document).ready(function() {
         var class_to_filter = '.' + $(this).attr("data-filter-value");
         var hiding_class = 'inactive_' + $(this).attr("data-filter-value");
              
-        if (filter_to_change_value == 0){
+        if (filter_to_change_value == "0"){
             $(this).attr('data-active', '1');
             $(this).css('background-color', 'green');
             $(class_to_filter).removeClass(hiding_class);
-        } else if (filter_to_change_value == 1) {
+        } else if (filter_to_change_value == "1") {
             $(this).attr('data-active', '0');
             $(this).css('background-color', 'red');
             $(class_to_filter).addClass(hiding_class);
@@ -19,5 +19,5 @@ $(document).ready(function() {
 });
 
 function hideUSR(){
-    $('.filter_own_usr').addClass('inactive_usr');
+    $('.filter_own_usr').addClass('inactive_filter_own_usr');
 }

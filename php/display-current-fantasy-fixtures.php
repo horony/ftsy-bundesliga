@@ -225,11 +225,11 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             FROM xa7580_db1.ftsy_schedule sch
             LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab1
                 ON sch.ftsy_home_id = tab1.player_id 
-                AND (tab1.spieltag + 1) = '$selected_spieltag' 
+                AND tab1.spieltag = (SELECT MAX(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = '$akt_season_id')
                 AND tab1.season_id = '$akt_season_id'
             LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab2
                 ON sch.ftsy_away_id = tab2.player_id 
-                AND (tab2.spieltag + 1) = '$selected_spieltag' 
+                AND tab2.spieltag = (SELECT MAX(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE season_id = '$akt_season_id')
                 AND tab2.season_id = '$akt_season_id'
             LEFT JOIN xa7580_db1.users_scoring_akt_v scr1
                 ON sch.ftsy_home_id = scr1.user_id 
@@ -360,8 +360,8 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             , stats2.cup_ftsy_score_for_avg AS ftsy_away_avg
             , stats1.cup_record AS ftsy_home_record
             , stats2.cup_record AS ftsy_away_record
-            , CASE WHEN sch.ftsy_home_id = sch2.ftsy_home_id THEN sch2.ftsy_home_score ELSE sch2.ftsy_away_score END AS ftsy_home_score_leg1
-            , CASE WHEN sch.ftsy_away_id = sch2.ftsy_away_id THEN sch2.ftsy_away_score ELSE sch2.ftsy_home_score END AS ftsy_away_score_leg1                
+            , ROUND(CASE WHEN sch.ftsy_home_id = sch2.ftsy_home_id THEN sch2.ftsy_home_score ELSE sch2.ftsy_away_score END,1) AS ftsy_home_score_leg1
+            , ROUND(CASE WHEN sch.ftsy_away_id = sch2.ftsy_away_id THEN sch2.ftsy_away_score ELSE sch2.ftsy_home_score END,1) AS ftsy_away_score_leg1
             FROM xa7580_db1.ftsy_schedule sch
             LEFT JOIN xa7580_db1.ftsy_schedule sch2
                 ON sch2.cup_leg = 1
@@ -509,9 +509,16 @@ while($col = mysqli_fetch_array($result)){
                                 // Score
                                 echo "<div class='roster-score-and-projection-matchup'>";
                                     if ($match_type == 'cup' && $cup_leg == 2 && !empty($col['ftsy_home_score_agg'])) {
-                                        echo "<div class='score-aggregate' title='Hinspiel + Rückspiel'>".$col['ftsy_home_score_agg']."</div>";
+                                        echo "<div class='cup-rematch-score-container'>";
+                                            echo "<div class='cup-leg-scores-vertical'>";
+                                                echo "<div class='cup-leg-score' title='Hinspiel'>".$col['ftsy_home_score_leg1']."</div>";
+                                                echo "<div class='cup-leg-score' title='Rückspiel'>".$col['ftsy_home_score']."</div>";
+                                            echo "</div>";
+                                            echo "<div class='score' title='Gesamtergebnis'>".$col['ftsy_home_score_agg']."</div>";
+                                        echo "</div>";
+                                    } else {
+                                        echo "<div class='score'>".$col['ftsy_home_score']."</div>";
                                     }
-                                    echo "<div class='score'>".$col['ftsy_home_score']."</div>";
                                 echo "</div>";
                             echo "</div>";
                         echo "</div>";
@@ -520,9 +527,9 @@ while($col = mysqli_fetch_array($result)){
                             echo "<div class='row'>";
                                 echo "<div class='description-one'>";
                                     if ($match_type == 'league') {
-                                        echo '#' . $col['away_description_1'];
+                                        echo '#' . $col['home_description_1'];
                                     } else {
-                                        echo $col['away_description_1'];
+                                        echo $col['home_description_1'];
                                     }
                                 echo "</div>";
                                 echo "<div class='description-two'>";
@@ -565,9 +572,16 @@ while($col = mysqli_fetch_array($result)){
                                 echo "<div class='roster-score-and-projection-matchup flip'>";
                                     // Score
                                     if ($match_type == 'cup' && $cup_leg == 2 && !empty($col['ftsy_away_score_agg'])) {
-                                        echo "<div class='score-aggregate' title='Hinspiel + Rückspiel'>".$col['ftsy_away_score_agg']."</div>";
+                                        echo "<div class='cup-rematch-score-container'>";
+                                            echo "<div class='score' title='Gesamtergebnis'>".$col['ftsy_away_score_agg']."</div>";
+                                            echo "<div class='cup-leg-scores-vertical'>";
+                                                echo "<div class='cup-leg-score' title='Hinspiel'>".$col['ftsy_away_score_leg1']."</div>";
+                                                echo "<div class='cup-leg-score' title='Rückspiel'>".$col['ftsy_away_score']."</div>";
+                                            echo "</div>";
+                                        echo "</div>";
+                                    } else {
+                                        echo "<div class='score'>".$col['ftsy_away_score']."</div>";
                                     }
-                                    echo "<div class='score'>".$col['ftsy_away_score']."</div>";
                                 echo "</div>";
                             echo "</div>";
                         echo "</div>";

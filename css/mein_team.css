@@ -398,7 +398,7 @@ body {
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 2000 !important; /* Very high z-index to ensure it's above everything */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -408,6 +408,13 @@ body {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+/* When modal is shown, use flexbox for centering */
+.modal[style*="block"] {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Modal Content/Box */
 .modal-content {
 
@@ -415,10 +422,15 @@ body {
 
 .modal_wrapper {
   background-color: #fefefe;
-  margin: 5% auto; /* 15% from the top and centered */
+  margin: 0; /* Remove margin, let flexbox handle centering */
   padding: 20px;
   border: 8px solid #888;
   width: 50%; /* Could be more or less, depending on screen size */
+  max-width: 600px; /* Add max width for better responsive design */
+  max-height: 80vh; /* Limit height to prevent overflow on small screens */
+  overflow-y: auto; /* Allow scrolling if content is too tall */
+  position: relative; /* Ensure proper stacking context */
+  z-index: 10000; /* Even higher z-index for the content */
 }
 
 .modal_header {

@@ -1,13 +1,30 @@
-body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
+body {
+  font-family: Arial, Helvetica, sans-serif; 
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+header {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
 .flex-grid {
-  /*display: flex;
-  justify-content: space-between;
-  height: 80%;*/
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  /* height: 80%; */
 }
 
 .flex-grid .col {
-  width: 50%;
+  /* width: 45%; */
   display: flex;
   background: white;
   flex-direction: column;
@@ -32,7 +49,7 @@ body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
 
 .filter_button_row{
   display: flex;
-  justify-content: ;
+  justify-content: flex-start;
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -54,8 +71,14 @@ height: max-content;
   background-color: red;
 }
 
-.inactive_filter_pos_tw, .inactive_filter_pos_aw, .inactive_filter_pos_mf, .inactive_filter_pos_st, .inactive_usr, .inactive_wvr, .inactive_fa{
-  display: none;
+/* Position filters - high specificity to override table styles */
+#myTable tr.inactive_filter_pos_tw, #myTable tr.inactive_filter_pos_aw, #myTable tr.inactive_filter_pos_mf, #myTable tr.inactive_filter_pos_st {
+  display: none !important;
+}
+
+/* Owner filters - original working pattern with high specificity */  
+#myTable tr.inactive_usr, #myTable tr.inactive_wvr, #myTable tr.inactive_fa {
+  display: none !important;
 }
 
 .player {
@@ -69,10 +92,6 @@ height: max-content;
 }
 
 .flex-grid .row_outer {
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
-  overflow: hidden;
-  width: 100%;
   display: flex;
   flex-direction: row;
 
@@ -81,8 +100,7 @@ height: max-content;
 
 .kader{
   overflow-y: auto;
-  /*height: 380px*/
-  height: 55vh;
+  height: 400px;
   }
 
 .sub_header {
@@ -94,14 +112,20 @@ height: max-content;
 }
 
 #hilfscontainer {
-  height: 100%;
+  min-height: 100%;
+  background-image: url(../img/textures/grass.jpg);
+  background-repeat: repeat;
+  overflow: visible;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 #myInput, #myInput2 {
-  background-image: url('/css/search_icon.png'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
+  /* background-image: url('/css/search_icon.png');
+  background-position: 10px 12px; 
   background-size: 20px 20px;
-  background-repeat: no-repeat; /* Do not repeat the icon image */
+  background-repeat: no-repeat; */
   width: 100%; /* Full-width */
   font-size: 16px; /* Increase font-size */
   padding: 12px 20px 12px 40px; /* Add some padding */
@@ -136,6 +160,9 @@ height: max-content;
   text-align: left;
   background-color: #4CAF50;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 #selected_players, #dropped_players {
@@ -147,16 +174,17 @@ height: max-content;
   }
 
 #submit_button_div {
-    /*position: fixed;*/
-    width:100%;
-    padding-bottom: 5px;
-    bottom:0;
+    width: 100%;
+    padding: 20px 0;
     text-align: center;
+    clear: both;
+    position: relative;
+    z-index: 1;
 }
 
 #waiver_speichern{
-  margin:auto;
-  display:block;
+  margin: 0 auto;
+  display: block;
   }
 
 a {
