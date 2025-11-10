@@ -184,54 +184,5 @@ $nav_labels = [
         </div>
     </div>
 </div>
-
-<script>
-// Allow closing mobile dropdowns by clicking on already open menu
-document.addEventListener('DOMContentLoaded', function() {
-    const mobileNav = document.querySelector('.mobile-nav');
-    const labels = mobileNav.querySelectorAll('.dropdownbtn');
-    
-    labels.forEach(label => {
-        label.addEventListener('click', function(e) {
-            const radio = document.getElementById(this.getAttribute('for'));
-            
-            // If this radio is already checked, uncheck it by selecting the hidden close radio
-            if (radio && radio.checked) {
-                e.preventDefault();
-                document.getElementById('mobile-close-all').checked = true;
-            }
-        });
-    });
-    
-    // Function to update dropdown position
-    function updateDropdownPosition() {
-        const nav = document.querySelector('.main-nav');
-        const dropdowns = document.querySelectorAll('.main-nav .dropdown-content');
-        
-        if (nav && dropdowns.length > 0) {
-            const navRect = nav.getBoundingClientRect();
-            const topPosition = navRect.bottom;
-            
-            dropdowns.forEach(dropdown => {
-                dropdown.style.top = topPosition + 'px';
-            });
-        }
-    }
-    
-    // Update position on scroll and resize
-    window.addEventListener('scroll', updateDropdownPosition);
-    window.addEventListener('resize', updateDropdownPosition);
-    
-    // Update position when dropdown is hovered
-    const dropdownTriggers = document.querySelectorAll('.main-nav .dropdown');
-    dropdownTriggers.forEach(trigger => {
-        trigger.addEventListener('mouseenter', updateDropdownPosition);
-    });
-    
-    // Initial position update
-    updateDropdownPosition();
-});
-</script>
-
 </body>
 </html>
