@@ -2,12 +2,18 @@
 
 <html>
 <head>
-    <title>FANTASY BUNDESLIGA</title> 
+    <title>FANTASY BUNDESLIGA</title>
+
+    <!-- Meta Tags -->
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=3, minimum-scale=0.1, user-scalable=no, minimal-ui">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
-    <link rel="stylesheet" type="text/css" media="screen, projection" href="../dev/css/mein_team.css">
-
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/mein_team.css">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
+    
+    <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 

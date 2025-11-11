@@ -6,13 +6,21 @@ require("../php/auth.php");
 <html>
 <head>
 	<title>FANTASY BUNDESLIGA</title> 
+
+    <!-- Meta Tags -->
     <meta name="robots" content="noindex">
     <meta charset="UTF-8">   
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/matchup.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
+
+    <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
     <!-- Custom scripts -->
     <script type="text/javascript" src="../js/matchup-toggle-player-stats.js"></script>  
 </head>

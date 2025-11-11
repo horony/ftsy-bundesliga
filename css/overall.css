@@ -6,5 +6,6 @@ body {
   color: #000;
   background-image: url(../img/textures/grass.jpg);
   background-repeat: repeat;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

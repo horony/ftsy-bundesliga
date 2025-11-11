@@ -1,24 +1,11 @@
-body {font-family: Arial, Helvetica, sans-serif; background-color: rgb(10, 48, 66);;}
-
 * {
   box-sizing: border-box;
 }
-
-/* Style the body */
-body {
-  font-family: Arial;
-  margin: 8px;
-  background-color: #4CAF50;
-}
-
 
 /* Column container */
 .row {  
   display: flex;
   flex-wrap: nowrap;
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
-  overflow: hidden;
   max-width: 100%;
   overflow-x: auto;
 }
@@ -27,9 +14,9 @@ body {
 	border-radius: 50%;
   border: 1px solid white;  border: solid;
 	display: block;
-  	margin-left: auto;
-  	margin-right: auto;
-	}
+  margin-left: auto;
+  margin-right: auto;
+}
 
 #akt_player_data {
 	width: 100%;
@@ -334,7 +321,6 @@ body {
 }
 
 .scoreboard_proj{
-  background-image: url(grass2.jpg);
   font-weight: bold;
   color: #003eff;
   letter-spacing: 3px;
