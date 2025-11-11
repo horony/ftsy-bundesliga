@@ -1,15 +1,8 @@
-body { 
-  font-family: Arial, Helvetica, sans-serif; 
-  background-color: #ffffff;
-}
-
 * {
   box-sizing: border-box;
 }
 
 #wrapper {
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
   padding-top: 30px;
   padding-bottom: 30px;
 }

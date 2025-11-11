@@ -10,7 +10,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Stylesheets -->    
+    <!-- Stylesheets --> 
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="css/overall.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="css/nav.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="css/index.css">
     

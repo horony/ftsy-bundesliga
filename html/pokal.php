@@ -3,12 +3,15 @@
 <html>
 <head>
     <title>FANTASY BUNDESLIGA - POKAL</title>
+
+    <!-- Meta Tags -->
     <meta name="robots" content="noindex">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/pokal.css">
     
     <!-- Custom scripts -->

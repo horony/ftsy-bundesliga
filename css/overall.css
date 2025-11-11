@@ -1,0 +1,11 @@
+body {
+  background: #f7f7fa;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  color: #000;
+  background-image: url(../img/textures/grass.jpg);
+  background-repeat: repeat;
+  overflow: hidden;
+}

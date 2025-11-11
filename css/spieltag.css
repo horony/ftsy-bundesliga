@@ -65,12 +65,7 @@ td {
   vertical-align: baseline;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif; 
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
-}
+
 
 * {
   box-sizing: border-box;
@@ -96,20 +91,8 @@ header {
   margin-bottom: 20px;
 }
 
-body {
-  background: #f7f7fa;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-  color: #000;
-}
-
 main {
   padding: 1rem;
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
-  overflow: hidden;
 }
 
 .league-matchups {

@@ -4,13 +4,21 @@
 <html>
 <head>
     <title>FANTASY BUNDESLIGA</title>
+
+    <!-- Meta Tags -->
     <meta name="robots" content="noindex">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="../css/overall.css">
     <link rel="stylesheet" type="text/css" href="../css/spieltag.css">
     <link rel="stylesheet" type="text/css" href="../css/nav.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
     <!-- Custom scripts -->
     <script type="text/javascript" src="../js/spieltag-display-fixtures.js"></script>
     <script type="text/javascript" src="../js/spieltag-clickable-fixtures.js"></script>

@@ -1,8 +1,3 @@
-body { 
-  font-family: Arial, Helvetica, sans-serif; 
-  background-color: #ffffff;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -10,16 +5,12 @@ body {
 /* Style the body */
 
 #wrapper {
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
   padding-top: 30px;
   padding-bottom: 30px;
-
 }
 
 #content_wrapper{
   background: white;
-
   border: solid 1px lightgray;
   padding: 10px;
   margin-left: 2%;
@@ -29,7 +20,7 @@ body {
 
 .top_band{
   background: black;
-    display:flex; 
+  display:flex; 
   justify-content: space-between;
 }
 

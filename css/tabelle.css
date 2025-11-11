@@ -1,9 +1,3 @@
-body {
-  font-family: Arial, Helvetica, sans-serif; 
-  background-color: #ffffff;
-}
-
-
 .col{
     background: rgba(241, 241, 241, .3);
     padding: 10px;
@@ -33,9 +27,6 @@ body {
 }
 
 #hilfscontainer{
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
-  overflow: hidden;
   padding: 15px;
 }
 

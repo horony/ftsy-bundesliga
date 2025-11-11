@@ -1,14 +1,7 @@
 @import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;600&display=swap);
 
 body {
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
-  background-color: #f7f7fa;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   line-height: 1.4;
-  color: #000;
   min-height: 100vh;
 }
 

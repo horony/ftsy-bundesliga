@@ -7,10 +7,16 @@ $session_user_id=(isset($_SESSION['user_id']))?$_SESSION['user_id']:'';
 <html>
 <head>
 	<title>FANTASY BUNDESLIGA</title> 
+
+	<!-- Meta Tags -->
+ 	<meta name="robots" content="noindex">
+
+	<!-- Stylesheets -->
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/draft.css">
-	<meta name="robots" content="noindex">
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
 
+	<!-- External Scripts -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
