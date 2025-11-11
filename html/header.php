@@ -10,8 +10,8 @@
         align-items: center;
         justify-content: flex-start;
         padding: 10px;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        /* padding-top: 20px;
+        padding-bottom: 20px; */
         margin: 0 !important;
         overflow: hidden;
         position: relative;

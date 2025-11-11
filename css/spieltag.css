@@ -65,10 +65,6 @@ td {
   vertical-align: baseline;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 header {
   margin: 0 !important;
   padding: 0 !important;

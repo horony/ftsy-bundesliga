@@ -1,9 +1,5 @@
 body {font-family: Arial, Helvetica, sans-serif; background-color: #ffffff;}
 
-* {
-  box-sizing: border-box;
-}
-
 .flex-grid-fantasy {
   display: flex;
   justify-content: space-between;
