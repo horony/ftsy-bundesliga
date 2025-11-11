@@ -56,12 +56,12 @@
   }
 
 #top_flow_band > div {
-    display: flex;
-    align-items:center;
-      flex-basis: 100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    padding: 5px;
+  display: flex;
+  align-items:center;
+  flex-basis: 100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  padding: 5px;
   margin: 2px;
   /*height: 60px;
   width: 60px;
@@ -93,7 +93,6 @@
 
 .left_column{
   background: url(../img/textures/dottedBorder_vert.gif) repeat-y bottom right;
-
   margin-left: 1px;
   margin-right: 5px;
   padding: 5px;
@@ -134,14 +133,14 @@
 }
 
 .filter_button{
-padding: 5px;
-border-radius: 5px;
-color: white;
-background-color: lightgray;
-font-size: 11;
-border: 0;
-cursor: pointer;
-margin: 3px;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: lightgray;
+  font-size: 11;
+  border: 0;
+  cursor: pointer;
+  margin: 3px;
 }
 
 #selectable_players_list{
@@ -570,9 +569,6 @@ margin: 3px;
 
 }
 
-#transfer_table tr {
-}
-
 #transfer_table td {
   color: #555;
   padding: 3px;
@@ -663,14 +659,9 @@ div.blink_border {
   margin-right: 1px;
 }
 
-.gesamt_fantasy_score{
-
-}
-
 .gesamt_fantasy_score_head{
   text-transform: capitalize;
   font-size: 9px;
-
 }
 
 .gesamt_fantasy_score_value{
@@ -688,4 +679,3 @@ div.blink_border {
 #spielerprofil_fantasy_rank > div{
   padding: 3px;
 }
-
