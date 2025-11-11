@@ -12,6 +12,7 @@ require("../php/auth.php");
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="-1" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/waiver.css">
@@ -74,7 +75,7 @@ require("../php/auth.php");
                         $i = 0;
                         while ($r = $result1->fetch_assoc()){
                             $i++;
-                            echo "<li class='ui-state-default' id='item_".$i."'>&Xi;&nbsp;" . $i . "&nbsp;&nbsp;&nbsp;<b>" .
+                            echo "<li class='ui-state-default' id='item_".$i."' draggable='true'>&Xi;&nbsp;" . $i . "&nbsp;&nbsp;&nbsp;<b>" .
                                 mb_convert_encoding($r["waiver_add_name"], 'UTF-8') . "</b><small> " . 
                                 htmlspecialchars($r["add_verein"]) . "</small>&nbsp;&harr;&nbsp;<b>" . 
                                 mb_convert_encoding($r["waiver_drop_name"], 'UTF-8') . "</b><small> " . 
@@ -130,14 +131,14 @@ require("../php/auth.php");
                     <!-- Link: Create new waiver -->
                     <div class="footer_box" style="cursor: pointer;" onclick="window.location='transfermarkt.php';">
                         <span style="font-size: 12px; text-decoration: bold;">
-                            Erstelle neue Waiver
+                            » Erstelle neue Waiver
                         </span>
                     </div>
 
                     <!-- Link: Delete waiver -->
                     <div class="footer_box" style="cursor: pointer;" onclick="window.location='waiver_delete.php';">
                         <span style="font-size: 12px; text-decoration: bold;">
-                            Lösche bestehende Waiver
+                            » Lösche bestehende Waiver
                         </span>
                     </div>
                 </div>

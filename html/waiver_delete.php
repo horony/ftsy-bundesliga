@@ -8,6 +8,7 @@ require("../php/auth.php");
     <!-- Meta Tags -->
     <meta name="robots" content="noindex">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
