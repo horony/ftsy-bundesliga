@@ -14,9 +14,9 @@ require("../php/auth.php");
 
     <!-- Stylesheets -->
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/matchup_buli.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
     <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

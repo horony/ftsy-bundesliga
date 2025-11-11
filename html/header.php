@@ -3,18 +3,20 @@
         background-image: url(../img/textures/grass.jpg);
         background-repeat: repeat;
         width: 100%;
-        min-height: 80px;
-        max-height: 80px;
-        height: 80px;
+        min-height: 80px !important;
+        max-height: 80px !important;
+        height: 80px !important;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         padding: 10px;
-        margin: 0;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin: 0 !important;
         overflow: hidden;
         position: relative;
     }
-    
+
     .header_logo {
         max-width: 300px;
         max-height: 60px;
@@ -39,7 +41,7 @@
     
     @media (max-width: 480px) {
         .header_container {
-            display: none;
+            display: none !important;
         }
     }
 </style>

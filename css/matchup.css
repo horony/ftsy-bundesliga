@@ -281,9 +281,6 @@
   bottom: 0;
 }
 
-
-
-
 .cup-score {
     background: #4CAF50;
     padding: 5px 10px;
@@ -300,12 +297,6 @@
     margin-top: 35px; 
 	margin-bottom: -35px;
 	margin-left: 10px;
-}
-
-
-
-
-100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
 }
 
 .scoreboard{

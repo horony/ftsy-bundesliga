@@ -552,46 +552,53 @@
 .player_card_score {
   width: 40px;
   height: 40px;
-  padding: 2px;
   margin-left: auto;
   text-align: center;
   font-size: 14px;
   font-weight: bold;
-  line-height: 37px;
+  line-height: 40px;
   border-radius: 5px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .player_card_score_saison {
   width: 40px;
   height: 40px;
-  padding: 2px;
   margin-left: auto;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   border-radius: 5px;
   background-color: #dddddd;
-  padding-top: 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
 }
 
 .player_card_score_saison div:first-child {
   color: #333333;
   text-decoration: underline;
+  font-size: 10px;
+  line-height: 1;
+  margin: 0;
 }
 
 .player_card_score_saison > div:nth-of-type(2) {
-  color: blue;
-  font-size: 10px;
   color: #333333;
+  font-size: 8px;
+  line-height: 1;
+  margin: 0;
 }
 
 .pre {
   background-color: #dddddd;
   color: #483D8B !important;
-}
-
-.live {
-
 }
 
 .aufstellung_headline, .bank_headline {
