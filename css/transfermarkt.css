@@ -9,11 +9,9 @@ header {
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  /* height: 80%; */
 }
 
 .flex-grid .col {
-  /* width: 45%; */
   display: flex;
   background: white;
   flex-direction: column;
@@ -44,16 +42,15 @@ header {
 }
 
 .filter_button{
-padding: 5px;
-border-radius: 5px;
-color: white;
-background-color: green;
-font-size: 11;
-border: 0;
-cursor: pointer;
-margin: 3px;
-height: max-content;
-
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: green;
+  font-size: 11;
+  border: 0;
+  cursor: pointer;
+  margin: 3px;
+  height: max-content;
 }
 
 #usr_filter{
@@ -83,14 +80,18 @@ height: max-content;
 .flex-grid .row_outer {
   display: flex;
   flex-direction: row;
-
 }
 
+.flex-grid .row_outer > #free_agent,
+.flex-grid .row_outer > #user_kader {
+  flex: 1 1 0;
+  min-width: 0;
+}
 
 .kader{
   overflow-y: auto;
-  height: 400px;
-  }
+  height: 440px;
+}
 
 .sub_header {
   background: white;
@@ -108,10 +109,11 @@ height: max-content;
 }
 
 #myInput, #myInput2 {
-  /* background-image: url('/css/search_icon.png');
-  background-position: 10px 12px; 
-  background-size: 20px 20px;
-  background-repeat: no-repeat; */
+  background-color: white;
+  background-image: url('../img/icons/searchicon.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
   width: 100%; /* Full-width */
   font-size: 16px; /* Increase font-size */
   padding: 12px 20px 12px 40px; /* Add some padding */
@@ -129,9 +131,9 @@ height: max-content;
 
 #myTable td,#myTable2 td, #myTable th,#myTable2 th {
   padding: 3px;
-
 }
 
+/* Zebra striping */
 #myTable tr:nth-child(even){background-color: #f2f2f2;}
 #myTable2 tr:nth-child(even){background-color: #f2f2f2;}
 #myTable tr:nth-child(odd){background-color: white;}
@@ -151,27 +153,58 @@ height: max-content;
   z-index: 10;
 }
 
+.table_col_player{
+  text-align: left;
+  white-space: nowrap;
+  overflow: ellipsis;
+}
+
+.table_col_position {
+  text-align: center;
+}
+
+.table_col_matchup {
+  text-align: left;
+}
+
+.table_col_scr {
+  text-align: center;
+  /* white-space: nowrap;
+  overflow: ellipsis; */
+}
+
+.table_col_fitness {
+  text-align: center;
+}
+
+.table_col_owner {
+  text-align: center;
+}
+
+.table_col_checkbox {
+  text-align: center;
+}
+
 #selected_players, #dropped_players {
   background-color: #4CAF50;
   color: white;
   text-align: center;
   box-shadow: 0 -5px 3px -5px grey;
-  ;
-  }
+}
 
 #submit_button_div {
-    width: 100%;
-    padding: 20px 0;
-    text-align: center;
-    clear: both;
-    position: relative;
-    z-index: 1;
+  width: 100%;
+  padding: 20px 0;
+  text-align: center;
+  clear: both;
+  position: relative;
+  z-index: 1;
 }
 
 #waiver_speichern{
   margin: 0 auto;
   display: block;
-  }
+}
 
 a {
   text-decoration: none;
@@ -181,4 +214,174 @@ a {
 a:hover{
   text-decoration: underline;
   color: #4caf50;
+}
+
+.content_container {
+  color: white;
+  text-align: center;
+  background: rgba(241, 241, 241, .3);
+  margin-top: 20px;
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media screen and (max-width: 768px) {
+  #transfermarkt_wrapper {
+    margin: 10px 2px;
+    padding: 0 0 15px 0;
+    border-radius: 10px;
+  }
+  .transfermarkt_headline {
+    font-size: 1.3rem;
+    padding: 18px 0 8px 0;
+  }
+}
+
+/* Mobile Optimierung */
+@media screen and (max-width: 768px) {
+  /* Grundlegendes Layout - 2 Spalten beibehalten aber responsiv */
+  .flex-grid {
+    flex-direction: column;
+    gap: 10px;
+    max-width: 100%;
+    margin: 0;
+    padding: 5px;
+  }
+
+  .flex-grid .row_outer {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .flex-grid .col {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+  }
+
+  /* Filter Buttons kompakter machen */
+  .filter_button_row {
+    flex-wrap: wrap;
+    gap: 3px;
+    justify-content: center;
+  }
+
+  .filter_button {
+    font-size: 10px;
+    padding: 6px 8px;
+    margin: 2px;
+  }
+
+  /* Suchfelder anpassen */
+  #myInput, #myInput2 {
+    font-size: 16px; /* Zoom auf iOS verhindern */
+    padding: 12px 15px;
+    margin-bottom: 10px;
+  }
+
+  /* Tabellen auf Mobile optimieren */
+  .kader {
+    height: 440px;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  #myTable, #myTable2 {
+    font-size: 11px;
+    min-width: 100%;
+  }
+
+  #myTable th, #myTable2 th {
+    padding: 6px 4px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  #myTable td, #myTable2 td {
+    padding: 4px 2px;
+    font-size: 10px;
+  }
+
+  /* Unwichtige Spalten auf Mobile ausblenden */
+  /* Spalte 6: Saison (Gesamte Fantasy-Punkte über die Saison) */
+  #myTable th:nth-child(5),
+  #myTable td:nth-child(6),
+  #myTable2 th:nth-child(5),
+  #myTable2 td:nth-child(6),
+  /* Spalte 9: Proj (Projection aktueller Spieltag) */
+  #myTable th:nth-child(8),
+  #myTable td:nth-child(9),
+  #myTable2 th:nth-child(8),
+  #myTable2 td:nth-child(9),
+  /* Spalte 10: Status (Fitness) */
+  #myTable th:nth-child(9),
+  #myTable td:nth-child(10),
+  #myTable2 th:nth-child(9),
+  #myTable2 td:nth-child(10) {
+    display: none;
+  }
+
+  /* Überschriften kompakter */
+  .sub_header {
+    font-size: 14px;
+    margin: 8px 0;
+    padding: 5px;
+  }
+
+  /* Submit Button responsive */
+  #submit_button_div {
+    padding: 15px 10px;
+  }
+
+  #waiver_speichern {
+    width: 95%;
+    padding: 15px;
+    font-size: 16px;
+  }
+
+  /* Player Selection Bereich */
+  #selected_players, #dropped_players {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+
+/* Sehr kleine Bildschirme (< 480px) */
+@media screen and (max-width: 480px) {
+  .flex-grid {
+    padding: 2px;
+  }
+
+  .flex-grid .col {
+    padding: 5px;
+  }
+
+  .filter_button {
+    font-size: 9px;
+    padding: 4px 6px;
+  }
+
+  #myTable, #myTable2 {
+    font-size: 10px;
+  }
+
+  #myTable th, #myTable2 th {
+    font-size: 9px;
+    padding: 4px 2px;
+  }
+
+  #myTable td, #myTable2 td {
+    font-size: 9px;
+    padding: 3px 1px;
+  }
+
+  .content_container {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
 }
