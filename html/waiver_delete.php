@@ -4,16 +4,18 @@ require("../php/auth.php");
 ?>
 <html>
 <head>
-
     <title>FANTASY BUNDESLIGA</title> 
-
+    <!-- Meta Tags -->
     <meta name="robots" content="noindex">
-    <meta charset="UTF-8">  
+    <meta charset="UTF-8">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/waivers_trades.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
 
+    <!-- External Scripts -->
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-
 </head>
 
 <body>

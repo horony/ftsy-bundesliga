@@ -6,13 +6,18 @@ require("../php/auth.php");
 <html>
 <head>
     <title>FANTASY BUNDESLIGA</title> 
+
+    <!-- Meta Tags -->
     <meta name="robots" content="noindex">
     <meta charset="UTF-8">   
 
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/research.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
+    <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   
     <!-- Custom Scripts -->

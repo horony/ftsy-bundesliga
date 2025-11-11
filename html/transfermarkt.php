@@ -13,6 +13,7 @@ require("../php/auth.php");
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/transfermarkt.css">
     <link rel="stylesheet" type="text/css" media="screen, projection" href="../css/nav.css"> 	
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="../css/overall.css">
     
     <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

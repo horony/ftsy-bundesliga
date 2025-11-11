@@ -39,13 +39,7 @@
     
     @media (max-width: 480px) {
         .header_container {
-            min-height: 50px;
-            padding: 5px;
-        }
-        
-        .header_logo {
-            max-width: 200px;
-            max-height: 40px;
+            display: none;
         }
     }
 </style>

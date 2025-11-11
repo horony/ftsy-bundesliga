@@ -1,24 +1,9 @@
-body {
-  font-family: Arial, Helvetica, sans-serif; 
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
-}
-
 * {
   box-sizing: border-box;
 }
 
-header {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
 .row {  
   display: flex;
-  background-image: url(../img/textures/grass.jpg);
-  background-repeat: repeat;
-  overflow: hidden;
 }
 
 #player_img {
