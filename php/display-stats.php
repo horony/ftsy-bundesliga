@@ -112,80 +112,128 @@ if ($stat_category == 'FANTASY-TEAMS'){
     // Types of games
 
     $most_blowout_wins = mysqli_query($con,"
-        SELECT  
-            'Meiste Blowout-Wins (50+ Punkte)' as headline 
-            , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
-            , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
-            , count(*) as kennzahl_1 
-            , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
-            , 0 as kennzahl_3
-            , case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
-        FROM ftsy_schedule sch
-        LEFT JOIN parameter pa 
-            ON pa.season_id = sch.season_id
-        WHERE 
-            sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
-            AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
-        GROUP BY headline, besitzer, teamname, highlight_flg
+        WITH base AS (
+            SELECT  
+                'Meiste Blowout-Wins (50+ Punkte)' as headline 
+                , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+                , COUNT(*) as kennzahl_1 
+                , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+                , 0 as kennzahl_3
+                , case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
+            FROM ftsy_schedule sch
+            LEFT JOIN parameter pa 
+                ON pa.season_id = sch.season_id
+            WHERE 
+                sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+                AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
+            GROUP BY headline, besitzer, highlight_flg
+        ) 
+        SELECT 
+            base.headline
+            , base.besitzer 
+            , users.teamname
+            , base.kennzahl_1
+            , base.kennzahl_2
+            , base.kennzahl_3
+            , base.highlight_flg    
+        FROM base
+        INNER JOIN users 
+            ON users.id = base.besitzer
         ORDER BY kennzahl_1 DESC
     ");
 
     $most_blowout_losses = mysqli_query($con,"
-        SELECT  
-            'Meiste Blowout-Losses (50+ Punkte)' as headline 
-            , case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
-            , case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
-            , count(*) as kennzahl_1 
-            , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
-            , 0 as kennzahl_3
-            , case when case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
-        FROM ftsy_schedule sch
-        LEFT JOIN parameter pa 
-            ON pa.season_id = sch.season_id
-        WHERE   
-            sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
-            AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
-        GROUP BY headline, besitzer, teamname, highlight_flg
+        WITH base AS (
+            SELECT  
+                'Meiste Blowout-Losses (50+ Punkte)' as headline 
+                , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+                , COUNT(*) as kennzahl_1 
+                , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+                , 0 as kennzahl_3
+                , case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
+            FROM ftsy_schedule sch
+            LEFT JOIN parameter pa 
+                ON pa.season_id = sch.season_id
+            WHERE 
+                sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+                AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) >= 50)
+            GROUP BY headline, besitzer, highlight_flg
+        ) 
+        SELECT 
+            base.headline
+            , base.besitzer 
+            , users.teamname
+            , base.kennzahl_1
+            , base.kennzahl_2
+            , base.kennzahl_3
+            , base.highlight_flg    
+        FROM base
+        INNER JOIN users 
+            ON users.id = base.besitzer
         ORDER BY kennzahl_1 DESC
     ");
 
     $most_close_wins = mysqli_query($con,"
-        SELECT  
-            'Meiste Nailbaiter-Wins (<= 10 Punkte)' as headline 
-            , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
-            , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
-            , count(*) as kennzahl_1 
-            , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
-            , 0 as kennzahl_3
-            , case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
-        FROM ftsy_schedule sch
-        LEFT JOIN parameter pa 
-            ON pa.season_id = sch.season_id
-        WHERE
-            sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
-            AND sch.ftsy_home_score != 0 AND sch.ftsy_away_score != 0
-            AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 10)
-        GROUP BY headline, besitzer, teamname, highlight_flg
+        WITH base AS (
+            SELECT  
+                'Meiste Nailbaiter-Wins (<= 10 Punkte)' as headline 
+                , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+                , COUNT(*) as kennzahl_1 
+                , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+                , 0 as kennzahl_3
+                , case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
+            FROM ftsy_schedule sch
+            LEFT JOIN parameter pa 
+                ON pa.season_id = sch.season_id
+            WHERE 
+                sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+                AND sch.ftsy_home_score != 0 AND sch.ftsy_away_score != 0
+                AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 10)
+            GROUP BY headline, besitzer, highlight_flg
+        ) 
+        SELECT 
+            base.headline
+            , base.besitzer 
+            , users.teamname
+            , base.kennzahl_1
+            , base.kennzahl_2
+            , base.kennzahl_3
+            , base.highlight_flg    
+        FROM base
+        INNER JOIN users 
+            ON users.id = base.besitzer
         ORDER BY kennzahl_1 DESC
     ");
 
     $most_close_losses = mysqli_query($con,"
-        SELECT  
-            'Meiste Nailbaiter-Losses (<= 10 Punkte)' as headline 
-            , case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
-            , case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_name else sch.ftsy_away_name end as teamname
-            , count(*) as kennzahl_1 
-            , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
-            , 0 as kennzahl_3
-            , case when case when sch.ftsy_home_score < sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
-        FROM ftsy_schedule sch
-        LEFT JOIN parameter pa 
-            ON pa.season_id = sch.season_id
-        WHERE 
-            sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
-            AND sch.ftsy_home_score != 0 AND sch.ftsy_away_score != 0
-            AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 10)
-        GROUP BY headline, besitzer, teamname, highlight_flg
+        WITH base AS (
+            SELECT  
+                'Meiste Nailbaiter-Losses (<= 10 Punkte)' as headline 
+                , case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end as besitzer
+                , COUNT(*) as kennzahl_1 
+                , concat(cast(sum(case when sch.season_id = pa.season_id then 1 else 0 end) as char), ' diese Saison') as kennzahl_2
+                , 0 as kennzahl_3
+                , case when case when sch.ftsy_home_score > sch.ftsy_away_score then sch.ftsy_home_id else sch.ftsy_away_id end = '".$user_id."' then 1 else 0 end as highlight_flg
+            FROM ftsy_schedule sch
+            LEFT JOIN parameter pa 
+                ON pa.season_id = sch.season_id
+            WHERE 
+                sch.ftsy_home_score != -20 AND sch.ftsy_away_score != -20
+                AND sch.ftsy_home_score != 0 AND sch.ftsy_away_score != 0
+                AND (ABS(sch.ftsy_home_score - sch.ftsy_away_score) <= 10)
+            GROUP BY headline, besitzer, highlight_flg
+        ) 
+        SELECT 
+            base.headline
+            , base.besitzer 
+            , users.teamname
+            , base.kennzahl_1
+            , base.kennzahl_2
+            , base.kennzahl_3
+            , base.highlight_flg    
+        FROM base
+        INNER JOIN users 
+            ON users.id = base.besitzer
         ORDER BY kennzahl_1 DESC
     ");
 

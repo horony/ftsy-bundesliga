@@ -10,7 +10,7 @@ INNER JOIN (
         AND match_type = 'league' 
     GROUP BY buli_round_name
     ) sch 
-    ON sch.buli_round_name = hist.round_name                       
+    ON sch.buli_round_name = hist.round_name
 WHERE 
     hist.1_ftsy_match_status != 'NONE'
     AND hist.season_id = (SELECT season_id FROM parameter)
