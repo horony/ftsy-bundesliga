@@ -10,16 +10,15 @@ $player_data = mysqli_query($con, "
     SELECT  
         base.image_path
         , base.display_name
+        , base.fullname
         , base.current_team_name AS teamname
+        , base.position_short
         , base.position_long
         , base.position_detail_name
         , base.height
         , base.weight
-        , base.birthplace
         , base.birthcountry
-        , base.captain
         , base.number
-        , base.captain
         , FLOOR(DATEDIFF(CURRENT_DATE, base.birth_dt)/365) AS age
         , CASE  
             WHEN base.injured = 1 AND base.injury_reason IS NOT NULL THEN CONCAT('Verletzt: ', base.injury_reason)
@@ -30,11 +29,31 @@ $player_data = mysqli_query($con, "
         , base.injured 
         , base.injury_reason
         , base.is_suspended
-        , base.number
         , team.logo_path AS team_logo
+        , CASE WHEN draft.player_id IS NOT NULL 
+            THEN CONCAT('Pick ', draft.pick, ' (Runde ', draft.round, ')')
+            ELSE 'Undrafted'
+            END AS draft_pick
+        , CONCAT('OVR #', snap.ftsy_score_rank_all, ' (', snap.position_short, ' #', snap.ftsy_score_rank_pos, ')') AS ftsy_rank
+        , CASE WHEN draft.player_id IS NOT NULL 
+            THEN draft.teamname
+            ELSE 'Undrafted'
+            END AS draft_team
+        , CASE WHEN usr.teamname IS NOT NULL 
+            THEN usr.teamname
+            ELSE 'Free Agent'
+            END AS owner_team
     FROM sm_playerbase base
     LEFT JOIN sm_teams team 
         ON base.current_team_id = team.id
+    LEFT JOIN draft_order_full draft 
+        ON base.id = draft.player_id
+    LEFT JOIN ftsy_scoring_snap snap 
+        ON base.id = snap.id
+    LEFT JOIN ftsy_player_ownership own 
+        ON base.id = own.player_id
+    LEFT JOIN users usr 
+        ON own.1_ftsy_owner_id = usr.id
     WHERE base.id = '".$id."'
 ");
 
@@ -58,27 +77,42 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
         // Player meta-data
         echo "<div id='spielerprofil_metadaten'>";
             echo "<div class='profil_player_name'>";
-                echo mb_convert_encoding($player['display_name'], 'UTF-8');
+                if (strpos($player['display_name'] , ".") !== false) {
+                    echo mb_convert_encoding($player['display_name'], 'UTF-8');
+                } else {
+                    echo mb_convert_encoding($player['fullname'], 'UTF-8'); 
+                }
             echo "</div>";
-
             echo "<div class='metadaten_table'>";
                 echo "<div class='left_col'>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Verein</div><div class='meta_value'>".mb_convert_encoding($player['teamname'], 'UTF-8')."</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Position</div><div class='meta_value'>".$player['position_long']."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Position</div><div class='meta_value'>";
+                    if ($is_goalkeeper) {
+                        echo mb_convert_encoding($player['position_long'], 'UTF-8');
+                    } else {
+                        echo mb_convert_encoding($player['position_long'] . " (" . $player['position_detail_name'] . ")", 'UTF-8');
+                    }
+                    echo "</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nummer</div><div class='meta_value'>".$player['number']."</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>".mb_convert_encoding($player['fitness'],'UTF-8')."</div></div>";
                 echo "</div>";
-                echo "<div class=right_col>";
+                echo "<div class=middle_col>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nationalität</div><div class='meta_value'>".mb_convert_encoding($player['birthcountry'], 'UTF-8')."</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Alter</div><div class='meta_value'>".$player['age']."</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']." cm</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']." kg</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']."cm</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']."kg</div></div>";
+                echo "</div>";
+                echo "<div class=right_col>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Draft Pick</div><div class='meta_value'>".$player['draft_pick']."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fantasy-Rank</div><div class='meta_value'>".$player['ftsy_rank']."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Draft Team</div><div class='meta_value'>".mb_convert_encoding($player['draft_team'], 'UTF-8')."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Aktuelles Team</div><div class='meta_value'>".mb_convert_encoding($player['owner_team'], 'UTF-8')."</div></div>";
                 echo "</div>";
             echo "</div>";
 
         echo "</div>"; 
     echo "</div>";
-echo "</div>";
+echo "</div>";  
 
 /*********************/
 /* AGGREGATED SCORES */

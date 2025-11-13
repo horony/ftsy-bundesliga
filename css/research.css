@@ -17,7 +17,7 @@
 }
 
 #myInput {
-  /* background-image: url('/css/search_icon.png'); Add a search icon to input */
+  background-image: url('../img/icons/searchicon.png');
   background-position: 10px 12px; /* Position the search icon */
   background-size: 20px 20px;
   background-repeat: no-repeat; /* Do not repeat the icon image */
@@ -208,22 +208,25 @@
   display: flex;
 }
 
-.left_col, .right_col{
+.left_col, .middle_col, .right_col{
   display: table;
   margin-top: 3px;
-  margin-right: 20px;
+  margin-right: 25px;
 }
 
 .meta_stat_row{
   display: table-row;
 }
 
-.meta_stat, .meta_value{
+.meta_value{
   display: table-cell;
   padding: 1px;
 }
 
 .meta_stat{
+  display: table-cell;
+  font-weight: bold;
+  padding: 1px;
   padding-right: 10px !important;
 }
 

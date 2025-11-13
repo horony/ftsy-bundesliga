@@ -75,9 +75,12 @@ require("../php/auth.php");
                     , CASE  
                         WHEN ".$ftsy_owner_type_column." = 'WVR' THEN 'Waiver'
                         WHEN ".$ftsy_owner_type_column." = 'FA' THEN 'Free Agent'
-                        WHEN ".$ftsy_owner_type_column." = 'USR' THEN 'Spieler'
+                        WHEN ".$ftsy_owner_type_column." = 'USR' THEN base.ftsy_owner_teamcode
                         ELSE NULL
                         END AS Besitzer 
+                    , ftsy_owner_teamname
+                    , ftsy_owner_teamcode
+                    , 1_ftsy_owner_id AS ftsy_owner_id
                 FROM xa7580_db1.`sm_playerbase_basic_v` base
                 LEFT JOIN xa7580_db1.ftsy_scoring_snap snap
                     ON snap.id = base.id
@@ -106,7 +109,13 @@ require("../php/auth.php");
                             echo "<td>" . $row['pos'] . "</td>";
                             echo "<td>" . utf8_encode($row['total_fb_score']) . "</td>";
                             echo "<td>" . utf8_encode($row['avg_fb_score']) . "</td>";
-                            echo "<td>" . utf8_encode($row['Besitzer']) . "</td>"; 
+                            if ($row['Besitzer'] == 'Waiver' || $row['Besitzer'] == 'Free Agent'){
+                                echo "<td style='color: orange; font-weight: bold;'>" . utf8_encode($row['Besitzer']) . "</td>"; 
+                            } elseif ($row['ftsy_owner_id'] == $_SESSION['user_id']) {
+                                echo "<td style='color: #4caf50; font-weight: bold;' title='" . utf8_encode($row['ftsy_owner_teamname']) . "'>" . utf8_encode($row['Besitzer']) . "</td>"; 
+                            } else {
+                                echo "<td title='" . utf8_encode($row['ftsy_owner_teamname']) . "'>" . utf8_encode($row['Besitzer']) . "</td>"; 
+                            }
                         echo "</tr>";
                     }
                 echo "</table>";
