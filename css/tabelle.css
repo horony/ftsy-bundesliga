@@ -1,3 +1,8 @@
+
+#hilfscontainer{
+  padding: 15px;
+}
+
 .col{
   background: rgba(241, 241, 241, .3);
   padding: 10px;
@@ -6,6 +11,7 @@
   margin: 0 auto; 
 }
 
+/* Spielstand table */
 #spielstand {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size: 16px;
@@ -14,33 +20,96 @@
   margin: 0px auto;
 }
 
-#hilfscontainer{
-  padding: 15px;
-}
-
-#spielstand td, #spielstand th {
-  padding: 3px;
+/* Default td styling */
+td, th {
+  padding-left: 3px;
+  padding-right: 3px;
   padding-top: 5px;
   padding-bottom: 5px;
   vertical-align: middle;
 }
 
+th {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: help;
+}
+
+.th_left {
+  text-align: left;
+}
+
+.th_centered {
+  text-align: center;
+}
+
+.th_seperate_l, .td_seperate_l {
+  padding-right: 35px;
+} 
+
+.th_seperate_s, .td_seperate_s {
+  padding-right: 10px;
+} 
+
+
+.th_position {
+  text-align: center;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.td_position {
+  text-align: center;
+  text-align: center; 
+  font-weight: bold; 
+  padding-right: 10px; 
+  padding-left: 10px;
+}
+
+.updown {
+  text-align: center;
+}
+
+.td_teamname {
+  font-weight: bold;
+}
+
+.td_scoring {
+  text-align: right;
+}
+
+.td_record {
+  text-align: center;
+}
+
+.serie_color {
+  color: gray;
+}
+
+.td_h2h {
+  text-align: center;
+}
+
+.td_punkte {
+  font-weight: bold;
+  text-align: center;
+}
+
+.td_waiver {
+  text-align: center;
+  padding-right: 10px;
+}
+
+/* Zebra striping */
 #spielstand tr:nth-child(even){background-color: #f2f2f2; cursor: pointer;}
 #spielstand tr:nth-child(odd){background-color: white; cursor: pointer;}
 #spielstand tr:hover {background-color: #ddd;}
 
-#spielstand th {
-	padding-top: 9px;
-	padding-bottom: 9px;
-	text-align: left;
-	background-color: #4CAF50;
-	color: white;
-  cursor: help;
-}
-
 #headline {
-	color: white;
-	text-align: center;
+  color: white;
+  text-align: center;
   padding-bottom: -10px;
 }
 
@@ -53,4 +122,36 @@
     overflow-x: scroll;
     margin: 0px auto;
   }
+
+  #spielstand th:nth-child(4), #spielstand td:nth-child(4) {
+    display: none;
+  }
+
+  #spielstand th:nth-child(5), #spielstand td:nth-child(5) {
+    display: none;
+  }
+
+  #spielstand th:nth-child(6), #spielstand td:nth-child(6) {
+    display: none;
+  }
+
+  #spielstand th:nth-child(7), #spielstand td:nth-child(7) {
+    display: none;
+  }
+
+  #spielstand th:nth-child(8), #spielstand td:nth-child(8) {
+    display: none;
+  }
+
+  #spielstand th:nth-child(13), #spielstand td:nth-child(13) {
+    display: none;
+  }
+
+  #spielstand th:nth-child(14), #spielstand td:nth-child(14) {
+    display: none;
+  }  
+
+  .th_seperate_l, .td_seperate_l {
+    padding-right: 10px;
+  } 
 }

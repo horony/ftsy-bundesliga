@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-     <title>FANTASY BUNDESLIGA</title> 
+     <title>FANTASY BUNDESLIGA</title>
 
     <!-- Meta Tags -->
     <meta name="robots" content="noindex">
@@ -18,8 +18,8 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   
     <!-- Custom scripts -->
-    <script type="text/javascript" src="../js/tabelle-dynamic-colors.js"></script>  
-    <script type="text/javascript" src="../js/tabelle-clickable-teams.js"></script>  
+    <script type="text/javascript" src="../js/tabelle-dynamic-colors.js"></script>
+    <script type="text/javascript" src="../js/tabelle-clickable-teams.js"></script>
 </head>
 
 <body>
@@ -63,43 +63,43 @@
             echo "
                 <table id='spielstand' style='margin: 0px auto;''>
                     <tr>
-                        <th style='text-align: center; padding-right:10px; padding-left:10px;' title='Position'>#</th>
-                        <th style='text-align: center;' title='Veränderung zum letzten Spieltag'>&#8645;</th>
-                        <th style='padding-right:35px;'>Team</th>
-                        <th style='text-align: center;' title='Summe eigner Scores'>+</th>
-                        <th style='text-align: center;' title='Summe gegnerischer Scores'>&minus;</th>
-                        <th style='text-align: center;' title='Score-Differenz'>&plusmn; </th>
-                        <th style='text-align: center;' title='Durchschnittlicher eigener Score'>&empty; + </th>
-                        <th style='text-align: center; padding-right:35px;' title='Durchschnittlicher gegnerischer Score'>&empty; &minus;</th>
-                        <th style='text-align: center;' title='Anzahl Siege'>S</th>
-                        <th style='text-align: center;' title='Anzahl Unentschieden'>U</th>
-                        <th style='text-align: center;' title='Anzahl Niederlagen'>N</th>
-                        <th style='text-align: center;' title='Anzahl Trostpreis (Bester Verlierer)'>T</th>
-                        <th style='padding-right:35px; text-align: center;' title='Ergebnisse letzte 3 Spiele'>Trend</th>
-                        <th style='padding-right:35px; text-align: center;' title='Head-to-Head (direkter Vergleich): Anzahl Siege gegen Konkurrenten mit gleichvielen Punkten'>H2H</th>
-                        <th style='padding-right:35px; text-align:center;' title='Summe Punkte'>Punkte</th>
-                        <th style='text-align: center; padding-right:10px;' title='Aktuelle Waiver-Position'>Waiver</th>
+                        <th style='th_position' title='Position'>#</th>
+                        <th class='th_centered' title='Veränderung zum letzten Spieltag'>&#8645;</th>
+                        <th class='th_left th_seperate_l' title='Team'>Team</th>
+                        <th class='th_centered' title='Summe eigner Scores'>+</th>
+                        <th class='th_centered' title='Summe gegnerischer Scores'>&minus;</th>
+                        <th class='th_centered' title='Score-Differenz'>&plusmn; </th>
+                        <th class='th_centered' title='Durchschnittlicher eigener Score'>&empty; + </th>
+                        <th class='th_centered th_seperate_l' title='Durchschnittlicher gegnerischer Score'>&empty; &minus;</th>
+                        <th class='th_centered' title='Anzahl Siege'>S</th>
+                        <th class='th_centered' title='Anzahl Unentschieden'>U</th>
+                        <th class='th_centered' title='Anzahl Niederlagen'>N</th>
+                        <th class='th_centered th_seperate_l' title='Anzahl Trostpreis (Bester Verlierer)'>T</th>
+                        <th class='th_centered th_seperate_l' title='Ergebnisse letzte 3 Spiele'>Trend</th>
+                        <th class='th_centered th_seperate_l' title='Head-to-Head (direkter Vergleich): Anzahl Siege gegen Konkurrenten mit gleichvielen Punkten'>H2H</th>
+                        <th class='th_centered th_seperate_l' title='Summe Punkte'>Punkte</th>
+                        <th class='th_centered th_seperate_s' title='Aktuelle Waiver-Position'>Waiver</th>
                     </tr>";
 
             // Print out table rows
             while($col = mysqli_fetch_array($result)){
                 echo "<tr>";	
-                    echo "<td style='text-align: center; font-weight:bold; padding-right:10px; padding-left:10px;'>" . $col['rang'] . "</td>";
-                    echo "<td style='text-align: center;' class='updown'>" . $col['updown'] . "</td>";
-                    echo "<td style='padding-right:35px; font-weight:bold'>" . utf8_encode($col['team_name']) . ' ' . utf8_encode($col['achievement_icons']) . "</td>";
-                    echo "<td style='text-align: right;'>" . $col['score_for'] . "</td>";
-                    echo "<td style='text-align: right;'>" . $col['score_against'] . "</td>";
-                    echo "<td style='text-align: right;'>" . $col['differenz'] . "</td>";
-                    echo "<td style='text-align: right;'>" . $col['avg_for'] . "</td>";
-                    echo "<td style='padding-right:35px; text-align: right;'>" . $col['avg_against'] . "</td>";
-                    echo "<td style='text-align: center;'>" . $col['siege'] . "</td>";
-                    echo "<td style='text-align: center;'>" . $col['unentschieden'] . "</td>";
-                    echo "<td style='text-align: center;'>" . $col['niederlagen'] . "</td>";
-                    echo "<td style='text-align: center;'>" . $col['trost'] . "</td>";
-                    echo "<td class='serie_color' style='padding-right:35px; color:gray;'>" . $col['serie'] . "</td>";
-                    echo "<td class='serie_color' style='padding-right:35px; text-align: center;'>" . $col['h2h'] . "</td>";
-                    echo "<td style='padding-right:35px; font-weight:bold; text-align: center;'>" . $col['punkte'] . "</td>";
-                    echo "<td style='text-align: center; padding-right:10px;'>#" . $col['waiver_position']. "</td>";
+                    echo "<td class='td_position'>" . $col['rang'] . "</td>";
+                    echo "<td class='updown'>" . $col['updown'] . "</td>";
+                    echo "<td class='td_teamname td_seperate_l'>" . utf8_encode($col['team_name']) . ' ' . utf8_encode($col['achievement_icons']) . "</td>";
+                    echo "<td class='td_scoring'>" . $col['score_for'] . "</td>";
+                    echo "<td class='td_scoring'>" . $col['score_against'] . "</td>";
+                    echo "<td class='td_scoring'>" . $col['differenz'] . "</td>";
+                    echo "<td class='td_scoring'>" . $col['avg_for'] . "</td>";
+                    echo "<td class='td_scoring td_seperate_l'>" . $col['avg_against'] . "</td>";
+                    echo "<td class='td_record'>" . $col['siege'] . "</td>";
+                    echo "<td class='td_record'>" . $col['unentschieden'] . "</td>";
+                    echo "<td class='td_record'>" . $col['niederlagen'] . "</td>";
+                    echo "<td class='td_record td_seperate_l'>" . $col['trost'] . "</td>";
+                    echo "<td class='serie_color td_seperate_l'>" . $col['serie'] . "</td>";
+                    echo "<td class='td_h2h td_seperate_l'>" . $col['h2h'] . "</td>";
+                    echo "<td class='td_punkte td_seperate_l'>" . $col['punkte'] . "</td>";
+                    echo "<td class='td_waiver'>#" . $col['waiver_position']. "</td>";
                 echo "</tr>";
                 }
             echo "</table>";
