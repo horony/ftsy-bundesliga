@@ -10,8 +10,14 @@ $user = $_SESSION['username'];
 $user_id = $_SESSION['user_id'];
 $ftsy_owner_column = strval($_SESSION['league_id']) . '_ftsy_owner_id';
 $ftsy_status_column = strval($_SESSION['league_id']) . '_ftsy_match_status';
-$akt_spieltag = mysqli_query($con, "SELECT spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
-$akt_season_id = mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;  
+$akt_spieltag = mysqli_query($con, "SELECT spieltag FROM xa7580_db1.parameter ") -> fetch_object() -> spieltag; 
+$akt_season_id = mysqli_query($con, "SELECT season_id FROM xa7580_db1.parameter ") -> fetch_object() -> season_id;  
+
+// Ensure that the current spieltag does not exceed the max available spieltag im ftsy_scoring_hist
+$max_spieltag = mysqli_query($con, "SELECT MAX(round_name) AS max_spieltag FROM xa7580_db1.ftsy_scoring_hist WHERE season_id = '".$akt_season_id."'") -> fetch_object() -> max_spieltag; 
+if ($akt_spieltag > $max_spieltag){
+    $akt_spieltag = $max_spieltag;
+}
 
 /*******************/
 /* COLUMN HANDLING */
