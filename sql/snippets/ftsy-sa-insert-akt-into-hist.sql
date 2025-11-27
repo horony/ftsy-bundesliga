@@ -13,6 +13,7 @@ SELECT
     , base.common_name
     , base.number
     , base.position_short
+    , base.position_detail_name
     , base.injured
     , base.injury_reason
     , base.is_suspended
