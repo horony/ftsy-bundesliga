@@ -12,6 +12,7 @@ import os
 import sys
 import subprocess
 
+sys.path.insert(1, '../secrets/')
 sys.path.insert(2, '../py/')
 from logging_function import log
 
