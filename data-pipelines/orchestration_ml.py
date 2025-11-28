@@ -121,7 +121,7 @@ print("")
 
 log('Step 4/5 - TBD')
 
-venv_python = "../py/venv-ml/bin/python"
+venv_python = "../py/venv/venv-ml/bin/python"
 subprocess.run([venv_python, "ml_player_minutes_projection.py"])
 
 print("")
