@@ -105,7 +105,7 @@ with engine.connect() as con:
             , p.spieltag AS round_name
             , v.player_id
             , v.ftsy_score_projected AS ftsy_score_projected_by_avg
-            , SYSDATE AS insert_ts
+            , SYSDATE() AS insert_ts
         FROM ftsy_scoring_projection_v v
         CROSS JOIN parameter p
         ;
@@ -122,7 +122,7 @@ print("")
 log('Step 4/5 - TBD')
 
 venv_python = "../py/venv-ml/bin/python"
-subprocess.run([venv_python, "ml_player_minutes_projections.py"])
+subprocess.run([venv_python, "ml_player_minutes_projection.py"])
 
 print("")
 print("###################################")
