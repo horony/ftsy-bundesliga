@@ -1,4 +1,4 @@
-CREATE TABLE ml_player_minutes_features AS 
+CREATE TABLE ml_player_features_minutes AS 
 WITH ordered_hist AS (
     SELECT
         hist.season_id

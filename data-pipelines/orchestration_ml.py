@@ -79,7 +79,7 @@ with engine.connect() as con:
             , p.spieltag AS round_name
             , v.player_id
             , v.ftsy_score_projected AS ftsy_score_projected_by_avg
-            , SYSDATE AS insert_ts
+            , SYSDATE() AS insert_ts
         FROM ftsy_scoring_projection_v v
         CROSS JOIN parameter p;
         ''')

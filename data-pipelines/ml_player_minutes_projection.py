@@ -66,7 +66,7 @@ with engine.connect() as con:
 
     # Drop old table
     log("Dropping feature table")
-    con.execute('DROP TABLE IF EXISTS ml_player_minutes_features;')
+    con.execute('DROP TABLE IF EXISTS ml_player_features_minutes;')
     
     # Create new table
     log("Recreating feature table")
