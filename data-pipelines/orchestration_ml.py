@@ -110,9 +110,6 @@ with engine.connect() as con:
         ;
         ''')
 
-finally:
-    con.close()
-
 log('Update of table ml_player_projection_by_avg complete')
 
 print("")
