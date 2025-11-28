@@ -10,6 +10,7 @@ Script to orchestrate the player scoring predictions
 
 import os
 import sys
+import subprocess
 
 sys.path.insert(2, '../py/')
 from logging_function import log
@@ -121,6 +122,9 @@ print("#####################################")
 print("")
 
 log('Step 4/5 - TBD')
+
+venv_python = "../py/venv-ml/bin/python"
+subprocess.run([venv_python, "ml_player_minutes_projections.py"])
 
 print("")
 print("###################################")
