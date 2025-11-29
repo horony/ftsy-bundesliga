@@ -71,11 +71,6 @@ mysqli_query($con, "
 $insert_akt_into_hist_sql = file_get_contents('../sql/snippets/ftsy-sa-insert-akt-into-hist.sql');
 mysqli_query($con,	$insert_akt_into_hist_sql);
 
-// Clean up materialized views
-mysqli_query($con, "
-    DELETE FROM xa7580_db1.ftsy_scoring_akt_mv
-    ");
-
 sleep(10);
 
 /****************************/
@@ -86,6 +81,9 @@ echo "2/9 - Update player snapshot" . "<br>";
 
 // Delete old snapshot and create new snapshot with the updated data from ftsy_scoring_hist
 include 'create-ftsy-snapshot.php';
+
+// Clean up materialized views
+mysqli_query($con, "DELETE FROM xa7580_db1.ftsy_scoring_akt_mv");
 
 sleep(10);
 
