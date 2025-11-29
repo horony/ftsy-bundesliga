@@ -73,7 +73,7 @@ with engine.connect() as con:
     with open("../sql/snippets/ml-create-feature-table-minutes.sql", "r", encoding="utf-8") as f:
         create_ml_player_minutes_features = f.read()
 
-    con.execute(ml_player_minutes_features)
+    con.execute(create_ml_player_minutes_features)
 
 # Define test size sample in number of rounds
 test_size_parameter = 3
@@ -99,11 +99,14 @@ for pos in positions:
     # Define test / train / rounds
     query_test_rounds = f'''
         SELECT DISTINCT
-            CONCAT(season_id, "-", round_name) AS season_round
-        FROM sm_fixtures
+            CONCAT(r.season_id, "-", r.name) AS season_round
+        FROM sm_rounds r
         WHERE
-            ( season_id = {current_season_id} AND round_name != {current_round_name} )
-        ORDER BY season_id DESC, round_name DESC
+	        1 = CASE 
+    		        WHEN {current_season_id} = r.season_id AND r.name < {current_round_name} THEN 1
+    		        WHEN {current_season_id} > r.season_id THEN 1 
+                    ELSE 0 END
+        ORDER BY r.season_id DESC, r.name DESC
         LIMIT {test_size}
         '''
 

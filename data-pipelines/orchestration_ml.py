@@ -119,7 +119,7 @@ print("#  ML_PLAYER_MINUTES_PROJECTION.PY  #")
 print("#####################################")
 print("")
 
-log('Step 4/5 - TBD')
+log('Step 4/5 - Calling script ml_player_minutes_projection')
 
 venv_python = "../py/venv/venv-ml/bin/python"
 subprocess.run([venv_python, "ml_player_minutes_projection.py"])
@@ -130,4 +130,7 @@ print("#  ML_PLAYER_SCORE_PROJECTION.PY  #")
 print("###################################")
 print("")
 
-log('Step 5/5 - TBD')
+log('Step 5/5 - Calling script ml_player_scores_projection')
+
+venv_python = "../py/venv/venv-ml/bin/python"
+subprocess.run([venv_python, "ml_player_score_projection.py"])
