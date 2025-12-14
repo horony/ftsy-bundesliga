@@ -467,18 +467,20 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 WHEN ftsy_away_score >= ftsy_home_score THEN CONCAT('<b>',ftsy_away_score,'</b>')  
                 ELSE ftsy_away_score 
                 END AS ftsy_away_score
-            , CONCAT('<p style=\'color:blue\'>','↝',ftsy_home_proj,'</p>') AS ftsy_home_avg
-            , CONCAT('<p style=\'color:blue\'>','↝',ftsy_away_proj,'</p>') AS ftsy_away_avg
+            , CONCAT('<p style=\'color:blue\'>','↝',ROUND(ftsy_home_proj + ftsy_home_score_leg1,1),'</p>') AS ftsy_home_avg
+            , CONCAT('<p style=\'color:blue\'>','↝',ROUND(ftsy_away_proj + ftsy_away_score_leg1,1),'</p>') AS ftsy_away_avg
             , cup_leg
             , cup_round
-            , COALESCE(ftsy_home_score+ftsy_home_score_leg1,0) AS ftsy_home_score_agg
-            , COALESCE(ftsy_away_score+ftsy_away_score_leg1,0) AS ftsy_away_score_agg
+            , ROUND(COALESCE(ftsy_home_score+ftsy_home_score_leg1,0),1) AS ftsy_home_score_agg
+            , ROUND(COALESCE(ftsy_away_score+ftsy_away_score_leg1,0),1) AS ftsy_away_score_agg
             , NULL AS home_description_1
             , NULL AS away_description_1
             , ftsy_home_record AS home_description_2
             , ftsy_away_record AS away_description_2
             , ftsy_home_players_status AS home_description_3
             , ftsy_away_players_status AS away_description_3
+            , ftsy_home_score_leg1
+            , ftsy_away_score_leg1
         FROM cte_schedule
     ");
 }
