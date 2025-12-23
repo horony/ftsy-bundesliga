@@ -293,17 +293,17 @@
                 FROM xa7580_db1.sm_playerbase_basic_v base
                 INNER JOIN xa7580_db1.sm_fixtures fix
                     ON fix.round_name = '".$akt_spieltag."'
-                    AND ( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id )
+                    AND ( base.team_id = fix.localteam_id OR base.team_id = fix.visitorteam_id )
                 WHERE 
                     ".$ftsy_owner_id_column." = '".$_SESSION['user_id']."' 
                     AND base.".$ftsy_match_status_column." != 'NONE' 
-                    AND base.is_sidelined = 1
+                    AND base.player_status != 'Fit'
                     AND fix.kickoff_ts >= NOW()
             ") -> fetch_object() -> cnt_aufstellung_verletzt;
             ?>
 
             <!-- Display collected data in status box -->
-            <?php if ($cnt_trades > 0 or $cnt_trades > 0 or $cnt_aufstellung != 11 or $cnt_aufstellung_verletzt > 0){?>
+            <?php if ($cnt_waiver > 0 or $cnt_trades > 0 or $cnt_aufstellung != 11 or $cnt_aufstellung_verletzt > 0){?>
                 <div class="row graybox" id="notifications">
                     <div class="graybox_header">ALERTS</div>
 

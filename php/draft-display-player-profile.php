@@ -14,20 +14,13 @@ $player = mysqli_query($con, "
         , base.captain
         , base.number
         , base.captain
-        , FLOOR(DATEDIFF(CURRENT_DATE, base.birth_dt)/365) as age
-        , case     
-            when base.injured = 1 and base.injury_reason is not NULL then concat('Verletzt: ', base.injury_reason)
-            when base.injured = 1 and base.injury_reason is NULL then 'Verletzt'
-            when base.injured = 0 and base.is_suspended = 1 then 'Gesperrt'
-            else 'Fit'
-            end as fitness  
-        , base.injured 
-        , base.injury_reason
-        , base.is_suspended
-        , base.number
-        , ord.teamname as fantasy_team_name
+        , FLOOR(DATEDIFF(CURRENT_DATE, base.birth_dt)/365) AS age
+        , base.player_status 
+        , base.player_status_logo_path
+        , base.sidelined_reason
+        , ord.teamname AS fantasy_team_name
     FROM draft_player_base drft
-    INNER JOIN sm_playerbase base
+    INNER JOIN sm_playerbase_basic_v base
         ON base.id = drft.id
     LEFT JOIN draft_order_full ord
         ON drft.pick = ord.pick
@@ -68,14 +61,14 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Verein</div><div class='meta_value'>".mb_convert_encoding($player['teamname'], 'UTF-8')."</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Position</div><div class='meta_value'>".$player['position_long']."</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nummer</div><div class='meta_value'>".$player['number']."</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>".mb_convert_encoding($player['fitness'],'UTF-8')."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div title='".mb_convert_encoding($player['sidelined_reason'],'UTF-8')."' class='meta_value'>".mb_convert_encoding($player['player_status'],'UTF-8')."</div></div>";
                 echo "</div>";
 
                 echo "<div class=right_col>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Herkunft</div><div class='meta_value'>".mb_convert_encoding($player['birthplace'], 'UTF-8').", ".mb_convert_encoding($player['birthcountry'], 'UTF-8')."</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Alter</div><div class='meta_value'>".$player['age']."</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']." cm</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']." kg</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Größe</div><div class='meta_value'>".$player['height']."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Gewicht</div><div class='meta_value'>".$player['weight']."</div></div>";
                 echo "</div>";
 
             echo "</div>";
@@ -134,7 +127,7 @@ echo "<div id='highlights_2019'>";
 
     // Loop different stats and display them
 
-    foreach ($relevant_stats_array as &$relevant_stat)  {
+    foreach ($relevant_stats_array AS &$relevant_stat)  {
 
         if ($relevant_stat == 'min_played'){
             $stat_display_name = 'Minuten';
@@ -244,13 +237,13 @@ echo "<div id='transfer_daten'>";
 
     $tf_data = mysqli_query($con, "    
         SELECT     
-            year(tf.transfer_dt) as tf_year
-            , coalesce(abg.name, 'Unbekannt') as abg_name
-            , abg.logo_path as abg_logo
-            , coalesce(auf.name, 'Unbekannt') as auf_name
-            , auf.logo_path as auf_logo
+            YEAR(tf.transfer_dt) AS tf_year
+            , COALESCE(abg.name, 'Unbekannt') AS abg_name
+            , abg.logo_path AS abg_logo
+            , COALESCE(auf.name, 'Unbekannt') AS auf_name
+            , auf.logo_path AS auf_logo
             , tf.transfer_type
-            , case when tf.transfer_type = 'Transfer' then coalesce(tf.amount, 0) else tf.amount end as amount
+            , CASE WHEN tf.transfer_type = 'Transfer' THEN COALESCE(tf.amount, 0) ELSE tf.amount END AS amount
         FROM `sm_player_transfers` tf
         LEFT JOIN sm_teams abg
             ON abg.id = tf.from_team_id
@@ -316,27 +309,27 @@ echo "<div id='data_2019'>";
 
         SELECT     
         	ses.season_name
-            , sum(scr.ftsy_score) as ftsy_score_sum
-            , round(avg(case when scr.appearance_stat = 1 then scr.ftsy_score else null end),1) as ftsy_score_avg
-            , sum(case when scr.appearance_stat = 1 then 1 else 0 end) as appearances
-            , sum(scr.goals_total_stat) as goals
-            , sum(scr.assists_stat) as assists
-            , sum(scr.shots_total_stat) as shots
-            , sum(scr.key_passes_stat) as passes_key
-            , sum(scr.passes_complete_stat) as passes
-            , round((sum(scr.passes_complete_stat)/sum(scr.passes_total_stat))*100,0) as passes_perc
-            , sum(scr.crosses_complete_stat) as crosses
-            , round((sum(scr.crosses_complete_stat)/sum(scr.crosses_total_stat))*100,0) as crosses_perc
-            , sum(scr.dribbles_success_stat) as dribbles
-            , round((sum(scr.dribbles_success_stat)/sum(scr.dribble_attempts_stat))*100,0) as dribbles_perc
-            , sum(scr.duels_won_stat) as duels
-            , round((sum(scr.duels_won_stat)/sum(scr.duels_won_stat+scr.duels_lost_stat))*100,0) as duels_perc
-            , sum(scr.blocks_stat) as blocks
-            , sum(scr.clearances_stat) as clearances
-            , sum(scr.interceptions_stat) as interceptions
-            , sum(scr.tackles_stat) as tackles
-            , sum(scr.saves_stat) as saves
-            , sum(scr.pen_saved_stat) as pen_saved
+            , SUM(scr.ftsy_score) AS ftsy_score_sum
+            , ROUND(avg(CASE WHEN scr.appearance_stat = 1 THEN scr.ftsy_score ELSE NULL END),1) AS ftsy_score_avg
+            , SUM(CASE WHEN scr.appearance_stat = 1 THEN 1 else 0 end) AS appearances
+            , SUM(scr.goals_total_stat) AS goals
+            , SUM(scr.assists_stat) AS assists
+            , SUM(scr.shots_total_stat) AS shots
+            , SUM(scr.key_passes_stat) AS passes_key
+            , SUM(scr.passes_complete_stat) AS passes
+            , ROUND((SUM(scr.passes_complete_stat)/SUM(scr.passes_total_stat))*100,0) AS passes_perc
+            , SUM(scr.crosses_complete_stat) AS crosses
+            , ROUND((SUM(scr.crosses_complete_stat)/SUM(scr.crosses_total_stat))*100,0) AS crosses_perc
+            , SUM(scr.dribbles_success_stat) AS dribbles
+            , ROUND((SUM(scr.dribbles_success_stat)/SUM(scr.dribble_attempts_stat))*100,0) AS dribbles_perc
+            , SUM(scr.duels_won_stat) AS duels
+            , ROUND((SUM(scr.duels_won_stat)/SUM(scr.duels_won_stat+scr.duels_lost_stat))*100,0) AS duels_perc
+            , SUM(scr.blocks_stat) AS blocks
+            , SUM(scr.clearances_stat) AS clearances
+            , SUM(scr.interceptions_stat) AS interceptions
+            , SUM(scr.tackles_stat) AS tackles
+            , SUM(scr.saves_stat) AS saves
+            , SUM(scr.pen_saved_stat) AS pen_saved
         FROM ftsy_scoring_all_v scr
         INNER JOIN sm_fixtures fix
             ON fix.fixture_id = scr.fixture_id        
@@ -418,25 +411,25 @@ for ($season_counter = 0; $season_counter <= $season_counter_max; $season_counte
             SELECT     
                 rds.id
                 , rds.name
-                , concat(concat(fix.localteam_name_code, ' vs. '), fix.visitorteam_name_code) as matchup
+                , CONCAT(CONCAT(fix.localteam_name_code, ' vs. '), fix.visitorteam_name_code) AS matchup
                 , scr.own_team_code
-                , concat(concat(fix.localteam_score, ':'), fix.visitorteam_score) as ft_score
-                , case when scr.appearance_stat = 1 then scr.ftsy_score else null end as ftsy_score
-                , case when scr.appearance_stat = 1 then concat(CONVERT(scr.minutes_played_stat,CHAR), ' Min.') else null end as minutes_played
-                , case when scr.appearance_stat = 1 then scr.goals_total_stat else null end as goals
-                , case when scr.appearance_stat = 1 then scr.assists_stat else null end as assists
-                , case when scr.appearance_stat = 1 then scr.shots_total_stat else null end as shots
-                , case when scr.appearance_stat = 1 then scr.key_passes_stat else null end as passes_key
-                , case when scr.appearance_stat = 1 then concat(concat(concat(scr.passes_complete_stat, ' ('), scr.passes_total_stat),')') else null end as passes
-                , case when scr.appearance_stat = 1 then concat(concat(concat(scr.crosses_complete_stat, ' ('), scr.crosses_total_stat),')') else null end as crosses_stat
-                , case when scr.appearance_stat = 1 then concat(concat(concat(scr.dribbles_success_stat, ' ('), scr.dribble_attempts_stat),')') else null end as dribbles
-                , case when scr.appearance_stat = 1 then concat(concat(concat(scr.duels_won_stat, ' ('), scr.duels_total_stat),')') else null end as duels
-                , case when scr.appearance_stat = 1 then scr.blocks_stat else null end as blocks
-                , case when scr.appearance_stat = 1 then scr.clearances_stat else null end as clearances
-                , case when scr.appearance_stat = 1 then scr.interceptions_stat else null end as interceptions
-                , case when scr.appearance_stat = 1 then scr.tackles_stat else null end as tackles
-                , case when scr.appearance_stat = 1 then scr.saves_stat else null end as saves
-                , case when scr.appearance_stat = 1 then scr.pen_saved_stat else null end as pen_saved
+                , CONCAT(CONCAT(fix.localteam_score, ':'), fix.visitorteam_score) AS ft_score
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.ftsy_score ELSE NULL END AS ftsy_score
+                , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONVERT(scr.minutes_played_stat,CHAR), ' Min.') ELSE NULL END AS minutes_played
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.goals_total_stat ELSE NULL END AS goals
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.assists_stat ELSE NULL END AS assists
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.shots_total_stat ELSE NULL END AS shots
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.key_passes_stat ELSE NULL END AS passes_key
+                , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.passes_complete_stat, ' ('), scr.passes_total_stat),')') ELSE NULL END AS passes
+                , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.crosses_complete_stat, ' ('), scr.crosses_total_stat),')') ELSE NULL END AS crosses_stat
+                , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.dribbles_success_stat, ' ('), scr.dribble_attempts_stat),')') ELSE NULL END AS dribbles
+                , CASE WHEN scr.appearance_stat = 1 THEN CONCAT(CONCAT(CONCAT(scr.duels_won_stat, ' ('), scr.duels_total_stat),')') ELSE NULL END AS duels
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.blocks_stat ELSE NULL END AS blocks
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.clearances_stat ELSE NULL END AS clearances
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.interceptions_stat ELSE NULL END AS interceptions
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.tackles_stat ELSE NULL END AS tackles
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.saves_stat ELSE NULL END AS saves
+                , CASE WHEN scr.appearance_stat = 1 THEN scr.pen_saved_stat ELSE NULL END AS pen_saved
             FROM `sm_rounds` rds
             LEFT JOIN ftsy_scoring_all_v scr
                 ON scr.round_name = rds.name

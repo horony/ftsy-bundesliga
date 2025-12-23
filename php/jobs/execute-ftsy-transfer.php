@@ -57,7 +57,7 @@ if ($Aufzunehmender_Spieler_ID == 0 OR $Abzugebender_Spieler_ID == 0){
             ON 	( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id ) 
             AND fix.round_name = '$aktueller_spieltag' 
             AND fix.season_id = '$akt_season_id'
-        WHERE base.ID = '$Abzugebender_Spieler_ID'
+        WHERE base.id = '$Abzugebender_Spieler_ID'
         ") -> fetch_object() -> zeit;
 
     $Abzugebender_Spieler_Status = mysqli_query($con, "	

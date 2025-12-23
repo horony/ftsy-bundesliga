@@ -33,7 +33,7 @@ if ($cnt_clicked_players == 2 or $cnt_aufstellung < 11){
                 SELECT COUNT(*) AS cnt 
                 FROM xa7580_db1.sm_playerbase_basic_v base
                 INNER JOIN xa7580_db1.sm_fixtures fix	
-                    ON ( base.current_team_id = fix.localteam_id OR base.current_team_id = fix.visitorteam_id) 
+                    ON ( base.team_id = fix.localteam_id OR base.team_id = fix.visitorteam_id) 
                     AND fix.round_name = '".$akt_spieltag."'	
                 AND fix.season_id = '".$akt_season_id."'
                 WHERE 

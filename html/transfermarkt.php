@@ -177,9 +177,7 @@ require("../php/auth.php");
                                 echo "<td class='table_col_scr' title='Fantasy-Punkte letzter Spieltag'>" . $row['last1_total_fb_score'] . "</td>";
                                 echo "<td class='table_col_scr' title='Projection aktueller Spieltag' style='color: #483D8B'>" . $row['ftsy_score_projected'] . "</td>";										
                                 echo "<td class='table_col_fitness'>"; 
-                                if ($row['fitness'] == 'fit'){echo "<img title='Fit' height='15px' width='auto' src='../img/icons/fit.png'>";}
-                                    elseif ($row['fitness'] == 'injured'){echo "<img title='Verletzt'height='15px' width='auto' src='../img/icons/verletzung.png'>";}
-                                    elseif ($row['fitness'] == 'suspended'){echo "<img title='Gesperrt' height='15px' width='auto' src='../img/icons/gelb-rote-karte.png'>";}
+                                    echo "<img title='" . $row['player_status'] . "' height='15px' width='auto' src='../img/icons/" . $row['player_status_logo_path'] . "'>";
                                 echo "</td>";
                                 echo "<td class='table_col_owner'>";
                                 echo $row['Besitzer'];
@@ -248,21 +246,19 @@ require("../php/auth.php");
                             $matchup_expl = mb_convert_encoding($row['opp_name'], 'UTF-8') . ' lässt im Schnitt ' . $row['avg_allowed'] . ' Punkte gegen ' . $row['pos'] . ' zu (Platz ' .$row['rank_allowed']. '/18).';
 
                             echo "<tr>";
-                            echo "<td style='display:none;'>" . $row['id'] . "</td>";
-                            echo "<td title='Verein' align='center'><img height='15px' width='auto' src='" . $row['verein_logo'] . "'></td>";
-                            echo "<td title='Spieler'><a href='" . $link_datenbank . "'>" . mb_convert_encoding($row['name'], 'UTF-8') . "</a></td>";
-                            echo "<td title='Fantasy-Position' align='left'>" . $row['pos'] . "</td>";	
-                            echo "<td title='".$matchup_expl."' align='left'><span style= color:".$opp_color.";'> vs. " . mb_convert_encoding($row['opp_code'], 'UTF-8') . "</span></td>";			
-                            echo "<td title='Gesamte Fantasy-Punkte über die Saison' align='center'>" . $row['total_fb_score'] . "</td>";
-                            echo "<td title='Durchschnittliche Fantasy-Punkte über die Saison' align='center'>" . $row['avg_fb_score'] . "</td>";
-                            echo "<td title='Fantasy-Punkte letzter Spieltag' align='center'>" . $row['last1_total_fb_score'] . "</td>";
-                            echo "<td title='Projection aktueller Spieltag' align='center' style='color: #483D8B'>" . $row['ftsy_score_projected'] . "</td>";					
-                            echo "<td align='center'>"; 
-                            if ($row['fitness'] == 'fit'){echo "<img title='Fit' height='15px' width='auto' src='../img/icons/fit.png'>";}
-                                elseif ($row['fitness'] == 'injured'){echo "<img title='Verletzt'height='15px' width='auto' src='../img/icons/verletzung.png'>";}
-                                elseif ($row['fitness'] == 'suspended'){echo "<img title='Gesperrt' height='15px' width='auto' src='../img/icons/gelb-rote-karte.png'>";}
-                            echo "</td>";
-                            echo "<td align='center'><input type='checkbox' class='check2'></td>";
+                                echo "<td style='display:none;'>" . $row['id'] . "</td>";
+                                echo "<td title='Verein' align='center'><img height='15px' width='auto' src='" . $row['verein_logo'] . "'></td>";
+                                echo "<td title='Spieler'><a href='" . $link_datenbank . "'>" . mb_convert_encoding($row['name'], 'UTF-8') . "</a></td>";
+                                echo "<td title='Fantasy-Position' align='left'>" . $row['pos'] . "</td>";	
+                                echo "<td title='".$matchup_expl."' align='left'><span style= color:".$opp_color.";'> vs. " . mb_convert_encoding($row['opp_code'], 'UTF-8') . "</span></td>";			
+                                echo "<td title='Gesamte Fantasy-Punkte über die Saison' align='center'>" . $row['total_fb_score'] . "</td>";
+                                echo "<td title='Durchschnittliche Fantasy-Punkte über die Saison' align='center'>" . $row['avg_fb_score'] . "</td>";
+                                echo "<td title='Fantasy-Punkte letzter Spieltag' align='center'>" . $row['last1_total_fb_score'] . "</td>";
+                                echo "<td title='Projection aktueller Spieltag' align='center' style='color: #483D8B'>" . $row['ftsy_score_projected'] . "</td>";					
+                                echo "<td align='center'>"; 
+                                    echo "<img title='" . $row['player_status'] . "' height='15px' width='auto' src='../img/icons/" . $row['player_status_logo_path'] . "'>";
+                                echo "</td>";
+                                echo "<td align='center'><input type='checkbox' class='check2'></td>";
                             echo "</tr>";
                         }
                         echo "</table></div>";

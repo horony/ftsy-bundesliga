@@ -12,10 +12,21 @@ SELECT
     , base.position_long AS position_long
     , base.position_detail_name AS position_detail_name
     , base.captain AS captain
+    , base.sidelined_type_id
     , base.injured AS injured
-    , base.injury_reason AS injury_reason
+    , base.sidelined_category
     , base.is_suspended AS is_suspended
     , base.is_sidelined AS is_sidelined
+    , CASE WHEN
+    	WHEN t.type_code IN ('red-card-suspension') THEN 'redcard'
+    	WHEN t.type_code IN ('redy-card-suspension') THEN 'redyellowcard'
+    	WHEN t.type_code IN ('yellow-card-suspension') THEN 'yellowcard'
+		WHEN t.type_code IN ('called-up-to-national-team') THEN 'nationalteam'
+        WHEN t.type_code IN ('fitness') THEN 'recovery'
+        WHEN t.type_code IS NOT NULL AND t.type_code NOT IN ('no-eligibility') THEN 'injury'
+        WHEN t.type_code IS NOT NULL THEN 'unknown-sidelined'
+        ELSE 'fit'
+        END AS sidelined_reason
     , base.current_team_id AS current_team_id
     , base.image_path AS image_path
     , base.height AS height
@@ -43,3 +54,5 @@ LEFT JOIN ftsy_player_ownership own
     ON own.player_id = base.id
 LEFT JOIN users usr
     ON usr.id = own.1_ftsy_owner_id
+LEFT JOIN sm_types t 
+    ON base.sidelined_type_id = t.type_id

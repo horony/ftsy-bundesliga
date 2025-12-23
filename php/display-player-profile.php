@@ -10,8 +10,8 @@ $player_data = mysqli_query($con, "
     SELECT  
         base.image_path
         , base.display_name
-        , base.fullname
-        , base.current_team_name AS teamname
+        , base.full_name AS fullname
+        , base.name AS teamname
         , base.position_short
         , base.position_long
         , base.position_detail_name
@@ -20,16 +20,10 @@ $player_data = mysqli_query($con, "
         , base.birthcountry
         , base.number
         , FLOOR(DATEDIFF(CURRENT_DATE, base.birth_dt)/365) AS age
-        , CASE  
-            WHEN base.injured = 1 AND base.injury_reason IS NOT NULL THEN CONCAT('Verletzt: ', base.injury_reason)
-            WHEN base.injured = 1 AND base.injury_reason IS NULL THEN 'Verletzt'
-            WHEN base.injured = 0 AND base.is_suspended = 1 THEN 'Gesperrt'
-            ELSE 'Fit'
-            END AS fitness  
-        , base.injured 
-        , base.injury_reason
-        , base.is_suspended
-        , team.logo_path AS team_logo
+        , base.player_status 
+        , base.player_status_logo_path
+        , base.sidelined_reason
+        , base.logo_path AS team_logo
         , CASE WHEN draft.player_id IS NOT NULL 
             THEN CONCAT('Pick ', draft.pick, ' (Runde ', draft.round, ')')
             ELSE 'Undrafted'
@@ -39,21 +33,15 @@ $player_data = mysqli_query($con, "
             THEN draft.teamname
             ELSE 'Undrafted'
             END AS draft_team
-        , CASE WHEN usr.teamname IS NOT NULL 
-            THEN usr.teamname
+        , CASE WHEN base.ftsy_owner_teamname IS NOT NULL 
+            THEN base.ftsy_owner_teamname
             ELSE 'Free Agent'
             END AS owner_team
-    FROM sm_playerbase base
-    LEFT JOIN sm_teams team 
-        ON base.current_team_id = team.id
+    FROM sm_playerbase_basic_v base
     LEFT JOIN draft_order_full draft 
         ON base.id = draft.player_id
     LEFT JOIN ftsy_scoring_snap snap 
         ON base.id = snap.id
-    LEFT JOIN ftsy_player_ownership own 
-        ON base.id = own.player_id
-    LEFT JOIN users usr 
-        ON own.1_ftsy_owner_id = usr.id
     WHERE base.id = '".$id."'
 ");
 
@@ -94,7 +82,7 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
                     }
                     echo "</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nummer</div><div class='meta_value'>".$player['number']."</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>".mb_convert_encoding($player['fitness'],'UTF-8')."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>".mb_convert_encoding($player['player_status'],'UTF-8')."</div></div>";
                 echo "</div>";
                 echo "<div class=middle_col>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nationalität</div><div class='meta_value'>".mb_convert_encoding($player['birthcountry'], 'UTF-8')."</div></div>";

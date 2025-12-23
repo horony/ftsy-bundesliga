@@ -64,7 +64,7 @@ response_teams = requests.get(
     "https://api.sportmonks.com/v3/football/teams/seasons/"
     + str(aktuelle_buli_season)
     + "?api_token=" + sportmonks_token
-    + "&include=sidelined.type;sidelined.player"
+    + "&include=sidelined"
 )
 
 log("API response code: " + str(response_teams.status_code))
@@ -103,11 +103,11 @@ for team in data_teams:
             list_current_sidelined = []
             
             list_current_sidelined.append(player_sidelined['player_id'])
-            list_current_sidelined.append(player_sidelined['player']['display_name'])
-            list_current_sidelined.append(player_sidelined['type']['id'])            
-            list_current_sidelined.append(player_sidelined['type']['name'])
-            list_current_sidelined.append(player_sidelined['start_date'])
-            list_current_sidelined.append(player_sidelined['end_date'])
+            list_current_sidelined.append(player_sidelined['type_id'])
+            list_current_sidelined.append(player_sidelined['category'])
+            #list_current_sidelined.append(player_sidelined['type']['name'])
+            #list_current_sidelined.append(player_sidelined['start_date'])
+            #list_current_sidelined.append(player_sidelined['end_date'])
             list_current_sidelined.append(player_sidelined['completed'])
                
             list_sidelined.append(list_current_sidelined)      
@@ -118,7 +118,7 @@ aktuelle_buli_teams = df_teams['team_id'].tolist()
 log("Current team-ids are: " + str(aktuelle_buli_teams))
 
 log('Building DataFrame from parsed sidelined data')              
-df_sidelined = pd.DataFrame(columns=['player_id','display_name','sidelined_type_id','injury_reason','start_date','end_date','completed'], data=list_sidelined)
+df_sidelined = pd.DataFrame(columns=['player_id','sidelined_type_id','sidelined_category','completed'], data=list_sidelined)
 df_sidelined = df_sidelined.drop_duplicates(subset=['player_id'], keep='first')
 log('Created DataFrame containing ' + str(df_sidelined.shape[0]) + ' unique sidelined players')
 
@@ -226,6 +226,7 @@ for team_id in aktuelle_buli_teams:
         list_current_player.append(None) # placeholder
         list_current_player.append(None) # placeholder
         list_current_player.append(False) # placeholder
+        list_current_player.append(None) # placeholder
         
         # player image
         list_current_player.append(isNone(player['player']['image_path'],None))
@@ -304,13 +305,12 @@ print('')
 
 # store player results to DataFrame
 log('Building DataFrame from parsed player data')              
-column_names_players = ['id','rostered','fullname','common_name','display_name'
-                      ,'firstname','lastname','current_team_id','current_team_name'
-                      ,'number','position_id','position_short', 'position_long','position_detail_id','position_detail_name'
-                      ,'captain','injured', 'is_suspended', 'injury_reason', 'is_sidelined'
-                      ,'image_path','height','weight'
-                      ,'country_id','birthcountry','birth_dt','birthplace'
-                      ]
+column_names_players = [
+    'id','rostered','fullname','common_name','display_name' ,'firstname','lastname','current_team_id','current_team_name'
+    ,'number','position_id','position_short', 'position_long','position_detail_id','position_detail_name'
+    ,'captain','injured','is_suspended','sidelined_category','is_sidelined','sidelined_type_id'
+    ,'image_path','height','weight','country_id','birthcountry','birth_dt','birthplace'
+    ]
 df_players = pd.DataFrame(columns=column_names_players, data=list_players)
 log('Created DataFrame containing ' + str(df_players.shape[0]) + ' players')
 
@@ -319,21 +319,30 @@ log('Updating player DataFrame with sidelined DataFrame')
 
 # filter df_sidelined to valid rows and columns
 df_sidelined = df_sidelined.loc[~df_sidelined.completed]
-df_sidelined = df_sidelined[['player_id','sidelined_type_id','injury_reason']]
+df_sidelined = df_sidelined[['player_id','sidelined_type_id','sidelined_category']]
 
 # execute join
 df_players = pd.merge(df_players, df_sidelined, left_on='id', right_on='player_id', how='left')
 
 # define suspensions (e.g. red card)
-df_players['is_suspended'] = np.where((df_players['sidelined_type_id'] == 561) | (df_players['sidelined_type_id'] == 1692), 1, None)
+df_players['sidelined_type_id_x'] = df_players['sidelined_type_id_y']
+df_players = df_players.rename(columns={'sidelined_type_id_x': 'sidelined_type_id'})
+
+df_players['is_suspended'] = np.where(
+    (df_players['sidelined_type_id'] == 1608) 
+    | (df_players['sidelined_type_id'] == 1610) 
+    | (df_players['sidelined_type_id'] == 1611)
+    , 1, None)
 
 # define injuries
-df_players['injury_reason_x'] = df_players['injury_reason_y']
-df_players = df_players.rename(columns={'injury_reason_x': 'injury_reason'})
-df_players['injured'] = np.where(((df_players['sidelined_type_id'] > 0) & (df_players['sidelined_type_id'] != 561) & (df_players['sidelined_type_id'] != 1692)), 1, None)
+df_players['sidelined_category_x'] = df_players['sidelined_category_y']
+df_players = df_players.rename(columns={'sidelined_category_x': 'sidelined_category'})
+df_players['injured'] = np.where((
+    (df_players['sidelined_category'] == 'injury') 
+    ), 1, None)
 
 # drop not needed columns
-df_players = df_players.drop(columns=['player_id','sidelined_type_id','injury_reason_y'], axis=1)
+df_players = df_players.drop(columns=['player_id','sidelined_category_y','sidelined_type_id_y'], axis=1)
 log('Updated player DataFrame with sidelined information of ' + str(df_sidelined.shape[0]) + ' players')
 
 # store transfers results to DataFrame
@@ -375,19 +384,18 @@ with engine.connect() as con:
     log('Executing INSERT + UPDATE on sm_player_transfers')
     con.execute('''
                 INSERT INTO xa7580_db1.sm_player_transfers 
-                SELECT  t2.transfer_id
-                        , t2.player_id
-                        , t2.player_common_name
-                        , t2.transfer_dt
-                        , t2.from_team_id
-                        , t2.to_team_id
-                        , t2.transfer_type
-                        , t2.amount
-                        , sysdate() as insert_ts
-                        , null as update_ts
-                        
+                SELECT
+                    t2.transfer_id
+                    , t2.player_id
+                    , t2.player_common_name
+                    , t2.transfer_dt
+                    , t2.from_team_id
+                    , t2.to_team_id
+                    , t2.transfer_type
+                    , t2.amount
+                    , sysdate() as insert_ts
+                    , null as update_ts
                 FROM tmp_sm_player_transfers t2 
-                
                 ON DUPLICATE KEY UPDATE 
                     player_id = t2.player_id
                     , player_common_name = t2.player_common_name
@@ -425,39 +433,39 @@ with engine.connect() as con:
     # updating prod table through tmp table
     log('Executing INSERT + UPDATE on sm_playerbase')    
     con.execute('''
-                INSERT INTO sm_playerbase 
-                SELECT  id
-                        , rostered 
-                        , fullname
-                        , common_name
-                        , display_name
-                        , firstname
-                        , lastname
-                        , current_team_id
-                        , current_team_name
-                        , number
-                        , position_id
-                        , position_short
-                        , position_long
-                        , position_detail_id
-                        , position_detail_name
-                        , captain
-                        , injured
-                        , is_suspended
-                        , injury_reason
-                        , is_sidelined
-                        , image_path
-                        , height
-                        , weight
-                        , country_id
-                        , birthcountry
-                        , birth_dt
-                        , birthplace
-                        , sysdate() as insert_ts
-                        , null as update_ts
-                        
+                INSERT INTO sm_playerbase
+                SELECT  
+                    id
+                    , rostered 
+                    , fullname
+                    , common_name
+                    , display_name
+                    , firstname
+                    , lastname
+                    , current_team_id
+                    , current_team_name
+                    , number
+                    , position_id
+                    , position_short
+                    , position_long
+                    , position_detail_id
+                    , position_detail_name
+                    , captain
+                    , injured
+                    , is_suspended
+                    , sidelined_category
+                    , is_sidelined
+                    , sidelined_type_id
+                    , image_path
+                    , height
+                    , weight
+                    , country_id
+                    , birthcountry
+                    , birth_dt
+                    , birthplace
+                    , sysdate() as insert_ts
+                    , null as update_ts
                 FROM tmp_sm_playerbase t2 
-                
                 ON DUPLICATE KEY UPDATE 
                     rostered = t2.rostered
                     , fullname = t2.fullname
@@ -470,8 +478,9 @@ with engine.connect() as con:
                     , captain = t2.captain
                     , injured = t2.injured
                     , is_suspended = t2.is_suspended
-                    , injury_reason = t2.injury_reason
+                    , sidelined_category = t2.sidelined_category
                     , is_sidelined = t2.is_sidelined
+                    , sidelined_type_id = t2.sidelined_type_id
                     , image_path = t2.image_path
                     , position_detail_id = t2.position_detail_id
                     , position_detail_name = t2.position_detail_name
@@ -488,15 +497,16 @@ with engine.connect() as con:
     # setting rostered = 0 if player is currently not on a squad
     log('Setting variable sm_playerbase.rostered = 0 if player is not in tmp table tmp_sm_playerbase')    
     con.execute('''
-                UPDATE  sm_playerbase 
-                SET     rostered = 0
-                        , current_team_id = NULL
-                        , current_team_name = NULL
-                        , captain = NULL
-                        , injured = NULL
-                        , is_suspended = NULL
-                        , injury_reason = NULL
-                        , is_sidelined = NULL 
+                UPDATE sm_playerbase
+                SET 
+                    rostered = 0
+                    , current_team_id = NULL
+                    , current_team_name = NULL
+                    , captain = NULL
+                    , injured = NULL
+                    , is_suspended = NULL
+                    , sidelined_category = NULL
+                    , is_sidelined = NULL 
                 WHERE id NOT IN (SELECT id from tmp_sm_playerbase)
                 ;
                 ''')

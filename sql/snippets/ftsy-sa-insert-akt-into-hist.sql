@@ -14,8 +14,9 @@ SELECT
     , base.number
     , base.position_short
     , base.position_detail_name
+    , base.sidelined_type_id
     , base.injured
-    , base.injury_reason
+    , base.sidelined_category
     , base.is_suspended
     , base.is_sidelined
     , base.image_path
