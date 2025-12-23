@@ -330,8 +330,8 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             , cup_round
             , ftsy_home_score_leg1
             , ftsy_away_score_leg1
-            , COALESCE(ftsy_home_score+ftsy_home_score_leg1,0) AS ftsy_home_score_agg
-            , COALESCE(ftsy_away_score+ftsy_away_score_leg1,0) AS ftsy_away_score_agg
+            , ROUND(COALESCE(ftsy_home_score+ftsy_home_score_leg1,0),1) AS ftsy_home_score_agg
+            , ROUND(COALESCE(ftsy_away_score+ftsy_away_score_leg1,0),1) AS ftsy_away_score_agg
             , '' AS ftsy_home_avg
             , '' AS ftsy_away_avg
             , '' AS home_description_1
