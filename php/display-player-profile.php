@@ -82,7 +82,13 @@ echo "<div id='spielerprofil_wrapper' class='spielerprofil'>";
                     }
                     echo "</div></div>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nummer</div><div class='meta_value'>".$player['number']."</div></div>";
-                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>".mb_convert_encoding($player['player_status'],'UTF-8')."</div></div>";
+                    echo "<div class='meta_stat_row'><div class='meta_stat'>Fitness</div><div class='meta_value'>";
+                        if ($player['player_status'] === 'Fit') {
+                            echo mb_convert_encoding($player['player_status'],'UTF-8');
+                        } else {
+                            echo mb_convert_encoding($player['player_status'],'UTF-8') . " (" . mb_convert_encoding($player['sidelined_reason'],'UTF-8') . ")";
+                        }
+                    echo "</div></div>";
                 echo "</div>";
                 echo "<div class=middle_col>";
                     echo "<div class='meta_stat_row'><div class='meta_stat'>Nationalität</div><div class='meta_value'>".mb_convert_encoding($player['birthcountry'], 'UTF-8')."</div></div>";
