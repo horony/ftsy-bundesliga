@@ -25,17 +25,16 @@ if ($_SESSION['user_id'] == $user_id){
 }
 
 // Get season data
-
 $clicked_spieltag = $_GET['tag'];
+$clicked_spieltag = trim($clicked_spieltag);
 $akt_spieltag = mysqli_query($con, "SELECT spieltag from xa7580_db1.parameter ") -> fetch_object() -> spieltag;	
 $akt_season_id = mysqli_query($con, "SELECT season_id from xa7580_db1.parameter ") -> fetch_object() -> season_id;	
 
-if ($clicked_spieltag == 'Aktueller Spieltag') {
+if ($clicked_spieltag === 'Aktueller Spieltag') {
 
     /*********************/
     /* SQL CURRENT ROUND */
     /*********************/
-
 
     $kader = mysqli_query($con,"		
     SELECT 
@@ -130,11 +129,6 @@ if ($clicked_spieltag == 'Aktueller Spieltag') {
         ".$ftsy_owner_column." = '".$user_id."'
 ");
 
-
-} elseif ($clicked_spieltag == 'Saison') {
-
-    // Legacy
-
 } else {
 
     /*********************/
@@ -169,7 +163,6 @@ if ($clicked_spieltag == 'Aktueller Spieltag') {
 /* MODAL PLAYER SUB   */
 /**********************/
 
-
 echo "<div id='myModal' class='modal'>";
     echo "<div class='modal_wrapper'>";
         echo "<div class='modal_header'>";
@@ -195,7 +188,7 @@ while ($row = mysqli_fetch_array($kader)) {
 
 echo "<div class='aufstellung_headline'>";
     echo "<div>AUFSTELLUNG";
-        $akt_aufstellung = mysqli_query($con, "SELECT akt_aufstellung from xa7580_db1.users_gamedata where user_id = '".$user_id."' ") -> fetch_object() -> akt_aufstellung;	
+        $akt_aufstellung = mysqli_query($con, "SELECT akt_aufstellung FROM xa7580_db1.users_gamedata WHERE user_id = '".$user_id."' ") -> fetch_object() -> akt_aufstellung;	
         if ($clicked_spieltag == 'Aktueller Spieltag' or $clicked_spieltag == 'Saison'){ echo "<small> (".$akt_aufstellung.")</small>";}
     echo "</div>";
         $ftsy_score_total = mysqli_query($con, "
