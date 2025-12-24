@@ -81,11 +81,11 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
             FROM xa7580_db1.ftsy_schedule sch
             LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab1
                 ON sch.ftsy_home_id = tab1.player_id 
-                AND (tab1.spieltag + 1) = '$selected_spieltag' 
+                AND tab1.spieltag = (SELECT MAX(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE spieltag < '$selected_spieltag' AND season_id = '$akt_season_id')
                 AND tab1.season_id = '$akt_season_id'
             LEFT JOIN xa7580_db1.ftsy_tabelle_2020 tab2
                 ON sch.ftsy_away_id = tab2.player_id 
-                AND (tab2.spieltag + 1) = '$selected_spieltag' 
+                AND tab2.spieltag = (SELECT MAX(spieltag) FROM xa7580_db1.ftsy_tabelle_2020 WHERE spieltag < '$selected_spieltag' AND season_id = '$akt_season_id')
                 AND tab2.season_id = '$akt_season_id'
             LEFT JOIN xa7580_db1.users u1
                 ON sch.ftsy_home_id = u1.id
@@ -328,10 +328,22 @@ if ($selected_spieltag < $akt_spieltag and $match_type == 'league') {
                 END AS ftsy_away_score
             , cup_leg
             , cup_round
-            , ftsy_home_score_leg1
-            , ftsy_away_score_leg1
-            , ROUND(COALESCE(ftsy_home_score+ftsy_home_score_leg1,0),1) AS ftsy_home_score_agg
-            , ROUND(COALESCE(ftsy_away_score+ftsy_away_score_leg1,0),1) AS ftsy_away_score_agg
+            , CASE 
+                WHEN ftsy_home_score_leg1 >= ftsy_away_score_leg1 THEN CONCAT('<b>',ftsy_home_score_leg1,'</b>') 
+                ELSE ftsy_home_score_leg1 
+                END AS ftsy_home_score_leg1       
+            , CASE 
+                WHEN ftsy_away_score_leg1 >= ftsy_home_score_leg1 THEN CONCAT('<b>',ftsy_away_score_leg1,'</b>') 
+                ELSE ftsy_away_score_leg1 
+                END AS ftsy_away_score_leg1
+            , CASE 
+                WHEN ftsy_home_score+ftsy_home_score_leg1 >= ftsy_away_score+ftsy_away_score_leg1 THEN CONCAT('<b>',ROUND(COALESCE(ftsy_home_score+ftsy_home_score_leg1,0),1) ,'</b>') 
+                ELSE ROUND(COALESCE(ftsy_home_score+ftsy_home_score_leg1,0),1)
+                END AS ftsy_home_score_agg       
+            , CASE 
+                WHEN ftsy_away_score+ftsy_away_score_leg1 >= ftsy_home_score+ftsy_home_score_leg1 THEN CONCAT('<b>',ROUND(COALESCE(ftsy_away_score+ftsy_away_score_leg1,0),1),'</b>') 
+                ELSE ROUND(COALESCE(ftsy_away_score+ftsy_away_score_leg1,0),1)
+                END AS ftsy_away_score_agg
             , '' AS ftsy_home_avg
             , '' AS ftsy_away_avg
             , '' AS home_description_1
