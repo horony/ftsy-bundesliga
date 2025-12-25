@@ -1,45 +1,55 @@
 /* Creates VIEW holding some basic information ON players (birth_dt, number, name, team, ftsy team etc.) */
 
+DROP VIEW sm_playerbase_basic_v;
+
 CREATE VIEW sm_playerbase_basic_v AS 
 SELECT
     base.id AS id
+    -- Name
     , base.fullname AS full_name
     , base.common_name AS common_name
     , base.display_name AS display_name
     , base.lastname AS lastname
     , base.number AS number
+    , base.image_path AS image_path
+    -- Position
     , base.position_short AS position_short
     , base.position_long AS position_long
     , base.position_detail_name AS position_detail_name
     , base.captain AS captain
+    -- Sidelined (Injury/Suspensions)
     , base.sidelined_type_id
-    , base.injured AS injured
-    , base.sidelined_category
-    , base.is_suspended AS is_suspended
-    , base.is_sidelined AS is_sidelined
-    , CASE WHEN
-    	WHEN t.type_code IN ('red-card-suspension') THEN 'redcard'
-    	WHEN t.type_code IN ('redy-card-suspension') THEN 'redyellowcard'
-    	WHEN t.type_code IN ('yellow-card-suspension') THEN 'yellowcard'
-		WHEN t.type_code IN ('called-up-to-national-team') THEN 'nationalteam'
-        WHEN t.type_code IN ('fitness') THEN 'recovery'
-        WHEN t.type_code IS NOT NULL AND t.type_code NOT IN ('no-eligibility') THEN 'injury'
-        WHEN t.type_code IS NOT NULL THEN 'unknown-sidelined'
-        ELSE 'fit'
-        END AS sidelined_reason
-    , base.current_team_id AS current_team_id
-    , base.image_path AS image_path
+    , li.li_sidelined_status AS sidelined_category
+    , CASE WHEN li.li_sidelined_status IN ('Aufbautraining','Verletzung') THEN 1 ELSE 0 END AS is_injured
+    , CASE WHEN li.li_sidelined_status IN ('5. Gelbe Karte','Nicht im Kader','Rote Karte','Gelb-Rote Karte') THEN 1 ELSE 0 END AS is_suspended
+    , CASE WHEN li.li_sidelined_status IS NOT NULL THEN 1 ELSE 0 END AS is_sidelined
+    , li.li_sidelined_reason AS sidelined_reason
+    , COALESCE(li.li_sidelined_status, 'Fit') AS player_status
+    , CASE
+        WHEN li.li_sidelined_status IS NULL THEN 'fit.png'
+        WHEN li.li_sidelined_status IN ('Verletzung') THEN 'verletzung.png'
+        WHEN li.li_sidelined_status IN ('Rote Karte') THEN 'rote-karte.png'
+        WHEN li.li_sidelined_status IN ('Gelb-Rote Karte') THEN 'gelb-rote-karte.png'
+        WHEN li.li_sidelined_status IN ('5. Gelbe Karte') THEN 'gelbe-karte.png'
+        WHEN li.li_sidelined_status IN ('Nicht im Kader') THEN 'verbannung.png'
+        WHEN li.li_sidelined_status IN ('Aufbautraining') THEN 'aufbautraining.png'
+        WHEN li.li_sidelined_status IN ('tbd') THEN 'angeschlagen-unsure.png'  
+        WHEN li.li_sidelined_status IN ('tbd') THEN 'angeschlagen-up.png'
+        WHEN li.li_sidelined_status IN ('tbd') THEN 'angeschlagen-down.png'  
+        ELSE 'fit.png'
+        END AS player_status_logo_path
+    -- Misc
     , base.height AS height
     , base.weight AS weight
     , base.birthcountry AS birthcountry
     , base.birthplace AS birthplace
     , base.birth_dt AS birth_dt
-    /* Infos on the players current team */
+    -- Current Bundesliga Team
     , team.id AS team_id
     , team.name AS name
     , team.short_code AS short_code
     , team.logo_path AS logo_path
-    /* Infos on the user owning the player in a ftsy league */
+    -- Current Fantasy Team
     , own.player_id AS player_id
     , own.player_name AS player_name
     , own.1_ftsy_owner_type AS 1_ftsy_owner_type
@@ -56,3 +66,6 @@ LEFT JOIN users usr
     ON usr.id = own.1_ftsy_owner_id
 LEFT JOIN sm_types t 
     ON base.sidelined_type_id = t.type_id
+LEFT JOIN li_sidelined_players li 
+    ON base.id = li.sm_player_id
+;
