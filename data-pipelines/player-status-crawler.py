@@ -11,6 +11,8 @@ Crawling player injury + suspension data and (fuzzy) matching them to existing p
 
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+import os
 import pandas as pd
 from sqlalchemy import create_engine, text
 import sys
@@ -58,65 +60,143 @@ def name_match(cleaned_name, full_name):
     parts = cleaned_name.split()  # split into parts
     return all(part in full_name for part in parts)
 
+def scrape_bundesliga_roster(url):
+    """
+    Scrape Bundesliga rosters by team
+    """
+
+    response = requests.get(url, headers=HEADERS, timeout=10)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # team name
+    title_div = soup.find("div", class_="leg_table_title leg_table_title_inner")
+    if not title_div:
+        return []
+
+    h2 = title_div.find("h2", class_="text-uppercase")
+    if not h2:
+        return []
+
+    team_name = h2.get_text(strip=True)
+
+    rows = []
+
+    # players
+    for row in soup.find_all("div", class_="leg_column_row"):
+
+        middle_info_box = row.find("div", class_="middle_info_box firstname")
+        if not middle_info_box:
+            continue
+
+        first_name = middle_info_box.find("span")
+        last_name = middle_info_box.find("strong")
+
+        if not first_name or not last_name:
+            continue
+
+        player_name = (
+            f"{first_name.get_text(strip=True)} "
+            f"{last_name.get_text(strip=True)}"
+        )
+
+        # sidelined status
+        status_text = None
+        sidelined_reason = None
+
+        status_div = row.find("div", class_="process_inner_column14 pull-left")
+        if status_div:
+            img = status_div.find("img")
+            if img and img.get("src"):
+                status_text = img["src"].split("/")[-1].split(".")[0]
+                sidelined_reason = img.get("alt")
+
+        rows.append({
+            "li_player_name": player_name,
+            "li_team_name": team_name,
+            "li_sidelined_status": status_text,
+            "li_sidelined_reason": sidelined_reason
+        })
+
+    print(rows)
+    return rows
+
+#################################################
+#   CRAWL ROSTER URLS OF ALL BUNDESLIGA TEAMS   #
+#################################################
+
+log_headline("Scraping Bundesliga roster URLs")
+
+BASE_URL = "https://www.ligainsider.de/"
+START_URL = "https://www.ligainsider.de/"
+HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+log("Scraping URL " + str(START_URL))
+
+response = requests.get(START_URL, timeout=10)
+response.raise_for_status()
+
+soup = BeautifulSoup(response.text, "html.parser")
+
+roster_urls = set()
+
+# get the container
+icon_holder = soup.find("div", class_="icon_holder")
+
+# find URLs inside container
+for a in icon_holder.find_all("a", href=True):
+    href = a["href"]
+
+    if href.endswith("/kader/"):
+        full_url = urljoin(BASE_URL, href)
+        roster_urls.add(full_url)
+
+# convert to list
+roster_urls = sorted(roster_urls)
+
+print(roster_urls)
+log(f"Found {len(roster_urls)} URLs")
+
 ######################################
 #   CRAWL INJURY + SUSPENSION DATA   #
 ######################################
 
-log_headline("Scraping sidelined player information")
+log_headline("Scraping Bundesliga injury and suspension status")
 
-URL = "https://www.ligainsider.de/bundesliga/verletzte-und-gesperrte-spieler/"
-headers = {"User-Agent": "Mozilla/5.0"}
+all_rows = []
 
-log("Scraping URL " + str(URL))
+# crawl rosters of all bundesliga teams
+for url in roster_urls:
+    team_rows = scrape_bundesliga_roster(url)
+    all_rows.extend(team_rows)
 
-response = requests.get(URL, headers=headers)
-soup = BeautifulSoup(response.text, "html.parser")
+df_crawler = pd.DataFrame(all_rows)
 
-log("Parsing BeautifulSoup result")
+# drop players with no sidelined status
+df_crawler = df_crawler[
+    df_crawler["li_sidelined_status"].notna() &
+    (df_crawler["li_sidelined_status"] != "fit")
+].reset_index(drop=True)
 
-rows = []
+# data preparation
+mapping_status = {
+    'verletzung': 'Verletzung',
+    'aufbautraining': 'Aufbautraining',
+    'verbannung': 'Nicht im Kader',
+    'rote-karte': 'Rote Karte',
+    'gelb-rote-karte': 'Gelb-Rote Karte',
+    'gelbe-karte': '5. Gelbe Karte',
+    'angeschlagen-down': 'Angeschlagen (Abwärtstrend)',
+    'angeschlagen-up': 'Angeschlagen (Aufwärtstrend)',
+    'angeschlagen-unsure': 'Angeschlagen (Fraglich)'
+}
 
-# Interate teams
-for table in soup.select("div.personal_table.personal_table_top"):
+df_crawler['li_sidelined_status'] = df_crawler['li_sidelined_status'].map(mapping_status)
 
-    # Team name
-    h2 = table.select_one("h2.text-uppercase.pull-left")
-    if not h2:
-        continue
+print(df_crawler.head())
+print(df_crawler.shape)
 
-    team_name = h2.get_text(strip=True)
-    log("Found team: " + str(team_name))
-
-    # Iterate sidelined player for each team
-    for player_row in table.select("div.small_table_row"):
-        
-        # Player name
-        name_div = player_row.select_one("div.left_title")
-        player_name = name_div.get_text(strip=True)
-        log("Found player: " + str(player_name))
-
-        # Sidelined icon
-        for injury_icon in table.select("div.left_icon.pull-left"):
-            icon_img = player_row.select_one("img")
-            status_text = icon_img.get("alt", "").strip() if icon_img else ""
-            icon_src = icon_img.get("src", "").strip() if icon_img else ""
-
-        # Sidelined reason
-        sidelined_reason_div = player_row.select_one("div.small_table_column2.pull-left")
-        if sidelined_reason_div:
-            sidelined_reason = sidelined_reason_div.get_text(strip=True)
-        else: 
-            sidelined_reason = None
-
-        rows.append({
-            "li_team_name": team_name,
-            "li_player_name": player_name,
-            "li_sidelined_status": status_text,
-            "li_sidelined_reason": sidelined_reason,
-            "li_sidelined_icon_url": icon_src,
-        })
-
-df_crawler = pd.DataFrame(rows, columns=["li_player_name", "li_team_name", "li_sidelined_status", "li_sidelined_reason", "li_sidelined_icon_url"])
 log("Created df_crawler with " + str(len(df_crawler)) + " rows")
 
 #######################
@@ -192,8 +272,12 @@ log(db_message)
 df_playerbase["sm_full_name"] = remove_special_chars(df_playerbase["sm_full_name"])
 df_playerbase["sm_display_name"] = remove_special_chars(df_playerbase["sm_display_name"])
 
+print(df_playerbase)
+
 # Perform matching
 log("Conducting fuzzy matching")
+
+print(df_crawler)
 
 matches = []
 
@@ -273,7 +357,6 @@ df_insert = df_insert.rename(columns={"sm_team_id_mapped": "sm_team_id"})
 
 # Write results to database
 with engine.connect() as con:
-    
     # Truncate
     log('Truncate table li_sidelined_players')
     con.execute("TRUNCATE TABLE li_sidelined_players")
