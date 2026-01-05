@@ -187,9 +187,9 @@ mapping_status = {
     'rote-karte': 'Rote Karte',
     'gelb-rote-karte': 'Gelb-Rote Karte',
     'gelbe-karte': '5. Gelbe Karte',
-    'angeschlagen-down': 'Angeschlagen (Abwärtstrend)',
-    'angeschlagen-up': 'Angeschlagen (Aufwärtstrend)',
-    'angeschlagen-unsure': 'Angeschlagen (Fraglich)'
+    'angeschlagen-down': 'Angeschlagen',
+    'angeschlagen-up': 'Schwer Angeschlagen',
+    'angeschlagen-unsure': 'Leicht Angeschlagen'
 }
 
 df_crawler['li_sidelined_status'] = df_crawler['li_sidelined_status'].map(mapping_status)

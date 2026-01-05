@@ -20,7 +20,7 @@ SELECT
     -- Sidelined (Injury/Suspensions)
     , base.sidelined_type_id
     , li.li_sidelined_status AS sidelined_category
-    , CASE WHEN li.li_sidelined_status IN ('Aufbautraining','Verletzung','Angeschlagen (Fraglich)','Angeschlagen (Aufwärtstrend)','Angeschlagen (Abwärtstrend)') THEN 1 ELSE 0 END AS is_injured
+    , CASE WHEN li.li_sidelined_status IN ('Aufbautraining','Verletzung','Angeschlagen','Leicht Angeschlagen','Schwer Angeschlagen') THEN 1 ELSE 0 END AS is_injured
     , CASE WHEN li.li_sidelined_status IN ('5. Gelbe Karte','Nicht im Kader','Rote Karte','Gelb-Rote Karte') THEN 1 ELSE 0 END AS is_suspended
     , CASE WHEN li.li_sidelined_status IS NOT NULL THEN 1 ELSE 0 END AS is_sidelined
     , li.li_sidelined_reason AS sidelined_reason
@@ -33,9 +33,9 @@ SELECT
         WHEN li.li_sidelined_status IN ('5. Gelbe Karte') THEN 'gelbe-karte.png'
         WHEN li.li_sidelined_status IN ('Nicht im Kader') THEN 'verbannung.png'
         WHEN li.li_sidelined_status IN ('Aufbautraining') THEN 'aufbautraining.png'
-        WHEN li.li_sidelined_status IN ('Angeschlagen (Fraglich)') THEN 'angeschlagen-unsure.png'  
-        WHEN li.li_sidelined_status IN ('Angeschlagen (Aufwärtstrend)') THEN 'angeschlagen-up.png'
-        WHEN li.li_sidelined_status IN ('Angeschlagen (Abwärtstrend)') THEN 'angeschlagen-down.png'  
+        WHEN li.li_sidelined_status IN ('Angeschlagen') THEN 'angeschlagen-unsure.png'  
+        WHEN li.li_sidelined_status IN ('Leicht Angeschlagen') THEN 'angeschlagen-up.png'
+        WHEN li.li_sidelined_status IN ('Schwer Angeschlagen') THEN 'angeschlagen-down.png'  
         ELSE 'fit.png'
         END AS player_status_logo_path
     -- Misc
