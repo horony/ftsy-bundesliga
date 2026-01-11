@@ -188,7 +188,7 @@ if len(fixture_ids_collection) == 0:
 #   GET PLAYER STATS FROM API   #
 #################################
 
-log_headline('(4/X5 GET PLAYER STATS FROM API')    
+log_headline('(4/5 GET PLAYER STATS FROM API')    
 
 player_list = []
 stat_list = []
@@ -244,7 +244,11 @@ for spieltag in fixture_ids_collection:
         # parsing players
         for player in fixture_active:
             
-            player_data = []  
+            # check if player_id is not none
+            if not player.get('player_id'):
+                continue  # skip this player
+
+            player_data = []
             
             # player_id
             player_data.append(player['player_id'])
