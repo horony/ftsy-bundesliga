@@ -15,7 +15,7 @@ CREATE TABLE ftsy_scoring_hist_new (
     , `number` SMALLINT
     , position_short VARCHAR(3)
     , injured SMALLINT
-    , injury_reason VARCHAR(100)
+    , sidelined_category VARCHAR(100)
     , is_suspended VARCHAR(100)
     , is_sidelined SMALLINT
     , image_path TEXT

@@ -15,12 +15,12 @@ SELECT
     , base.position_short
     , base.position_detail_name
     , base.sidelined_type_id
-    , base.injured
+    , base.is_injured
     , base.sidelined_category
     , base.is_suspended
     , base.is_sidelined
     , base.image_path
-    , base.current_team_id
+    , base.team_id
     , base.name
     , base.short_code
     , base.logo_path
@@ -138,9 +138,9 @@ FROM sm_playerbase_basic_v base
 INNER JOIN sm_fixtures_basic_v fix
     ON fix.round_name = (SELECT spieltag FROM parameter)
     AND fix.season_id = (SELECT season_id FROM parameter)
-    AND ( base.current_team_id  = fix.localteam_id or base.current_team_id = fix.visitorteam_id)
+    AND ( base.team_id  = fix.localteam_id or base.team_id = fix.visitorteam_id)
 LEFT JOIN ftsy_scoring_akt_v scr
     ON scr.player_id = base.id
 WHERE 
-	base.current_team_id IS NOT NULL /* Only players currently on a roster */
+	base.team_id IS NOT NULL /* Only players currently on a roster */
 ;

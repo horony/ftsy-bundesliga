@@ -71,6 +71,11 @@ mysqli_query($con, "
 $insert_akt_into_hist_sql = file_get_contents('../sql/snippets/ftsy-sa-insert-akt-into-hist.sql');
 mysqli_query($con,	$insert_akt_into_hist_sql);
 
+// Clean up materialized views
+mysqli_query($con, "
+    DELETE FROM xa7580_db1.ftsy_scoring_akt_mv
+    ");
+
 sleep(10);
 
 /****************************/
@@ -94,7 +99,7 @@ sleep(10);
 echo "3/9 - Update ftsy schedule" . "<br>";
 
 // Option to exclude rounds
-if ($aktueller_spieltag != 99) {
+if ($aktueller_spieltag != 16) {
     $update_schedule_sql = file_get_contents('../sql/snippets/ftsy-sa-update-ftsy-schedule.sql');
     mysqli_query($con, $update_schedule_sql);
 }
@@ -110,7 +115,7 @@ echo "4/9 - Update ftsy standings" . "<br>";
 // League
 if ($aktueller_spieltag_type == 'league'){
     // Option to exclude rounds
-    if ($aktueller_spieltag != 99){
+    if ($aktueller_spieltag != 16){
         // Delete old data if exists
         mysqli_query($con, "
             DELETE 
