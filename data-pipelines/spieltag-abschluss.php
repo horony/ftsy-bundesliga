@@ -99,7 +99,7 @@ sleep(10);
 echo "3/9 - Update ftsy schedule" . "<br>";
 
 // Option to exclude rounds
-if ($aktueller_spieltag != 16) {
+if ($aktueller_spieltag != 99 && $aktueller_spieltag != 98) {
     $update_schedule_sql = file_get_contents('../sql/snippets/ftsy-sa-update-ftsy-schedule.sql');
     mysqli_query($con, $update_schedule_sql);
 }
@@ -115,7 +115,7 @@ echo "4/9 - Update ftsy standings" . "<br>";
 // League
 if ($aktueller_spieltag_type == 'league'){
     // Option to exclude rounds
-    if ($aktueller_spieltag != 16){
+    if ($aktueller_spieltag != 99 && $aktueller_spieltag != 98) {
         // Delete old data if exists
         mysqli_query($con, "
             DELETE 
