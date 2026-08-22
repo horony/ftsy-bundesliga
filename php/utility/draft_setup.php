@@ -99,7 +99,7 @@
             , null as autopick_ranking_flg
             , null as pick_ts
             , null as league_id
-            , 25646 as season_id # HERE NEW SEASON !!! 
+            , 28321 as season_id # HERE NEW SEASON !!! 
         FROM sm_playerbase base
         INNER JOIN sm_teams teams
             ON teams.id = base.current_team_id

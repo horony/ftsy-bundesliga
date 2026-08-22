@@ -4,7 +4,7 @@ include("../../secrets/mysql_db_connection.php");
 
 
 $year = '2026';
-$season_id = '25646'; 
+$season_id = '25646'; # Past Season
 
 
 $relevant_stat_array = ['ftsy_score', 'minutes_played_stat', 'goals_total_stat', 'pen_scored_stat', 'assists_stat', 'dribbles_success_stat', 'shots_total_stat', 'crosses_total_stat', 'passes_complete_stat', 'key_passes_stat', 'blocks_stat', 'clearances_stat', 'interceptions_stat', 'tackles_stat', 'duels_won_stat', 'clean_sheet_stat', 'pen_saved_stat', 'saves_stat'];
