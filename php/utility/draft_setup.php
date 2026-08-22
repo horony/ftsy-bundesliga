@@ -39,7 +39,7 @@
         /**************************************/
 
         WHERE 
-            tab.spieltag = 34 AND tab.season_id = 23744
+            tab.spieltag = 33 AND tab.season_id = 25646
         ORDER BY tab.rang DESC
        ");
        

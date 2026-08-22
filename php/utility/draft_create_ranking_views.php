@@ -3,8 +3,8 @@
 include("../../secrets/mysql_db_connection.php");
 
 
-$year = '2024';
-$season_id = '23744'; 
+$year = '2026';
+$season_id = '25646'; 
 
 
 $relevant_stat_array = ['ftsy_score', 'minutes_played_stat', 'goals_total_stat', 'pen_scored_stat', 'assists_stat', 'dribbles_success_stat', 'shots_total_stat', 'crosses_total_stat', 'passes_complete_stat', 'key_passes_stat', 'blocks_stat', 'clearances_stat', 'interceptions_stat', 'tackles_stat', 'duels_won_stat', 'clean_sheet_stat', 'pen_saved_stat', 'saves_stat'];
@@ -157,57 +157,57 @@ SELECT
     , tack.rank_ovr as rank_ovr_tackles
     , tack.rank_pos as rank_pos_tackles
 
-FROM rank_ftsy_score_2024 ftsy
+FROM rank_ftsy_score_2026 ftsy
 
-INNER JOIN `rank_tackles_stat_2024` tack
+INNER JOIN `rank_tackles_stat_2026` tack
     ON ftsy.player_id = tack.player_id
 
-INNER JOIN `rank_shots_total_stat_2024` shot
+INNER JOIN `rank_shots_total_stat_2026` shot
     ON ftsy.player_id = shot.player_id
 
-INNER JOIN `rank_saves_stat_2024` save
+INNER JOIN `rank_saves_stat_2026` save
     ON ftsy.player_id = save.player_id
 
-INNER JOIN `rank_pen_saved_stat_2024` pens
+INNER JOIN `rank_pen_saved_stat_2026` pens
     ON ftsy.player_id = pens.player_id
 
-INNER JOIN `rank_pen_scored_stat_2024` pen
+INNER JOIN `rank_pen_scored_stat_2026` pen
     ON ftsy.player_id = pen.player_id
     
-INNER JOIN `rank_key_passes_stat_2024` passkey
+INNER JOIN `rank_key_passes_stat_2026` passkey
     ON ftsy.player_id = passkey.player_id
 
-INNER JOIN `rank_passes_complete_stat_2024` pass
+INNER JOIN `rank_passes_complete_stat_2026` pass
     ON ftsy.player_id = pass.player_id
 
-INNER JOIN `rank_minutes_played_stat_2024` minu
+INNER JOIN `rank_minutes_played_stat_2026` minu
     ON ftsy.player_id = minu.player_id
 
-INNER JOIN `rank_interceptions_stat_2024` ints
+INNER JOIN `rank_interceptions_stat_2026` ints
     ON ftsy.player_id = ints.player_id
 
-INNER JOIN `rank_goals_total_stat_2024` goal
+INNER JOIN `rank_goals_total_stat_2026` goal
     ON ftsy.player_id = goal.player_id
 
-INNER JOIN `rank_dribbles_success_stat_2024` drb
+INNER JOIN `rank_dribbles_success_stat_2026` drb
     ON ftsy.player_id = drb.player_id
 
-INNER JOIN `rank_duels_won_stat_2024` duel
+INNER JOIN `rank_duels_won_stat_2026` duel
     ON ftsy.player_id = duel.player_id
 
-INNER JOIN `rank_crosses_total_stat_2024` crs
+INNER JOIN `rank_crosses_total_stat_2026` crs
     ON ftsy.player_id = crs.player_id
     
-INNER JOIN `rank_clearances_stat_2024` clr
+INNER JOIN `rank_clearances_stat_2026` clr
     ON ftsy.player_id = clr.player_id
 
-INNER JOIN `rank_clean_sheet_stat_2024` cs
+INNER JOIN `rank_clean_sheet_stat_2026` cs
     ON ftsy.player_id = cs.player_id
 
-INNER JOIN `rank_assists_stat_2024` ass
+INNER JOIN `rank_assists_stat_2026` ass
     ON ftsy.player_id = ass.player_id
     
-INNER JOIN `rank_blocks_stat_2024` blk
+INNER JOIN `rank_blocks_stat_2026` blk
     ON ftsy.player_id = blk.player_id
 
 ");
