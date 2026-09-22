@@ -1,4 +1,4 @@
-/* Step 1: Execute sm_fixturespy. for the round with the postponed fixture, IN order to UPDATE TABLE sm_fixtures */
+/* Step 1: Execute sm_fixtures.py for the round with the postponed fixture, IN order to UPDATE TABLE sm_fixtures */
 
 /* Step 2: Execute sm_player_stats.py for the round with the postponed fixture, IN order to UPDATE TABLE sm_player_stats */
 
@@ -17,7 +17,7 @@ ORDER BY fixture_id DESC, ftsy_score DESC
 UPDATE ftsy_scoring_hist hst
 INNER JOIN ftsy_scoring_all_v scr
     ON hst.fixture_id = scr.fixture_id
-    AND hst.fixture_id = 18863346 -- Edit here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    AND hst.fixture_id IN (19433616,19433618) -- Edit here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     AND hst.player_id = scr.player_id
 SET   
     hst.round_name = scr.round_name

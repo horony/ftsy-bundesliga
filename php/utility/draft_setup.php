@@ -91,7 +91,7 @@
             , base.is_sidelined
             , base.is_suspended
             , base.injured
-            , base.injury_reason
+            , null as injury_reason
             , null as pick 
             , null as round
             , null as pick_by

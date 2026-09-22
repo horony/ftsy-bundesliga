@@ -5,6 +5,14 @@
 
 /* DIMENSIONS TABELLEN AKTUALISIEREN */
 
+- 1. Lauf orchestration_scd -> Holt automatische neue Seasons nach sm_seasons
+- 2. Parameter-Tabelle anpassen (Spieltag & Season)
+- 3. Partitionierung von sm_fixtures erweitern (neue season_id aufnehmen)
+- 4. Lauf orchestration_scd
+- ...
+- 5. Setze alle Besitzer etc. auf NULL
+
+
 - 1. Lauf sm_dimensionstabellen_sammler -> holt autmatisch neue Season, Flags in der Season-Tabelle anpassen
 - Parameter-Tabelle anpassen (Spieltag & Season)
 - Partitionierung von rounds und fixtures anpassen (neue season_id aufnehmen)
@@ -20,7 +28,13 @@
 
 /* DRAFT */
 
-- neue Draft Order einfügen in Tabelle (draft_order)
+- 1. Script `draft_setup.php` ANPASSEN und ausführen
+    - Erstellt Tabellen `draft_order`, `draft_order_full` und `draft_player_base`
+    - Aktualisiert Tabelle `draft_meta`
+- 2. Script `create_ranking_views.php` ANPASSEN und ausführen
+
+...
+
 - SQL create_draft_playerbase.sql
 - PHP create_ranking_views.php 
 - SQL reset_draft.sql
