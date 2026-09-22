@@ -105,7 +105,7 @@ def scrape_bundesliga_roster(url):
         status_text = None
         sidelined_reason = None
 
-        status_div = row.find("div", class_="process_inner_column14 pull-left")
+        status_div = row.find("div", class_="process_inner_column14 float-start") # pull-left")
         if status_div:
             img = status_div.find("img")
             if img and img.get("src"):
@@ -228,6 +228,9 @@ mapping_team = {
     '1. FC Heidenheim': 2831,
     '1. FC Köln': 3320,
     'Hamburger SV': 2708,
+    'FC Schalke 04': 67,
+    'SC Paderborn 07': 2642,
+    'SV 07 Elversberg': 3588
 }
 
 log('Conducting mapping')
